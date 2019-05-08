@@ -3,5 +3,9 @@ pdbbind*.tar.gz
 PDBbind18/refined
 PDBbind18/other
 
+# Docking
+docking/refined
+docking/other
+
 # macOS
 .DS_Store
