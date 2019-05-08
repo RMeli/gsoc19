@@ -1,0 +1,5 @@
+# PDBbind
+pdbbind*.tar.gz
+
+# macOS
+.DS_Store
