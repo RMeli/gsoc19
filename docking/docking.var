@@ -1,0 +1,5 @@
+# Docking parameters
+l_box=23.5
+exhaustiveness=8
+num_modes=20
+cpu=12
