@@ -7,12 +7,12 @@ import warnings
 
 from typing import Optional
 
-def load_pdbqt(fname : str) -> mda.Universe:
+def load_ligand(fname : str) -> mda.Universe:
     """
-    Load .pdbqt file.
+    Load ligand file.
 
     Args:
-        fname (str): Input file name (.pdbqt)
+        fname (str): Input file name
 
     Returns:
         Returns a `mda.Universe` containing the coordinates from `fname`.
@@ -23,16 +23,13 @@ def load_pdbqt(fname : str) -> mda.Universe:
 
     if not os.path.isfile(fname):
         raise IOError(f"{fname} does not exsist.")
-
-    _, ext = os.path.splitext(fname)
-
-    if ext != ".pdbqt":
-        raise NameError(f"{fname} does not appear to be a .pdbqt file.")
     
     # Fixme: Redirect warning instead of suppressing
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
 
+        # TODO: For a .mol2 file this works only in the development branch
+        # FIXME: See Issue #2261
         u = mda.Universe(fname)
 
     return u
@@ -83,7 +80,7 @@ if __name__ == "__main__":
 
     args = parse()
 
-    u = load_pdbqt(args.input)
+    u = load_ligand(args.input)
 
     center = ligand_center(u)
 
