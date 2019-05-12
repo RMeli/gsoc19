@@ -40,7 +40,7 @@ do
             --center_x ${c_x} --center_y ${c_y} --center_z ${c_z} \
             --size_x ${l_box} --size_y ${l_box} --size_z ${l_box} \
             --exhaustiveness ${exhaustiveness} --num_modes ${num_modes} --cpu ${cpu} \
-            --out ${ddir}/smina.pdb --out_flex ${ddir}/flex.pdb \
+            --out ${ddir}/dock.pdb --out_flex ${ddir}/flex.pdb \
             2>&1 | tee ${ddir}/logs/smina.log
 
         # Split docking results
