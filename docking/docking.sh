@@ -7,7 +7,7 @@ wd=$PWD
 
 for dataset in "refined"
 do
-    for dir in $(ls -d ${pdbbind}/${dataset}/1[0-9]??)
+    for dir in $(ls -d ${pdbbind}/${dataset}/[1-3]???)
     do
 
  	    # PDB name
@@ -45,7 +45,7 @@ do
 
         # Split docking results
         mkdir ${ddir}/dock ${ddir}/flex
-        ${obabel} -m -ipdb ${ddir}/smina.pdb -opdb -O ${ddir}/dock/${system}_dock-.pdb \
+        ${obabel} -m -ipdb ${ddir}/dock.pdb -opdb -O ${ddir}/dock/${system}_dock-.pdb \
             2>&1 | tee ${ddir}/logs/obabel_dock.log
         ${obabel} -m -ipdb ${ddir}/flex.pdb -opdb -O ${ddir}/flex/${system}_flex-.pdb \
             2>&1 | tee ${ddir}/logs/obabel_flex.log
