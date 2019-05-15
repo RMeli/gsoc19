@@ -38,10 +38,19 @@ do
     # Docking parameters
     source variables/docking
 
+    # Print docking parameters
+    echo "--flexdist_ligand ${ligand}"
+    echo "--flexdist ${flexdist}"
+    echo "--autobox_ligand ${ligand}"
+    echo "--autobox_add ${autobox_add}"
+    echo "--exhaustiveness ${exhaustiveness}"
+    echo "--num_modes ${num_modes}"
+    echo "--cpu ${cpu}"
+	
     # Run docking
     ${smina} -r ${receptor} -l ${ligand} \
         --flexdist_ligand ${ligand} --flexdist 3 \
-	--autobox_ligand ${ligand} --autobox_add ${autobox_add} \	        
+	--autobox_ligand ${ligand} --autobox_add ${autobox_add} \
 	--exhaustiveness ${exhaustiveness} --num_modes ${num_modes} --cpu ${cpu} \
         --out ${ddir}/dock.pdb --out_flex ${ddir}/flex.pdb \
         2>&1 | tee ${ddir}/logs/smina.log
