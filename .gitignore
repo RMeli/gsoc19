@@ -1,7 +1,10 @@
 # PDBbind
-pdbbind*.tar.gz
 PDBbind18/refined
 PDBbind18/other
+
+# archives
+*.tar.gz
+*.zip
 
 # Docking
 docking/refined
