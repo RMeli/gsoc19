@@ -1,0 +1,49 @@
+#!/bin/bash
+
+#$ -V
+#$ -cwd
+#$ -q parallel-biggin
+#$ -pe parallel 16
+#$ -N <SPLITNAME>
+#$ -o jobs/<SPLITNAME>.out
+#$ -e jobs/<SPLITNAME>.err
+#$ -l h_rt=48:00:00
+
+source variables/paths
+source variables/docking
+
+splitfile=<SPLITFILE>
+
+for path in $(cat ${splitfile})
+do
+    
+    dir=${pdbbind}/${path}
+    system=$(basename ${dir})
+    dataset=$(basename $(dirname ${dir}))
+
+    # Docking working directory
+    ddir=${dataset}/${system}
+    mkdir -p ${ddir}
+    mkdir -p ${ddir}/logs
+
+    echo "Docking WD: ${ddir}"
+
+    # Ligand and receptor
+    ligand=${dir}/${system}_ligand.mol2
+    receptor=${dir}/${system}_protein.pdb
+
+    echo "Ligand: ${ligand}"
+    echo "Receptor: ${receptor}"
+
+    # Docking parameters
+    source variables/docking
+
+    # Run docking
+    ${smina} -r ${receptor} -l ${ligand} \
+        --flexdist_ligand ${ligand} --flexdist 3 \
+	--autobox_ligand ${ligand} --autobox_add ${autobox_add} \	        
+	--exhaustiveness ${exhaustiveness} --num_modes ${num_modes} --cpu ${cpu} \
+        --out ${ddir}/dock.pdb --out_flex ${ddir}/flex.pdb \
+        2>&1 | tee ${ddir}/logs/smina.log
+
+done

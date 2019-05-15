@@ -1,0 +1,31 @@
+#!/bin/bash
+
+source variables/paths
+source variables/misc
+
+# Store working directory
+wd=$PWD
+
+# Split PDBbind
+tdir=splits
+mkdir ${tdir}
+split -l 100 -d -a 3 ${pdbbind}/pdbbind18.list ${tdir}/split
+
+# Job directory
+jdir=jobs
+mkdir ${jdir}
+
+for s in $(ls ${tdir})
+do
+    sname=$(basename ${s})
+    jobname=${jdir}/${sname}.job
+
+    cp templates/${sn}.job ${jobname}
+
+    sed -i "s#<SPLITNAME>#${s}#g" ${jobname}
+    sed -i "s#<SPLITFILE>#${PWD}/${tdir}/${s}#g" ${jobname}
+
+    ${sub} ${jobname}
+ 
+    sleep 1 
+done

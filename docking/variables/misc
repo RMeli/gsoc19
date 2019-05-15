@@ -1,0 +1,3 @@
+# HPC Submission
+sn=sge		# Scheduler name
+sub=qsub 	# Submission command
