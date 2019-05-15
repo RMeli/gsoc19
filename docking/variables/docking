@@ -1,0 +1,6 @@
+# Docking parameters
+exhaustiveness=8	# Exhaustiveness
+num_modes=20		# Max number of poses
+autobox_add=10		# Padding for autobox
+
+cpu=16			# Number of CPU cores
