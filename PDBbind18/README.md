@@ -14,3 +14,7 @@ Version 2018 of PDBbind is based on the contents of [PDB](https://www.rcsb.org/)
 The script `get.sh` downloads the two parts (`refined` and `other`) of the PDBbind 2018 database for ligand-protein complexes under `PDBbind18/refined` and `PDBbind18/other`, respectively. This consists in 16'126 protein-ligand complexes, of which 4'463 are refined. 
 
 The `refined` set is 2.5Gb, while the `other` set is 6.5Gb.
+
+### Test
+
+A small `test` dataset (only 6 structures) is extracted from the `refined` set. This test set allows to test different pipelines for docking and training.
