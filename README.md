@@ -6,6 +6,10 @@
 
 ## Contributions
 
+### GNINA
+
+* Updated `PDBQTUtilities.cpp` to latest OpenBabel version ([PR #59](https://github.com/gnina/gnina/pull/59))
+
 ### LibMolGrid
 
 * Fixed issue with unsupported CUDA architecture ([PR #5](https://github.com/gnina/libmolgrid/pull/5))
