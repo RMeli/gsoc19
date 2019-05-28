@@ -2,7 +2,7 @@
 
 # Paths
 ddir=../../docking     # Docking directory
-pdbbing=../../PDBbind18 # PDBbind18 directory
+pdbbind=../../PDBbind18 # PDBbind18 directory
 
 # Working directory
 wd=$PWD
@@ -48,7 +48,13 @@ do
             2>&1 | tee ${dir}/logs/obabel_flexres.log
         rm ${pdbfix}
 
-        # TODO: Combine flexible and rigid part of the receptor
+        # Combine flexible and rigid part of the receptor
+        rigid=${pdbbind}/${dataset}/${system}/${system}_protein.pdb
+        for flex in $(ls -d ${dir}/????_flex-*.pdb)
+        do
+            idx=$(basename ${flex} .pdb | sed 's#...._flex-##') # Flex index
 
+            #python makeflex.py ${rigid} ${flex} ${dir}/${system}_protein-${idx}.pdb
+        done
     done
 done
