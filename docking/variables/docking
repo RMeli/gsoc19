@@ -1,7 +1,7 @@
 # Docking parameters
-flexdist=3		# Distance from ligand of flexible residue
-autobox_add=10          # Padding for autobox
-exhaustiveness=8	# Exhaustiveness
-num_modes=20		# Max number of poses
+flexdist=3          # Distance from ligand of flexible residue
+autobox_add=10      # Padding for autobox
+exhaustiveness=8    # Exhaustiveness
+num_modes=20        # Max number of poses
 
-cpu=16			# Number of CPU cores
+cpu=16              # Number of CPU cores

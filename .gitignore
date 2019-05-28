@@ -6,7 +6,10 @@ PDBbind18/other
 *.tar.gz
 *.zip
 
-# Docking
+# logs
+logs/
+
+# docking
 docking/refined
 docking/other
 

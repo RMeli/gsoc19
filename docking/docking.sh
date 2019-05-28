@@ -7,7 +7,7 @@ wd=$PWD
 
 for dataset in "refined"
 do
-    for dir in $(ls -d ${pdbbind}/${dataset}/[1-3]???)
+    for dir in $(ls -d ${pdbbind}/${dataset}/[1]???)
     do
 
  	# PDB name
