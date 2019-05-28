@@ -12,8 +12,8 @@ do
     for dir in $(ls -d ${ddir}/${dataset}/????)
     do
 
- 	    # PDB name
-	    system=$(basename ${dir})
+        # PDB name
+        system=$(basename ${dir})
 
         # Database working directory
         dir=${dataset}/${system}
