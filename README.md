@@ -8,12 +8,18 @@
 
 ### GNINA
 
+List of contributions to [gnina](https://github.com/gnina/gnina):
+
 * Updated `PDBQTUtilities.cpp` to latest OpenBabel version ([PR #59](https://github.com/gnina/gnina/pull/59))
 
 ### LibMolGrid
 
+List of contributions to [libmolgrid](https://github.com/gnina/gnina):
+
 * Fixed issue with unsupported CUDA architecture ([PR #5](https://github.com/gnina/libmolgrid/pull/5))
 
 ### OpenBabel
+
+List of contributions to [openbabel](https://github.com/openbabel/openbabel):
 
 * Fixed CMake when compiling without RapidJSON ([PR #1988](https://github.com/openbabel/openbabel/pull/1988))
