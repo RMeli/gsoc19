@@ -10,6 +10,7 @@
 
 List of contributions to [gnina](https://github.com/gnina/gnina):
 
+* Raised issue about `gnina` parallel compilation without `libmolgrid` installed ([Issue #57](https://github.com/gnina/gnina/issues/57))
 * Updated `PDBQTUtilities.cpp` to latest OpenBabel version ([PR #59](https://github.com/gnina/gnina/pull/59))
 
 ### LibMolGrid
