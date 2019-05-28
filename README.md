@@ -23,3 +23,9 @@ List of contributions to [libmolgrid](https://github.com/gnina/gnina):
 List of contributions to [openbabel](https://github.com/openbabel/openbabel):
 
 * Fixed CMake when compiling without RapidJSON ([PR #1988](https://github.com/openbabel/openbabel/pull/1988))
+
+
+## Mentors
+
+* **Dr. David Ryan Koes**, Assistant Professor, Department of Computational and Systems Biology, University of Pittsburgh
+* **Jocelyn Sunseri**, Computational Biology Doctoral Candidate, Carnegie Mellon and University of Pittsburgh
