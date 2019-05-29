@@ -18,3 +18,10 @@ The `refined` set is 2.5Gb, while the `other` set is 6.5Gb.
 ### Test
 
 A small `test` dataset (only 6 structures) is extracted from the `refined` set. This test set allows to test different pipelines for docking and training.
+
+
+## References
+
+* Cheng T.J.; Li X.; Li Y.; Liu Z.H.; Wang R.X. *Comparative assessment of scoring functions on a diverse test set*, J. Chem. Inf. Model., 2009; 49(4); 1079-1093.
+* Wang, R.; Fang, X.; Lu, Y.; Yang, C.-Y.; Wang, S. *The PDBbind Database: Methodologies and updates*, J. Med. Chem., 2005; 48(12); 4111-4119.
+* Wang, R.; Fang, X.; Lu, Y.; Wang, S. *The PDBbind Database: Collection of Binding Affinities for Protein-Ligand Complexes with Known Three-Dimensional Structures*, J. Med. Chem., 2004; 47(12); 2977-2980.
