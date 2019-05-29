@@ -28,5 +28,5 @@ List of contributions to [openbabel](https://github.com/openbabel/openbabel):
 
 ## Mentors
 
-* **Dr. David Ryan Koes**, Assistant Professor, Department of Computational and Systems Biology, University of Pittsburgh
-* **Jocelyn Sunseri**, Computational Biology Doctoral Candidate, Carnegie Mellon and University of Pittsburgh
+* [**Dr. David Ryan Koes**](http://bits.csb.pitt.edu/), Assistant Professor, Department of Computational and Systems Biology, University of Pittsburgh
+* [**Jocelyn Sunseri**](http://pitt.edu/~jss97/), Computational Biology Doctoral Candidate, Carnegie Mellon and University of Pittsburgh
