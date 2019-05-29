@@ -26,13 +26,13 @@ do
         pdbfix=${dir}/lig_fix.pdb
 
         # Fix END/ENDMDL for OBABEL
-        sed 's#^ENDMDL$#<END>#g;s#^END$#<ENDMDL>#g' ${pdbin} > ${pdbfix}
-        sed -i 's#<ENDMDL>#ENDMDL#g;s#<END>#END#g' ${pdbfix}
+        grep -v "^END$" ${pdbin} > ${pdbfix}
+        echo "END" >> ${pdbfix}
 
         # Split ligand
         obabel -m -ipdb ${pdbfix} -opdb -O ${pdbout} \
             2>&1 | tee ${dir}/logs/obabel_ligand.log
-        rm ${pdbfix}
+        mv ${pdbfix} ${dir}/${system}_ligand.pdb
 
         # Define flexible residues input and output names
         pdbin=${ddir}/${dataset}/${system}/flex.pdb
@@ -40,13 +40,13 @@ do
         pdbfix=${dir}/flex_fix.pdb
 
         # Fix END/ENDMDL for OBABEL
-        sed 's#^ENDMDL$#<END>#g;s#^END$#<ENDMDL>#g' ${pdbin} > ${pdbfix}
-        sed -i 's#<ENDMDL>#ENDMDL#g;s#<END>#END#g' ${pdbfix}
+        grep -v "^END$" ${pdbin} > ${pdbfix}
+        echo "END" >> ${pdbfix}
 
         # Split flexible residues
         obabel -m -ipdb ${pdbfix} -opdb -O ${pdbout} \
             2>&1 | tee ${dir}/logs/obabel_flexres.log
-        rm ${pdbfix}
+        mv ${pdbfix} ${dir}/${system}_flex.pdb
 
         # Combine flexible and rigid part of the receptor
         rigid=${pdbbind}/${dataset}/${system}/${system}_protein.pdb
