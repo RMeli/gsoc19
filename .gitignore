@@ -13,8 +13,9 @@ PDBbind18/other
 docking/refined
 docking/other
 
-# databases
-datasets/flexdock/test
+# datasets
+datasets/flexdock/refined
+datasets/flexdock/other
 
 # editors
 .vscode
