@@ -1,7 +1,3 @@
-# PDBbind
-PDBbind18/refined
-PDBbind18/other
-
 # archives
 *.tar.gz
 *.zip
@@ -9,9 +5,16 @@ PDBbind18/other
 # logs
 logs/
 
+# PDBbind
+PDBbind18/refined
+PDBbind18/other
+
 # docking
 docking/refined
 docking/other
+
+# databases
+datasets/flexdock/test
 
 # editors
 .vscode

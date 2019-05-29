@@ -7,7 +7,8 @@ import warnings
 
 from typing import Optional
 
-def load_ligand(fname : str) -> mda.Universe:
+
+def load_ligand(fname: str) -> mda.Universe:
     """
     Load ligand file.
 
@@ -23,7 +24,7 @@ def load_ligand(fname : str) -> mda.Universe:
 
     if not os.path.isfile(fname):
         raise IOError(f"{fname} does not exsist.")
-    
+
     # Fixme: Redirect warning instead of suppressing
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
@@ -48,7 +49,7 @@ def ligand_center(u: mda.Universe) -> np.ndarray:
     .. note:
         Assumes that ``u`` only contains the ligand (all atoms are selected).
     """
-    
+
     ligand = u.select_atoms("all")
 
     return ligand.center_of_geometry()
@@ -89,6 +90,5 @@ if __name__ == "__main__":
     if args.output is None:
         print(center_str)
     else:
-        with open(args.output, 'w') as fout:
+        with open(args.output, "w") as fout:
             fout.write(f"{center[0]:.4f} {center[1]:.4f} {center[2]:.4f}")
-
