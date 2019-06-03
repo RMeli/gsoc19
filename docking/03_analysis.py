@@ -51,7 +51,7 @@ plt.savefig("analysis/plots/n_modes.pdf")
 print("\nDescription:")
 print(df.astype(int).describe())
 
-print(f"\nNo flexible residued not printed ({len(failed)}):\n", *failed)
+print(f"\nNo flexible residues printed ({len(failed)}):\n", *failed)
 np.savetxt("analysis/noflex.dat", np.array(failed), "%s")
 
 print(f"\nNo conformations found ({len(no_conf)}):\n", *no_conf)
