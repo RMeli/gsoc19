@@ -23,6 +23,6 @@ The script `docking.sub` allows to submit different docking jobs on a HPC cluste
 
 Only a job for the Sun Grid Engine (SGE) scheduler is provided (see `templates/sge.job`), but job scripts for other schedulers can be easily added.
 
-#### Analysis
+### Analysis
 
 The script `analysis.py` allows to automatically check how many systems have been docked successfully and provides some statistics. In addition, problematic systems where no conformations were found in the given search space are detected and listed.
