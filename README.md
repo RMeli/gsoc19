@@ -10,6 +10,7 @@
 
 List of contributions to [gnina](https://github.com/gnina/gnina):
 
+* Added test support for newer versions of Boost ([PR #62](https://github.com/gnina/gnina/pull/62))
 * Provided documentation and PDB standardization for `makeflex.py` script ([PR #61](https://github.com/gnina/gnina/pull/61))
 * Provided fixes for the `makeflex.py` script ([PR #60](https://github.com/gnina/gnina/pull/60))
 * Raised issue about `gnina` parallel compilation without `libmolgrid` installed ([Issue #57](https://github.com/gnina/gnina/issues/57))
