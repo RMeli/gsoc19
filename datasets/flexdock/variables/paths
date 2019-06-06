@@ -1,8 +1,5 @@
 # PDBbind database
-pdbbind=../PDBbind18
-
-# smina exec
-smina=$HOME/software/smina/smina.static
+pdbbind=../../PDBbind18
 
 # Openbabel
 obabel=$HOME/software/openbabel-2.4.1/install/bin/obabel
