@@ -13,7 +13,7 @@ do
         csvfile=${dir}/${system}_score.csv
         rm -f ${csvfile}
 
-        echo "name,rmsd_lig,score" >> ${csvfile}
+        echo "system,name,rmsd_lig,score" >> ${csvfile}
 
         ligand_crystal=${pdbbind}/${dataset}/${system}/${system}_ligand.mol2
 
@@ -23,7 +23,7 @@ do
             rmsd=$(${obrms} ${ligand_crystal} ${ligand} | awk  '{print $2}')
             score=$(grep "minimizedAffinity" ${ligand} | awk '{print $3}')
 
-            echo "${name},${rmsd},${score}" >> ${csvfile}
+            echo "${system},${name},${rmsd},${score}" >> ${csvfile}
         done
     done
 done

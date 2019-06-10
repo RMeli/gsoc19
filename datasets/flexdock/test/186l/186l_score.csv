@@ -1,3 +1,3 @@
-name,rmsd_lig,score
-186l_ligand-1,0.892552,-15.8827095
-186l_ligand-2,4.5397,-14.987792
+system,name,rmsd_lig,score
+186l,186l_ligand-1,0.892552,-15.8827095
+186l,186l_ligand-2,4.5397,-14.987792
