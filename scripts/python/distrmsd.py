@@ -50,7 +50,6 @@ if __name__ == "__main__":
 
     plt.figure()
     for rank in range(1,args.maxrank + 1):
-        name = os.path.join(args.outputpath, f"distrmsd-{rank}.pdf")
 
         rmsd = get_lig_rmsd_for_rank(rank, df)
 
@@ -66,4 +65,4 @@ if __name__ == "__main__":
     plt.xlabel("RMSD (Å)")
     plt.legend()
     plt.xlim([0,None])
-    plt.show()
+    plt.savefig(os.path.join(args.outputpath, f"distrmsd.pdf"))
