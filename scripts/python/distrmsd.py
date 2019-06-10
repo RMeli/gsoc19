@@ -1,4 +1,5 @@
 """
+Plot RMSD distributions for top 5 ligand poses across the dataset.
 """
 
 import argparse as ap
@@ -27,6 +28,8 @@ def parse(args: Optional[str] = None) -> ap.Namespace:
     parser = ap.ArgumentParser(description="Compute RMSD distributions for docking poses.")
 
     parser.add_argument("input", type=str, help="Input file (.csv)")
+    parser.add_argument("-mr", "--maxrank", type=int, default=5, help="Input file (.csv)")
+    parser.add_argument("-b", "--bins", type=int, default=None, help="Input file (.csv)")
     parser.add_argument("-opath", "--outputpath", type=str, default="", help="Output files path")
 
     return parser.parse_args(args)
@@ -46,12 +49,18 @@ if __name__ == "__main__":
     df = pd.read_csv(args.input)
 
     plt.figure()
-    for rank in range(1,3):
+    for rank in range(1,args.maxrank + 1):
         name = os.path.join(args.outputpath, f"distrmsd-{rank}.pdf")
 
         rmsd = get_lig_rmsd_for_rank(rank, df)
 
-        sns.distplot(rmsd, hist=True, kde=True, label = f"rank {rank}")
+        sns.distplot(rmsd, bins=args.bins, hist=True, kde=True, label = f"rank {rank}")
+
+
+    rmsd = get_lig_rmsd_for_rank(1, df)
+    N = len(rmsd)
+    n = len(rmsd[rmsd < 1])
+    print(f"Number of sub-1Å top poses: {n} ({n / N * 100:.2f}%)")
 
     plt.title("RMSD Distribution")
     plt.xlabel("RMSD (Å)")
