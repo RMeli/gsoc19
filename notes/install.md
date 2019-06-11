@@ -3,7 +3,23 @@
 
 ## OpenBabel
 
-[Open Babel](http://openbabel.org/wiki/Main_Page) is a chemical toolbox designed to speak the many languages of chemical data. It's an open, collaborative project allowing anyone to search, convert, analyze, or store data from molecular modeling, chemistry, solid-state materials, biochemistry, or related areas. 
+[Open Babel](http://openbabel.org/wiki/Main_Page) is a chemical toolbox designed to speak the many languages of chemical data. It's an open, collaborative project allowing anyone to search, convert, analyze, or store data from molecular modeling, chemistry, solid-state materials, biochemistry, or related areas.
+
+### Requirements
+
+* [CMake](https://cmake.org/)
+
+Optional:
+
+* [Eigen3](http://eigen.tuxfamily.org/)
+* [Python](https://www.python.org/)
+
+```
+git git build-essential \
+    cmake \
+    libeigen3-dev \
+    python3-dev
+```
 
 ### Download
 
@@ -53,11 +69,11 @@ export LD_LIBRARY_PATH=$HOME/software/openbabel/lib
 * [Eigen3](http://eigen.tuxfamily.org/)
 * [Open Babel](http://openbabel.org/wiki/Main_Page)
 
-Install OpenBabel as described above.
+```
+apt install git build-essential libboost-all-dev libeigen3-dev
+```
 
-```
-apt install git build-essential libboost-all-dev  libeigen3-dev
-```
+Install OpenBabel as described above.
 
 ### Download
 
