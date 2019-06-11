@@ -1,6 +1,9 @@
 # Compilation and Installation
 
+
 ## OpenBabel
+
+[Open Babel](http://openbabel.org/wiki/Main_Page) is a chemical toolbox designed to speak the many languages of chemical data. It's an open, collaborative project allowing anyone to search, convert, analyze, or store data from molecular modeling, chemistry, solid-state materials, biochemistry, or related areas. 
 
 ### Download
 
@@ -39,6 +42,34 @@ export LD_LIBRARY_PATH=$HOME/software/openbabel/lib
 
 `LIBRARY_PATH` is used before compilation to include directories containing static and/or shared libraries that have to be linked to the program. `LD_LIBRARY_PATH` is used by the program (successfully compiled and linked) to dinamically link shared libraries.
 
+
 ## Smina
+
+[smina](https://sourceforge.net/projects/smina/) is a fork of [Autodock Vina](http://vina.scripps.edu/) that focuses on improving scoring and minimization.
+
+### Requirements
+
+* [Boost](https://www.boost.org/)
+* [Eigen3](http://eigen.tuxfamily.org/)
+* [Open Babel](http://openbabel.org/wiki/Main_Page)
+
+Install OpenBabel as described above.
+
+```
+apt install git build-essential libboost-all-dev  libeigen3-dev
+```
+
+### Download
+
+```
+git clone https://git.code.sf.net/p/smina/code smina
+```
+
+### Compilation
+
+```
+cd smina/build/linux/release
+make -j
+```
 
 ## CMake
