@@ -1,6 +1,6 @@
 #!/bin/bash
 
-list=analysis/noconf_test.dat
+list=analysis/noconf.dat
 
 source variables/paths
 
