@@ -2,6 +2,19 @@
 
 ## Installation
 
+### MacOS
+
+Incentive PyMol:
+```
+conda create -n pymol python=3.6 ipython
+conda install -n pymol -c schrodinger pymol
+```
+
+Open-source PyMol:
+```
+brew insall brewsci/bio/pymol
+```
+
 ## Scripts
 
 In order to make the functions defined by `pymol.cmd.extend(PYMOL_FUNCTION_NAME, FUNCTION)` available in PyMol, the script containing their definitions has to be run from PyMol's CLI:
