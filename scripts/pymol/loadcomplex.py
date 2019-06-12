@@ -41,7 +41,7 @@ def loadcomplex(system, dataset, flexdist=3, pdbbindpath="../PDBbind18"):
     # Outline flexible residues
     for resn, resi, chain in flexres:
         if chain != "": # ???
-            sel = f"resi {resi} in chain {chain}"
+            sel = f"receptor and (resi {resi} in chain {chain})"
             cmd.show("licorice", sel)
             cmd.color("red", sel)
             cmd.remove(f"hydro in ({sel})")
