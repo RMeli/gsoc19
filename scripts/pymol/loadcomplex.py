@@ -1,8 +1,13 @@
+"""
+Given a PDB index, load a protein-ligand complex from PDBBind, outlining residues
+within FLEXDIST from the ligand.
+"""
+
 from pymol import cmd, stored
 
 import os
 
-def loadcomplex(system, dataset, pdbbindpath="../PDBbind18"):
+def loadcomplex(system, dataset, flexdist=3, pdbbindpath="../PDBbind18"):
 
     print(f"Loading {dataset}/{system}")
 
@@ -24,7 +29,6 @@ def loadcomplex(system, dataset, pdbbindpath="../PDBbind18"):
     cmd.color("grey", "receptor")
 
     # Get residue index of atoms within FLEXDIST from the ligand
-    flexdist = 3
     stored.list = []
     cmd.iterate(
         f"all within {flexdist} of ligand", # Selection
