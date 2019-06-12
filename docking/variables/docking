@@ -4,4 +4,4 @@ autobox_add=10      # Padding for autobox
 exhaustiveness=8    # Exhaustiveness
 num_modes=20        # Max number of poses
 
-cpu=16              # Number of CPU cores
+cpu=12              # Number of CPU cores

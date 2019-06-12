@@ -37,7 +37,7 @@ do
     echo "--out ${ddir}/dock.pdb" | tee ${ddir}/logs/smina.log
     echo "--out_flex ${ddir}/flex.pdb" | tee ${ddir}/logs/smina.log
 
-    valgrind -v ${smina} -r ${receptor} -l ${ligand} \
+    ${smina} -r ${receptor} -l ${ligand} \
         --flexdist_ligand ${ligand} --flexdist 3 \
         --autobox_ligand ${ligand} --autobox_add ${autobox_add} \
 	    --exhaustiveness ${exhaustiveness} --num_modes ${num_modes} --cpu ${cpu} \
