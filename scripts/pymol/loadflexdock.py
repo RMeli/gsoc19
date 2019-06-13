@@ -5,11 +5,26 @@ import os
 num_modes = 20 # Number of docking modes
 
 colors = [
-    ("skyblue", "aquamarine"), 
-    ("raspberry", "salmon"), 
-    ("splitpea", "palegreen"),
-    ("violetpurple", "violet"),
-    ("brown", "sand"),
+    "chocolate",
+    "skyblue",
+    "limegreen",
+    "warmpink",
+    "limon",
+    "violet",
+    "brightorange",
+    "sand",
+    "lime",
+    "deepteal",
+    "hotpink",
+    "yellowirange",
+    "violepurple",
+    "marine",
+    "olive",
+    "smudge",
+    "deepsalmon",
+    "splitpea",
+    "lightteal",
+    "slate",
 ]
 
 def loadflexdock(system, dataset, idxs=["1"], flexdist="3", pdbbindpath="../PDBbind18", dockingpath=""):
@@ -20,7 +35,7 @@ def loadflexdock(system, dataset, idxs=["1"], flexdist="3", pdbbindpath="../PDBb
     # Convert string of indices to numbers
     idxs = idxs.split()
     idxs = [int(idx) for idx in idxs]
-    if len(idxs) > 5:
+    if len(idxs) > 7:
         raise RuntimeError("Displaying more than 5 poses is not supported.")
 
     # Convert flexdist to float
@@ -53,11 +68,19 @@ def loadflexdock(system, dataset, idxs=["1"], flexdist="3", pdbbindpath="../PDBb
     # Hide everything and show only receptor and ligands
     cmd.hide("all")
     cmd.show("cartoon", "receptor")
-    for i, idx in enumerate(idxs):
-        cmd.show("licorice", docksel[idx])
-        cmd.color(colors[i][0], docksel[idx] + " and name C*")
+    for idx in idxs:
+        # Show ligand as ball and stick
+        cmd.show("sticks", docksel[idx])
+        cmd.show("spheres", docksel[idx])
+        cmd.set("sphere_scale", 0.2, docksel[idx])
+        
+        # Show flexible residue as licorice
         cmd.show("licorice", flexsel[idx])
-        cmd.color(colors[i][1], flexsel[idx])
+        cmd.set("stick_radius", 0.2, flexsel[idx])
+
+        # Color C atoms of ligand and flexible residues
+        cmd.color(colors[idx], docksel[idx] + " and name C*")
+        cmd.color(colors[idx], flexsel[idx] + " and name C*")
 
     # Center and zoom to ligand
     if len(idxs) == 1: # Center on the single ligand
@@ -90,5 +113,6 @@ def loadflexdock(system, dataset, idxs=["1"], flexdist="3", pdbbindpath="../PDBb
             cmd.show("licorice", sel)
             cmd.color("grey", sel)
             cmd.remove(f"hydro in ({sel})")
+            cmd.set("stick_radius", 0.2, sel)
 
 cmd.extend("loadflexdock", loadflexdock)
