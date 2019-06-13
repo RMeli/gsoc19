@@ -4,7 +4,13 @@ import os
 
 num_modes = 20 # Number of docking modes
 
-colors = [("blue", "skyblue"), ("red", "ruby"), ("green", "lime")]
+colors = [
+    ("skyblue", "aquamarine"), 
+    ("raspberry", "salmon"), 
+    ("splitpea", "palegreen"),
+    ("violetpurple", "violet"),
+    ("brown", "sand"),
+]
 
 def loadflexdock(system, dataset, idxs=["1"], flexdist="3", pdbbindpath="../PDBbind18", dockingpath=""):
 
@@ -14,8 +20,8 @@ def loadflexdock(system, dataset, idxs=["1"], flexdist="3", pdbbindpath="../PDBb
     # Convert string of indices to numbers
     idxs = idxs.split()
     idxs = [int(idx) for idx in idxs]
-    if len(idxs) > 3:
-        raise RuntimeError("Displaying more than 3 poses is not supported.")
+    if len(idxs) > 5:
+        raise RuntimeError("Displaying more than 5 poses is not supported.")
 
     # Convert flexdist to float
     flexdist = float(flexdist)
@@ -49,7 +55,7 @@ def loadflexdock(system, dataset, idxs=["1"], flexdist="3", pdbbindpath="../PDBb
     cmd.show("cartoon", "receptor")
     for i, idx in enumerate(idxs):
         cmd.show("licorice", docksel[idx])
-        cmd.color(colors[i][0], docksel[idx])
+        cmd.color(colors[i][0], docksel[idx] + " and name C*")
         cmd.show("licorice", flexsel[idx])
         cmd.color(colors[i][1], flexsel[idx])
 
