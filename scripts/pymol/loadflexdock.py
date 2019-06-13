@@ -6,10 +6,15 @@ num_modes = 20 # Number of docking modes
 
 def loadflexdock(system, dataset, idx=1, flexdist=3, pdbbindpath="../PDBbind18", dockingpath=""):
 
+    # Clear everything
+    cmd.reinitialize("everything")
+
     # Convert string idx to number
     idx = int(idx)
+    flexdist = float(flexdist)
 
-    print(f"Loading {dataset}/{system}")
+    print(f"Loading {dataset}/{system} (rank {idx})")
+    print(f"flexdist = {flexdist}")
 
     ligandpath = os.path.join(dockingpath, dataset, system, f"dock.pdb") # Docked ligands
     flexrespath = os.path.join(dockingpath, dataset, system, f"flex.pdb") # Flexible residues
@@ -42,19 +47,24 @@ def loadflexdock(system, dataset, idx=1, flexdist=3, pdbbindpath="../PDBbind18",
 
     # Remove solvent
     cmd.remove("solvent")
+    
+    # Remove hydrogen atoms
+    #cmd.remove("hydro")
 
     # Receptor rendering
     cmd.color("grey", "receptor")
 
-    # Get residue index of atoms within FLEXDIST from the ligand
+    # Get residue index of atoms within FLEXDIST from the crystal ligand
     stored.list = []
     cmd.iterate(
-        f"receptor within {flexdist} of {docksel[0]}", # Selection
+        f"(receptor and not hydro) within {flexdist} of {docksel[0]}", # Selection
         "stored.list.append((resn, resi, chain))" # Action
     )
 
     # Remove redundancies
     flexres = set(stored.list) # Set of flexible residues
+
+    print(flexres)
 
     # Outline flexible residues
     for resn, resi, chain in flexres:

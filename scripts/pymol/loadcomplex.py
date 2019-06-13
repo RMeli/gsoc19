@@ -31,7 +31,7 @@ def loadcomplex(system, dataset, flexdist=3, pdbbindpath="../PDBbind18"):
     # Get residue index of atoms within FLEXDIST from the ligand
     stored.list = []
     cmd.iterate(
-        f"all within {flexdist} of ligand", # Selection
+        f"(receptor and not hydro) within {flexdist} of {docksel[0]}", # Selection
         "stored.list.append((resn, resi, chain))" # Action
     )
 
