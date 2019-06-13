@@ -4,18 +4,27 @@ import os
 
 num_modes = 20 # Number of docking modes
 
-def loadflexdock(system, dataset, idx=1, flexdist=3, pdbbindpath="../PDBbind18", dockingpath=""):
+colors = [("blue", "skyblue"), ("red", "ruby"), ("green", "lime")]
+
+def loadflexdock(system, dataset, idxs=["1"], flexdist="3", pdbbindpath="../PDBbind18", dockingpath=""):
 
     # Clear everything
     cmd.reinitialize("everything")
 
-    # Convert string idx to number
-    idx = int(idx)
+    # Convert string of indices to numbers
+    idxs = idxs.split()
+    idxs = [int(idx) for idx in idxs]
+    if len(idxs) > 3:
+        raise RuntimeError("Displaying more than 3 poses is not supported.")
+
+    # Convert flexdist to float
     flexdist = float(flexdist)
 
-    print(f"Loading {dataset}/{system} (rank {idx})")
+    # Print informations
+    print(f"Loading {dataset}/{system} (rank {idxs})")
     print(f"flexdist = {flexdist}")
 
+    # Build paths
     ligandpath = os.path.join(dockingpath, dataset, system, f"dock.pdb") # Docked ligands
     flexrespath = os.path.join(dockingpath, dataset, system, f"flex.pdb") # Flexible residues
     cligandpath = os.path.join(pdbbindpath, dataset, system, f"{system}_ligand.mol2") # Crystal ligand
@@ -33,23 +42,27 @@ def loadflexdock(system, dataset, idx=1, flexdist=3, pdbbindpath="../PDBbind18",
     docksel = {i : f"ligand_{i:04d}" for i in range(1,num_modes+1)}
     docksel[0] = "cligand" # Add index 0 for crystal
     flexsel = {i : f"flexres_{i:04d}" for i in range(1,num_modes+1)}
-    flexsel[0] = f"receptor within {flexdist} of {docksel[idx]}" # Add index 0 for crystal
+    flexsel[0] = f"(receptor and not hydro) within {flexdist} of {docksel[0]}" # Add index 0 for crystal
     
-    # Hide everything and show only receptor and single ligand
+    # Hide everything and show only receptor and ligands
     cmd.hide("all")
     cmd.show("cartoon", "receptor")
-    cmd.show("licorice", docksel[idx])
-    cmd.show("licorice", flexsel[idx])
+    for i, idx in enumerate(idxs):
+        cmd.show("licorice", docksel[idx])
+        cmd.color(colors[i][0], docksel[idx])
+        cmd.show("licorice", flexsel[idx])
+        cmd.color(colors[i][1], flexsel[idx])
 
     # Center and zoom to ligand
-    cmd.center(docksel[idx])
-    cmd.zoom(docksel[idx], 8)
+    if len(idxs) == 1: # Center on the single ligand
+        cmd.center(docksel[idxs[0]])
+        cmd.zoom(docksel[idxs[0]], 10)
+    else: # Center on the crystal ligand if more than one ligand
+        cmd.center(docksel[0])
+        cmd.zoom(docksel[0], 8)
 
     # Remove solvent
     cmd.remove("solvent")
-    
-    # Remove hydrogen atoms
-    #cmd.remove("hydro")
 
     # Receptor rendering
     cmd.color("grey", "receptor")
@@ -63,7 +76,7 @@ def loadflexdock(system, dataset, idx=1, flexdist=3, pdbbindpath="../PDBbind18",
 
     # Remove redundancies
     flexres = set(stored.list) # Set of flexible residues
-    
+
     # Outline flexible residues
     for resn, resi, chain in flexres:
         if chain != "": # ???

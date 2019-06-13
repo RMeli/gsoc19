@@ -9,6 +9,9 @@ import os
 
 def loadcomplex(system, dataset, flexdist=3, pdbbindpath="../PDBbind18"):
 
+    # Clear everything
+    cmd.reinitialize("everything")
+
     print(f"Loading {dataset}/{system}")
 
     ligand = os.path.join(pdbbindpath, dataset, system, f"{system}_ligand.mol2")
@@ -31,7 +34,7 @@ def loadcomplex(system, dataset, flexdist=3, pdbbindpath="../PDBbind18"):
     # Get residue index of atoms within FLEXDIST from the ligand
     stored.list = []
     cmd.iterate(
-        f"(receptor and not hydro) within {flexdist} of {docksel[0]}", # Selection
+        f"(receptor and not hydro) within {flexdist} of ligand", # Selection
         "stored.list.append((resn, resi, chain))" # Action
     )
 
