@@ -63,9 +63,7 @@ def loadflexdock(system, dataset, idx=1, flexdist=3, pdbbindpath="../PDBbind18",
 
     # Remove redundancies
     flexres = set(stored.list) # Set of flexible residues
-
-    print(flexres)
-
+    
     # Outline flexible residues
     for resn, resi, chain in flexres:
         if chain != "": # ???
