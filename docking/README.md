@@ -82,7 +82,7 @@ The following `other` systems terminate with `WARNING: Could not find any confor
 ```
 
 An closer inspection of these systems revealed that OpenBabel and `smina` do not correctly handle insertion codes in PDB files. The following patch to OpenBabel (by David R. Koes)
-```
+```c++
 --- a/src/mol.cpp
 +++ b/src/mol.cpp
 @@ -1280,10 +1280,7 @@ namespace OpenBabel
