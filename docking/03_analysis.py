@@ -17,6 +17,7 @@ col_names = ["n_modes", "n_flex"]
 df = pd.DataFrame(columns=col_names, dtype=int)
 
 no_conf=[] # Systems where no conformation was found in search space
+no_flex=[] # Systems where no flexible residues are found
 failed=[] # Systems where a problem occurred
 
 for dataset in datasets:
@@ -26,14 +27,19 @@ for dataset in datasets:
         try:
             u = mda.Universe(fname)
 
-        except EOFError:
+        except EOFError: # Empty PDB file when no conformations found
             print(f"No conformations found for system {system}.")
             no_conf.append(os.path.join(dataset, system))
             continue
-        except Exception:
-            print(f"Problem loading PDB file for system {system}")
-            failed.append(os.path.join(dataset, system))
-            continue
+        except Exception: # PDB file with no residues or no PDB file
+            if os.path.isfile(fname): # File exists
+                print(f"No flexible residues found for system {system}.")
+                no_flex.append(os.path.join(dataset, system))
+                continue
+            else: # File does not exist (docking failed before output)
+                print(f"Problem loading PDB file for system {system}")
+                failed.append(os.path.join(dataset, system))
+                continue
 
         n_modes = len(u.trajectory)
         n_flex = len(u.residues)
@@ -44,11 +50,15 @@ for dataset in datasets:
 print("\nDescription:")
 print(df.astype(int).describe())
 
-print(f"\nNo flexible residues printed ({len(failed)}):\n", *failed)
-np.savetxt("analysis/noflex.dat", np.array(failed), "%s")
 
 print(f"\nNo conformations found ({len(no_conf)}):\n", *no_conf)
 np.savetxt("analysis/noconf.dat", np.array(no_conf), "%s")
+
+print(f"\nNo flexible residues found ({len(no_flex)}):\n", *no_flex)
+np.savetxt("analysis/noconf.dat", np.array(no_flex), "%s")
+
+print(f"\nFailed({len(failed)}):\n", *failed)
+np.savetxt("analysis/failed.dat", np.array(failed), "%s")
 
 # Number of rotatable bonds for systems where no conformation is found
 n_rot_noconf = []
