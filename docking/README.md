@@ -1,6 +1,6 @@
 # Flexible Docking
 
-Flexible docking is performed using `smina` (Feb 12 2019) on the PDBbind18 dataset.
+Flexible docking is performed using `smina` (Feb 12 2019 and Jun 12 2019) on the PDBbind18 dataset.
 
 ## Parameters
 
@@ -28,11 +28,39 @@ Only a job for the Sun Grid Engine (SGE) scheduler is provided (see `templates/s
 
 ## Analysis
 
-The script `analysis.py` allows to automatically check how many systems have been docked successfully and provides some statistics. In addition, problematic systems where no conformations were found in the given search space are detected and listed.
+The script `03_analysis.py` allows to automatically check how many systems have been docked successfully and provides some statistics.
 
-### No Flexible Residues
+### Detected Failures
 
-### No conformations found
+Detected failures are of three types:
+
+* No flexible residues found (for the given `--flexdist`)
+    * Docking completes successfully
+    * Ligand binding modes in `dock.pdb`
+    * Valid `flex.pdb` with no residues
+* No conformations found within the search space
+    * `smina` terminates with a `WARNING`
+    * PDB files `dock.pdb` and `flex.pdb` are empty
+* Unsupported metal atoms
+    * `smina` terminates with a `Parse error`
+    * PDB files `dock.pdb` and `flex.pdb` are not created
+
+The list of systems for which no flexible residues are found is printed in `analysis/noflex.dat`, the list of systems for which no conformations are found within the search space is printed in `analysis/noconf.dat`, the list of system failing (likely because of the presence of unsupported metal atoms) is printed in `analysis/failed.dat`.
+
+#### No Flexible Residues Found
+
+For the following `refined` systems, no flexible residues are found:
+```
+3nee 2z94 2g5u 5lud
+```
+
+For the following `other` systems, no flexible residues are found:
+```
+4his 5swg 1h9z 3grj 4wh7 5ea7 4z90 4e5i 2r1w 3tct 5vdu 4bnz 4nni 4u5t 5wbp
+1n1g
+```
+
+#### No Conformations Found
 
 The following `refined` systems terminate with `WARNING: Could not find any conformations completely within the search space`:
 ```
@@ -53,13 +81,32 @@ The following `other` systems terminate with `WARNING: Could not find any confor
 1ba8 4lxb 1doj 1awh 7kme 1j81 4ufd 2c8x
 ```
 
-### Metal Atoms
+An closer inspection of these systems revealed that OpenBabel and `smina` do not correctly handle insertion codes in PDB files. The following patch to OpenBabel (by David R. Koes)
+```
+--- a/src/mol.cpp
++++ b/src/mol.cpp
+@@ -1280,10 +1280,7 @@ namespace OpenBabel
+           {
+             res = NewResidue();
+             src_res = src.GetResidue(k);
+-            res->SetName(src_res->GetName());
+-            res->SetNum(src_res->GetNumString());
+-            res->SetChain(src_res->GetChain());
+-            res->SetChainNum(src_res->GetChainNum());
++           *res = *src_res;
+             for (src_atom=src_res->BeginAtom(ii) ; src_atom ; src_atom=src_res->NextAtom(ii))
+               {
+                 atom = GetAtom(src_atom->GetIdx());
+```
+and an updated version of `smina` (Jun 12 2019) solve the problem.
+
+#### Metal Atoms
 
 Some systems contain metal atoms and therefore `smina` terminates with `ATOM syntax incorrect: "METALATOMNAME" is not a valid AutoDock type.`.
 
 The following `refined` systems contain metal atoms (6 systems):
 ```
-2rio (Sr)   3rv4 (Cs)   4igt (Li)   4o3c (Li)   5fhm (Li)   5tcj (Cs)
+2rio (Sr)   2rv4 (Cs)   4igt (Li)   4o3c (Li)   5fhm (Li)   5tcj (Cs)
 ```
 
 The following `other` systems contain metal atoms (8 systems):
