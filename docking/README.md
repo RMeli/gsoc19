@@ -100,7 +100,7 @@ An closer inspection of these systems revealed that OpenBabel and `smina` do not
 ```
 and an updated version of `smina` (Jun 12 2019) solve the problem.
 
-#### Metal Atoms
+#### Unsupported Metal Atoms
 
 Some systems contain metal atoms and therefore `smina` terminates with `ATOM syntax incorrect: "METALATOMNAME" is not a valid AutoDock type.`.
 
