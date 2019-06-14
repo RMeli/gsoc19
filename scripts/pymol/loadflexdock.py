@@ -118,4 +118,9 @@ def loadflexdock(system, dataset, idxs=["1"], flexdist="3", pdbbindpath="../PDBb
             cmd.remove(f"hydro in ({sel})")
             cmd.set("stick_radius", 0.2, sel)
 
+    # Show metal atoms
+    cmd.show("spheres", "metals")
+    cmd.set("sphere_scale", 0.5, "metals")
+
+
 cmd.extend("loadflexdock", loadflexdock)
