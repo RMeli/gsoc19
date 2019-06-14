@@ -55,7 +55,7 @@ print(f"\nNo conformations found ({len(no_conf)}):\n", *no_conf)
 np.savetxt("analysis/noconf.dat", np.array(no_conf), "%s")
 
 print(f"\nNo flexible residues found ({len(no_flex)}):\n", *no_flex)
-np.savetxt("analysis/noconf.dat", np.array(no_flex), "%s")
+np.savetxt("analysis/noflex.dat", np.array(no_flex), "%s")
 
 print(f"\nFailed({len(failed)}):\n", *failed)
 np.savetxt("analysis/failed.dat", np.array(failed), "%s")
