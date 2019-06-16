@@ -100,7 +100,7 @@ def loadflexdock(system, dataset, idxs=["1"], flexdist="3", pdbbindpath="../PDBb
     recsel = "receptor and not hydro " +  " ".join([f"and not resn {resn}" for resn in noflex])
     stored.list = []
     cmd.iterate(
-        f"(receptor and not hydro) within {flexdist} of {docksel[0]}", # Selection
+        f"({recsel}}) within {flexdist} of {docksel[0]}", # Selection
         "stored.list.append((resn, resi, chain))" # Action
     )
 
@@ -121,4 +121,4 @@ def loadflexdock(system, dataset, idxs=["1"], flexdist="3", pdbbindpath="../PDBb
     cmd.set("sphere_scale", 0.5, "metals")
 
 
-cmd.extend("loadflexdock", loadflexdock)
+cmd.extend("loadflexdockall", loadflexdockall)
