@@ -1,6 +1,8 @@
 """
-Given a PDB index, load a protein-ligand complex from PDBBind, outlining residues
-within FLEXDIST from the ligand.
+Given a PDB index and a PDBbind DATASET ("refined" or "other"), load a protein-ligand 
+complex from PDBBINDPATH, outlining residues within FLEXDIST from the ligand.
+The residues within FLEXDIST from the ligand are considered as flexible residues
+during flexible docking.
 """
 
 from pymol import cmd, stored

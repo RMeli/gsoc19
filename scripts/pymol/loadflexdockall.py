@@ -1,30 +1,28 @@
+"""
+Given a PDB index and a PDBbind DATASET ("refined" or "other"), load the following
+structures:
+- Original crystal structure (from PDBBINDPATH)
+- All poses for the flexible residues (from flex.pdb in DOCKINGPATH)
+- All poses for the ligand (from dock.pdb in DOCKINGPATH)
+Then, show the following:
+- Original crystal structure of the receptor (cartoon, gray)
+- Original residues treated as flexible during flexible docking (licorice, gray)
+- Ligand pose(s) of rank(s) IDX(s) (licorice, COLORS[IDX])
+- Flexible residues pose(s) of rank(s) IDX(s) (licorice, COLORS[IDX])
+"""
+
 from pymol import cmd, stored
 
 import os
 
 num_modes = 20 # Number of docking modes
 
+# Colors corresponding to docking rank
 colors = [
-    "chocolate",
-    "skyblue",
-    "limegreen",
-    "warmpink",
-    "limon",
-    "violet",
-    "brightorange",
-    "sand",
-    "lime",
-    "deepteal",
-    "hotpink",
-    "yellowirange",
-    "violepurple",
-    "marine",
-    "olive",
-    "smudge",
-    "deepsalmon",
-    "splitpea",
-    "lightteal",
-    "slate",
+    "chocolate", "skyblue", "limegreen", "warmpink", "limon", "violet",
+    "brightorange", "sand", "lime", "deepteal", "hotpink", "yellowirange",
+    "violepurple", "marine", "olive", "smudge", "deepsalmon", "splitpea",
+    "lightteal", "slate",
 ]
 
 def loadflexdock(system, dataset, idxs=["1"], flexdist="3", pdbbindpath="../PDBbind18", dockingpath=""):
