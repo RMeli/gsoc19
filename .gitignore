@@ -4,6 +4,7 @@ PDBbind18/*.tar.gz
 
 # logs
 logs/
+nohup.out
 
 # PDBbind
 PDBbind18/refined
