@@ -67,20 +67,35 @@ The list of systems for which no flexible residues are found is printed in `anal
 
 #### No Flexible Residues Found
 
-For the following `refined` systems, no flexible residues are found:
+For the following `refined` systems, no flexible residues are found (4 systems):
 ```
 3nee 2z94 2g5u 5lud
 ```
 
-For the following `other` systems, no flexible residues are found:
+For the following `other` systems, no flexible residues are found (16 systems):
 ```
 4his 5swg 1h9z 3grj 4wh7 5ea7 4z90 4e5i 2r1w 3tct 5vdu 4bnz 4nni 4u5t 5wbp
 1n1g
 ```
 
+#### Unsupported Metal Atoms
+
+Some systems contain metal atoms and therefore `smina` terminates with `ATOM syntax incorrect: "METALATOMNAME" is not a valid AutoDock type.`.
+
+The following `refined` systems contain metal atoms (6 systems):
+```
+2rio (Sr)   2rv4 (Cs)   4igt (Li)   4o3c (Li)   5fhm (Li)   5tcj (Cs)
+```
+
+The following `other` systems contain metal atoms (8 systems):
+```
+1a52 (Au)   1ind (In)   2iw9 (Og)   2w54 (Ba)   3ump (Cs)   4k1e (Li)
+4q3r (Cs)   5ng9 (Li)
+```
+
 #### No Conformations Found
 
-The following `refined` systems terminate with `WARNING: Could not find any conformations completely within the search space`:
+With `smina` Feb 12 2019, the following `refined` systems terminate with `WARNING: Could not find any conformations completely within the search space`:
 ```
 1k22 2bmk 3bpc 2zgx 3qtv 2jh6 1mu6 1mue 4o97 2zfp 1ype 2jh0 3f68 4hfp 4ax9
 3qto 3tu7 3shc 1c4u 1nt1 1g32 1mu8 4loy 3hzm 1qbv 1g30 4e7r 1d6w 2cf8 1nm6
@@ -89,7 +104,7 @@ The following `refined` systems terminate with `WARNING: Could not find any conf
 2cn0 3si3 2zc9 1yei 1ghw
 ```
 
-The following `other` systems terminate with `WARNING: Could not find any conformations completely within the search space`:
+With `smina` Feb 12 2019, the following `other` systems terminate with `WARNING: Could not find any conformations completely within the search space`:
 ```
 2fx8 3s7f 1qhr 1qj6 1ett 3dux 5icz 2fes 1ca8 4hs8 1wun 4zxy 1dwc 1wss 4jyu
 4rn6 5wqd 2aei 2anm 1w2k 1f3j 1nzq 2bxt 3c1k 5j6d 1klg 2zp0 3chd 1o0d 1a2c
@@ -117,18 +132,3 @@ An closer inspection of these systems revealed that OpenBabel and `smina` do not
                  atom = GetAtom(src_atom->GetIdx());
 ```
 and an updated version of `smina` (Jun 12 2019) solve the problem.
-
-#### Unsupported Metal Atoms
-
-Some systems contain metal atoms and therefore `smina` terminates with `ATOM syntax incorrect: "METALATOMNAME" is not a valid AutoDock type.`.
-
-The following `refined` systems contain metal atoms (6 systems):
-```
-2rio (Sr)   2rv4 (Cs)   4igt (Li)   4o3c (Li)   5fhm (Li)   5tcj (Cs)
-```
-
-The following `other` systems contain metal atoms (8 systems):
-```
-1a52 (Au)   1ind (In)   2iw9 (Og)   2w54 (Ba)   3ump (Cs)   4k1e (Li)
-4q3r (Cs)   5ng9 (Li)
-```

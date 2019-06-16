@@ -92,7 +92,7 @@ plt.ylabel("Number of systems")
 plt.savefig("analysis/plots/n_modes.pdf")
 
 # Plot histogram for number of flexible residues
-plt.figure()
+plt.figure(figsize=(20,10))
 n = df["n_flex"].max()
 bins=np.arange(n + 2) - 0.5 # Center-aligned bins
 plt.hist(df["n_flex"].values, bins=bins, rwidth=0.9)
