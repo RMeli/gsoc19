@@ -1,5 +1,5 @@
 """
-Plot RMSD distributions for top 5 ligand poses across the dataset.
+Plot RMSD distributions for top ligand poses across the dataset.
 """
 
 import argparse as ap
@@ -39,6 +39,14 @@ def get_lig_rmsd_for_rank(rank : int, df : pd.DataFrame) -> np.ndarray:
 
     return df["rmsd_lig"].loc[df["rank"] == rank].values
 
+def plot(df: pd.DataFrame, maxrank: int, bins: int, ax):
+
+    for rank in range(1, maxrank + 1):
+
+        rmsd = get_lig_rmsd_for_rank(rank, df)
+
+        sns.distplot(rmsd, bins=bins, hist=True, kde=True, label = f"rank {rank}")
+
 
 if __name__ == "__main__":
 
@@ -48,21 +56,24 @@ if __name__ == "__main__":
 
     df = pd.read_csv(args.input)
 
-    plt.figure()
-    for rank in range(1,args.maxrank + 1):
+    plt.figure(figsize=(15,8))
 
-        rmsd = get_lig_rmsd_for_rank(rank, df)
+    ax = plt.subplot(1, 2, 1)
+    plot(df, args.maxrank, args.bins, ax)
+    ax.set_xlabel("RMSD (Å)")
+    ax.set_xlim([0,None])
+    ax.legend()
 
-        sns.distplot(rmsd, bins=args.bins, hist=True, kde=True, label = f"rank {rank}")
+    ax = plt.subplot(1, 2, 2)
+    plot(df, args.maxrank, args.bins, ax)
+    ax.set_xlabel("RMSD (Å)")
+    ax.set_xlim([0,5])
+    ax.legend()
 
+    plt.suptitle("Ligand RMSD Distribution")
+    plt.savefig(os.path.join(args.outputpath, f"distrmsd.pdf"))
 
     rmsd = get_lig_rmsd_for_rank(1, df)
     N = len(rmsd)
     n = len(rmsd[rmsd < 1])
     print(f"Number of sub-1Å top poses: {n} ({n / N * 100:.2f}%)")
-
-    plt.title("RMSD Distribution")
-    plt.xlabel("RMSD (Å)")
-    plt.legend()
-    plt.xlim([0,None])
-    plt.savefig(os.path.join(args.outputpath, f"distrmsd.pdf"))
