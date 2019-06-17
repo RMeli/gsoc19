@@ -4,7 +4,7 @@ source variables/paths
 
 csv_header="name,system,rank,rmsd_lig,score"
 
-allscores="allscores.csv"
+allscores="analysis/allscores.csv"
 rm -f ${allscores}
 echo ${csv_header} >> ${allscores}
 
@@ -12,6 +12,8 @@ for dataset in "refined"
 do
     for dir in $(ls -d ${dataset}/????)
     do
+        echo ${dir}
+
         # PDB name
 	    system=$(basename ${dir})
 
