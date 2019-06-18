@@ -1,0 +1,7 @@
+# gnina
+gtyper=$HOME/Documents/git/gnina/build/bin/gninatyper
+gnina=$HOME/Documents/git/gnina/build/bin/gnina
+
+# dirs
+database=../datasets/flexdock
+typedir=gninatypes
