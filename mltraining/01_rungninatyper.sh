@@ -12,8 +12,6 @@ do
     do
         system=$(basename ${systempath})
 
-        echo $system
-
         wdir=${typedir}/${system}
         mkdir -p ${wdir}
 
@@ -21,8 +19,6 @@ do
         for lig in $(ls ${systempath}/${system}_ligand-*.pdb )
         do
             ligname=$(basename ${lig} .pdb)
-
-            echo $ligname
 
             ${gtyper} ${lig} ${wdir}/${ligname}
         done
@@ -32,9 +28,7 @@ do
         do
             recname=$(basename ${rec} .pdb)
 
-            echo $recname
-
-            #${gtyper} ${rec} ${wdir}/${recname}
+            ${gtyper} ${rec} ${wdir}/${recname}
         done
 
     done    
