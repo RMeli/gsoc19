@@ -52,6 +52,8 @@ if __name__ == "__main__":
             else: # Discard (min, max) interval
                 continue # Skip
 
-            record = f"{annotation} {recpath} {ligpath}\n"
+            score = float(row["score"])
+
+            record = f"{annotation} {recpath} {ligpath} # {rmsd:.4f} {score:.4f}\n"
 
             fout.write(record)

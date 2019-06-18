@@ -3,5 +3,6 @@ gtyper=$HOME/Documents/git/gnina/build/bin/gninatyper
 gnina=$HOME/Documents/git/gnina/build/bin/gnina
 
 # dirs
+pscripts=../scripts/python
 database=../datasets/flexdock
 typedir=gninatypes
