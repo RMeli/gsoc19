@@ -75,6 +75,8 @@ apt install git build-essential libboost-all-dev libeigen3-dev
 
 Install OpenBabel as described above.
 
+The [Singularity]() conteiner defined by `smina.def` already has all the requirements.
+
 ### Download
 
 ```
@@ -83,9 +85,28 @@ git clone https://git.code.sf.net/p/smina/code smina
 
 ### Compilation
 
+Change the path to OpenBabel in `smina/build/linux/release/Makefile`:
+```
+OPENBABEL_INCLUDE=/usr/local/include/openbabel-2.0
+```
+
 ```
 cd smina/build/linux/release
 make -j
 ```
 
 ## CMake
+
+```
+apt purge --auto-remove cmake
+cmake_version=3.14
+cmake_build=4
+mkdir /cmake && cd /cmake
+wget https://cmake.org/files/v${cmake_version}/cmake-${cmake_version}.${cmake_build}.tar.gz
+tar -xzvf cmake-${cmake_version}.${cmake_build}.tar.gz
+cd cmake-${cmake_version}.${cmake_build}/
+./bootstrap
+make -j 4
+make install
+cmake --version
+```
