@@ -18,6 +18,9 @@ docking/other
 datasets/flexdock/refined
 datasets/flexdock/other
 
+# untraked
+untracked
+
 # editors
 .vscode
 
