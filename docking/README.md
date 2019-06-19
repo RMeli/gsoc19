@@ -84,7 +84,7 @@ Some systems contain metal atoms and therefore `smina` terminates with `ATOM syn
 
 The following `refined` systems contain metal atoms (6 systems):
 ```
-2rio (Sr)   2rv4 (Cs)   4igt (Li)   4o3c (Li)   5fhm (Li)   5tcj (Cs)
+2rio (Sr)   3rv4 (Cs)   4igt (Li)   4o3c (Li)   5fhm (Li)   5tcj (Cs)
 ```
 
 The following `other` systems contain metal atoms (8 systems):
