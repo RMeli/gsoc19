@@ -96,7 +96,7 @@ def loadflexdock(system, dataset, idxs=["1"], flexdist="3", pdbbindpath="../PDBb
 
     # Get residue index of atoms within FLEXDIST from the crystal ligand
     # Exclude ALA, GLY, PRO 
-    noflex = ["ALA", "GLY", "PRO"]
+    noflex = ["ALA", "GLY"]
     recsel = "receptor and not hydro " +  " ".join([f"and not resn {resn}" for resn in noflex])
     stored.list = []
     cmd.iterate(

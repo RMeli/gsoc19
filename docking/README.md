@@ -132,3 +132,14 @@ An closer inspection of these systems revealed that OpenBabel and `smina` do not
                  atom = GetAtom(src_atom->GetIdx());
 ```
 and an updated version of `smina` (Jun 12 2019) solve the problem.
+
+
+### Ring-Opening of Proline
+
+Visual inspection of multiple systems (using `scripts/pumol/loadflexdock.py`) outlined an evident problem with the proline (PRO) residue: the ring breaks as a result of flexible docking since non-backbone atoms are allowed to move.
+
+The systems where proline is a flexible residue can be listed using the following commands:
+```
+grep -l PRO refined/????/flex.pdb | sed "s#/flex.pdb##g" > analysis/proline.dat
+grep -l PRO other/????/flex.pdb | sed "s#/flex.pdb##g" >> analysis/proline.dat
+```
