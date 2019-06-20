@@ -22,6 +22,12 @@ List of contributions to [libmolgrid](https://github.com/gnina/gnina):
 
 * Fixed issue with unsupported CUDA architecture ([PR #5](https://github.com/gnina/libmolgrid/pull/5))
 
+### SMINA
+
+List of contributions to [smina]():
+
+* Fixed a problem with prolene residues, broken by flexible docking ([MR #3](https://sourceforge.net/p/smina/code/merge-requests/3/))
+
 ### OpenBabel
 
 List of contributions to [openbabel](https://github.com/openbabel/openbabel):
