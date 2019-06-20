@@ -1,0 +1,64 @@
+#!/bin/bash
+
+#SBATCH --job-name=<SPLITNAME>
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=1
+#SBATCH --cpus-per-task=12
+#SBATCH --gres=gpu:0
+#SBATCH -p gpu-biggin3,gpu-biggin4
+#SBATCH -o jobs/<SPLITNAME>.out
+#SBATCH -e jobs/<SPLITNAME>.err
+#SBATCH --time=48:00:00
+
+source /etc/profile.d/modules.sh
+module purge
+module load apps/singularity
+
+source variables/paths
+source variables/docking
+
+splitfile=<SPLITFILE>
+
+for path in $(cat ${splitfile})
+do
+
+    dir=${pdbbind}/${path}
+    system=$(basename ${dir})
+    dataset=$(basename $(dirname ${dir}))
+
+    # Docking working directory
+    ddir=${dataset}/${system}
+    mkdir -p ${ddir}
+    mkdir -p ${ddir}/logs
+
+    echo "Docking WD: ${ddir}"
+
+    # Ligand and receptor
+    ligand=${dir}/${system}_ligand.mol2
+    receptor=${dir}/${system}_protein.pdb
+
+    echo "Ligand: ${ligand}"
+    echo "Receptor: ${receptor}"
+
+    # Docking parameters
+    source variables/docking
+
+    # Print docking parameters
+    echo "--flexdist_ligand ${ligand}"
+    echo "--flexdist ${flexdist}"
+    echo "--autobox_ligand ${ligand}"
+    echo "--autobox_add ${autobox_add}"
+    echo "--exhaustiveness ${exhaustiveness}"
+    echo "--num_modes ${num_modes}"
+    echo "--cpu ${cpu}"
+
+    # Run docking
+    singularity exec ${container} \
+    ${smina} -r ${receptor} -l ${ligand} \
+        --flexdist_ligand ${ligand} --flexdist 3 \
+	--autobox_ligand ${ligand} --autobox_add ${autobox_add} \
+	--exhaustiveness ${exhaustiveness} --num_modes ${num_modes} --cpu ${cpu} \
+        --out ${ddir}/dock.pdb --out_flex ${ddir}/flex.pdb \
+        2>&1 | tee ${ddir}/logs/smina.log
+
+done
