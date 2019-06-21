@@ -56,11 +56,9 @@ if __name__ == "__main__":
 
     df = pd.read_csv(args.input)
 
-    # Replace infinite values with NaN
-    df = df.replace([np.inf, -np.inf], np.nan)
-    
-    if df.isna().sum(axis=0).max() > 0:
-        idx = df.index[df["rmsd_lig"].isna()] # Get row indices of NaN values
+    bad_values=[np.nan, np.inf, -np.inf]
+    if df.isin(bad_values).sum(axis=0).max() > 0:
+        idx = df.index[df["rmsd_lig"].isin(bad_values)] # Get row indices of bad values
 
         print(f"WARNING: {args.input} contains NaN or Inf:")
         print(df.iloc[idx])
