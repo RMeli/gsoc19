@@ -6,7 +6,7 @@ csv_header="name,system,rank,rmsd_lig,score"
 
 allscores="analysis/allscores.csv"
 rm -f ${allscores}
-echo ${csv_header} >> ${allscores}
+echo ${csv_header} > ${allscores}
 
 for dataset in "refined"
 do
@@ -21,7 +21,7 @@ do
         csvfile=${dir}/${system}_score.csv
         rm -f ${csvfile}
 
-        echo ${csv_header} >> ${csvfile}
+        echo ${csv_header} > ${csvfile}
 
         ligand_crystal=${pdbbind}/${dataset}/${system}/${system}_ligand.mol2
 

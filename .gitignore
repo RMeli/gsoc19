@@ -17,6 +17,8 @@ docking/other
 # datasets
 datasets/flexdock/refined
 datasets/flexdock/other
+refined-*.tar.gz
+other-*.tar.gz
 
 # untraked
 untracked
