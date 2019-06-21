@@ -90,6 +90,7 @@ plt.xlim([-1,n + 1])
 plt.xlabel("Number of modes")
 plt.ylabel("Number of systems")
 plt.savefig("analysis/plots/n_modes.pdf")
+plt.savefig("analysis/plots/n_modes.png")
 
 # Plot histogram for number of flexible residues
 plt.figure(figsize=(20,10))
@@ -101,3 +102,4 @@ plt.xlim([-1,n + 1])
 plt.xlabel("Number of flexible residues")
 plt.ylabel("Number of systems")
 plt.savefig("analysis/plots/n_flexres.pdf")
+plt.savefig("analysis/plots/n_flexres.png")
