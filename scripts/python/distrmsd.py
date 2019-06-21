@@ -56,6 +56,19 @@ if __name__ == "__main__":
 
     df = pd.read_csv(args.input)
 
+    # Replace infinite values with NaN
+    df = df.replace([np.inf, -np.inf], np.nan)
+    
+    if df.isna().sum(axis=0).max() > 0:
+        idx = df.index[df["rmsd_lig"].isna()] # Get row indices of NaN values
+
+        print(f"WARNING: {args.input} contains NaN or Inf:")
+        print(df.iloc[idx])
+
+        # Replace infinite values with NaNs and drop them
+        df = df.replace([np.inf, -np.inf], np.nan) # Change Inf with NaN
+        df = df.dropna() # Drop rows with NaN
+
     plt.figure(figsize=(15,8))
 
     ax = plt.subplot(1, 2, 1)
@@ -72,6 +85,7 @@ if __name__ == "__main__":
 
     plt.suptitle("Ligand RMSD Distribution")
     plt.savefig(os.path.join(args.outputpath, f"distrmsd.pdf"))
+    plt.savefig(os.path.join(args.outputpath, f"distrmsd.png"))
 
     rmsd = get_lig_rmsd_for_rank(1, df)
     N = len(rmsd)
