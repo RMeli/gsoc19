@@ -1,2 +1,3 @@
 MDAnalysis
 numpy
+pandas
