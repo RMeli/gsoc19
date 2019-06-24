@@ -54,7 +54,7 @@ do
         do
             idx=$(basename ${flex} .pdb | sed 's#...._flex-##') # Flex index
 
-            python makeflex.py ${rigid} ${flex} ${dir}/${system}_protein-${idx}.pdb
+            python ${pscripts}/makeflex.py ${rigid} ${flex} ${dir}/${system}_protein-${idx}.pdb
         done
     done
 done
