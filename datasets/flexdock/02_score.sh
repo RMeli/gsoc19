@@ -46,7 +46,7 @@ do
             # Score (from ligand file)
             score=$(grep "minimizedAffinity" ${ligand} | awk '{print $3}')
 
-            info="${name},${system},${rank},${rmsd_lig},${rmsd_flex},${rmsd_tot},${score}"
+            info="${system},${rank},${rmsd_lig},${rmsd_flex},${rmsd_tot},${score}"
             echo ${info} >> ${csvfile}
             echo ${info} >> ${allscores}
         done
