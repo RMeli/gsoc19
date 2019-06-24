@@ -20,6 +20,10 @@ datasets/flexdock/other
 refined-*.tar.gz
 other-*.tar.gz
 
+# gnina
+*prototxt
+training
+
 # untraked
 untracked
 

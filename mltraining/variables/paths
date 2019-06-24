@@ -1,10 +1,13 @@
 # gnina
-gtyper=$HOME/Documents/git/gnina/build/bin/gninatyper
-gnina=$HOME/Documents/git/gnina/build/bin/gnina
+groot=$HOME/Documents/git/gnina/
+gtyper=${groot}/build/bin/gninatyper
+gnina=${groot}}/build/bin/gnina
 gscripts=$HOME/Documents/git/gninascripts
+gcaffe=${groot}/caffe/python
 
 # dirs
 pscripts=../scripts/python
 database=../datasets/flexdock
 typedir=gninatypes
 foldir=folds
+modeldir=models
