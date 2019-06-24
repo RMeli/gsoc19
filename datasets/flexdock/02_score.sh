@@ -2,7 +2,7 @@
 
 source variables/paths
 
-csv_header="system,rank,rmsd_lig,rmsd_flex,score"
+csv_header="system,rank,rmsd_lig,rmsd_flex,rmsd_tot,score"
 
 allscores="analysis/allscores.csv"
 rm -f ${allscores}
@@ -40,10 +40,13 @@ do
             protein=${dir}/${system}_protein-${rank}.pdb
             rmsd_flex=$(python3.6 ${pscripts}/flexrmsd.py ${flex} ${protein} ${protein_crystal})
 
+            # Combined RMSD
+            rmsd_tot=$(echo ${rmsd_lig} + ${rmsd_flex} | bc)
+            
             # Score (from ligand file)
             score=$(grep "minimizedAffinity" ${ligand} | awk '{print $3}')
 
-            info="${name},${system},${rank},${rmsd_lig},${rmsd_flex},${score}"
+            info="${name},${system},${rank},${rmsd_lig},${rmsd_flex},${rmsd_tot},${score}"
             echo ${info} >> ${csvfile}
             echo ${info} >> ${allscores}
         done
