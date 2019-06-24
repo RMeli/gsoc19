@@ -19,7 +19,15 @@ from pymol import cmd, stored
 
 import os
 
-def loadflexdock(system, dataset, idx="1", flexdist="3", pdbbindpath="../../PDBbind18", dockingpath=""):
+
+def loadflexdock(
+    system,
+    dataset,
+    idx="1",
+    flexdist="3",
+    pdbbindpath="../../PDBbind18",
+    dockingpath="",
+):
 
     # Clear everything
     cmd.reinitialize("everything")
@@ -36,20 +44,22 @@ def loadflexdock(system, dataset, idx="1", flexdist="3", pdbbindpath="../../PDBb
 
     # Build paths
     ligname = f"{system}_ligand-{idx}.pdb"
-    ligandpath = os.path.join(dockingpath, dataset, system, ligname) # Docked ligand
+    ligandpath = os.path.join(dockingpath, dataset, system, ligname)  # Docked ligand
     flexname = f"{system}_flex-{idx}.pdb"
-    flexpath = os.path.join(dockingpath, dataset, system, flexname) # Flexible residues
+    flexpath = os.path.join(dockingpath, dataset, system, flexname)  # Flexible residues
     receptorname = f"{system}_protein-{idx}.pdb"
     receptorpath = os.path.join(dockingpath, dataset, system, receptorname)
     crystalname = f"{system}_protein.pdb"
-    crystalpath = os.path.join(pdbbindpath, dataset, system, crystalname) # Crystal receptor
+    crystalpath = os.path.join(
+        pdbbindpath, dataset, system, crystalname
+    )  # Crystal receptor
 
     # Load ligand and receptor
-    cmd.load(ligandpath, "ligand") # Selection name: ligand
-    cmd.load(flexpath, "flex") # Selection name: flex
-    cmd.load(receptorpath, "receptor") # Selection name: receptor
-    cmd.load(crystalpath, "crystal") # Selection name: receptor
-    
+    cmd.load(ligandpath, "ligand")  # Selection name: ligand
+    cmd.load(flexpath, "flex")  # Selection name: flex
+    cmd.load(receptorpath, "receptor")  # Selection name: receptor
+    cmd.load(crystalpath, "crystal")  # Selection name: receptor
+
     # Hide everything
     cmd.hide("all")
 
@@ -78,16 +88,16 @@ def loadflexdock(system, dataset, idx="1", flexdist="3", pdbbindpath="../../PDBb
     # Get residues of receptor close to flexible residues
     stored.list = []
     cmd.iterate(
-        "receptor within 0.1 of flex", # Selection
-        "stored.list.append((resn, resi, chain))" # Action
+        "receptor within 0.1 of flex",  # Selection
+        "stored.list.append((resn, resi, chain))",  # Action
     )
 
     # Remove redundancies
-    flexres = set(stored.list) # Set of flexible residues
+    flexres = set(stored.list)  # Set of flexible residues
 
     # Outline flexible residues of the receptor
     for _, resi, chain in flexres:
-        if chain != "": # ???
+        if chain != "":  # ???
             sel = f"receptor and (resi {resi} in chain {chain})"
             cmd.show("sphere", sel)
             cmd.set("sphere_scale", 0.2, sel)
@@ -96,7 +106,7 @@ def loadflexdock(system, dataset, idx="1", flexdist="3", pdbbindpath="../../PDBb
 
     # Outline flexible residues of the crystal
     for _, resi, chain in flexres:
-        if chain != "": # ???
+        if chain != "":  # ???
             sel = f"crystal and (resi {resi} in chain {chain})"
             cmd.show("licorice", sel)
             cmd.set("stick_radius", 0.15, sel)
@@ -106,5 +116,6 @@ def loadflexdock(system, dataset, idx="1", flexdist="3", pdbbindpath="../../PDBb
     # Show metal atoms
     cmd.show("spheres", "metals")
     cmd.set("sphere_scale", 0.5, "metals")
+
 
 cmd.extend("loadflexdock", loadflexdock)

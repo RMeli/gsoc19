@@ -15,17 +15,41 @@ from pymol import cmd, stored
 
 import os
 
-num_modes = 20 # Number of docking modes
+num_modes = 20  # Number of docking modes
 
 # Colors corresponding to docking rank
 colors = [
-    "chocolate", "skyblue", "limegreen", "warmpink", "limon", "violet",
-    "brightorange", "sand", "lime", "deepteal", "hotpink", "yellowirange",
-    "violepurple", "marine", "olive", "smudge", "deepsalmon", "splitpea",
-    "lightteal", "slate",
+    "chocolate",
+    "skyblue",
+    "limegreen",
+    "warmpink",
+    "limon",
+    "violet",
+    "brightorange",
+    "sand",
+    "lime",
+    "deepteal",
+    "hotpink",
+    "yellowirange",
+    "violepurple",
+    "marine",
+    "olive",
+    "smudge",
+    "deepsalmon",
+    "splitpea",
+    "lightteal",
+    "slate",
 ]
 
-def loadflexdock(system, dataset, idxs=["1"], flexdist="3", pdbbindpath="../PDBbind18", dockingpath=""):
+
+def loadflexdock(
+    system,
+    dataset,
+    idxs=["1"],
+    flexdist="3",
+    pdbbindpath="../PDBbind18",
+    dockingpath="",
+):
 
     # Clear everything
     cmd.reinitialize("everything")
@@ -44,25 +68,35 @@ def loadflexdock(system, dataset, idxs=["1"], flexdist="3", pdbbindpath="../PDBb
     print(f"flexdist = {flexdist}")
 
     # Build paths
-    ligandpath = os.path.join(dockingpath, dataset, system, f"dock.pdb") # Docked ligands
-    flexrespath = os.path.join(dockingpath, dataset, system, f"flex.pdb") # Flexible residues
-    cligandpath = os.path.join(pdbbindpath, dataset, system, f"{system}_ligand.mol2") # Crystal ligand
-    receptorpath = os.path.join(pdbbindpath, dataset, system, f"{system}_protein.pdb") # Crystal receptor
+    ligandpath = os.path.join(
+        dockingpath, dataset, system, f"dock.pdb"
+    )  # Docked ligands
+    flexrespath = os.path.join(
+        dockingpath, dataset, system, f"flex.pdb"
+    )  # Flexible residues
+    cligandpath = os.path.join(
+        pdbbindpath, dataset, system, f"{system}_ligand.mol2"
+    )  # Crystal ligand
+    receptorpath = os.path.join(
+        pdbbindpath, dataset, system, f"{system}_protein.pdb"
+    )  # Crystal receptor
 
     # Load ligand and receptor
     # When loading a multi-MODEL PDB file, PyMol appends 000X to the selection name
     # DOCKSEL and FLEXSEL dictionaries maps an index to the actual selection
-    cmd.load(ligandpath, "ligand") # Selection name: ligand_0001, ligand_0002, ...
-    cmd.load(cligandpath, "cligand") # Selection name: ligand_0001, ligand_0002, ...
-    cmd.load(flexrespath, "flexres") # Selection name: flexres_0001, flexres_0002, ...
-    cmd.load(receptorpath, "receptor") # Selection name: receptor
+    cmd.load(ligandpath, "ligand")  # Selection name: ligand_0001, ligand_0002, ...
+    cmd.load(cligandpath, "cligand")  # Selection name: ligand_0001, ligand_0002, ...
+    cmd.load(flexrespath, "flexres")  # Selection name: flexres_0001, flexres_0002, ...
+    cmd.load(receptorpath, "receptor")  # Selection name: receptor
 
     # Map selection name to rank (0 is the crystal)
-    docksel = {i : f"ligand_{i:04d}" for i in range(1,num_modes+1)}
-    docksel[0] = "cligand" # Add index 0 for crystal
-    flexsel = {i : f"flexres_{i:04d}" for i in range(1,num_modes+1)}
-    flexsel[0] = f"(receptor and not hydro) within {flexdist} of {docksel[0]}" # Add index 0 for crystal
-    
+    docksel = {i: f"ligand_{i:04d}" for i in range(1, num_modes + 1)}
+    docksel[0] = "cligand"  # Add index 0 for crystal
+    flexsel = {i: f"flexres_{i:04d}" for i in range(1, num_modes + 1)}
+    flexsel[0] = (
+        f"(receptor and not hydro) within {flexdist} of {docksel[0]}"
+    )  # Add index 0 for crystal
+
     # Hide everything and show only receptor and ligands
     cmd.hide("all")
     cmd.show("cartoon", "receptor")
@@ -71,7 +105,7 @@ def loadflexdock(system, dataset, idxs=["1"], flexdist="3", pdbbindpath="../PDBb
         cmd.show("sticks", docksel[idx])
         cmd.show("spheres", docksel[idx])
         cmd.set("sphere_scale", 0.2, docksel[idx])
-        
+
         # Show flexible residue as licorice
         cmd.show("licorice", flexsel[idx])
         cmd.set("stick_radius", 0.2, flexsel[idx])
@@ -81,10 +115,10 @@ def loadflexdock(system, dataset, idxs=["1"], flexdist="3", pdbbindpath="../PDBb
         cmd.color(colors[idx], flexsel[idx] + " and name C*")
 
     # Center and zoom to ligand
-    if len(idxs) == 1: # Center on the single ligand
+    if len(idxs) == 1:  # Center on the single ligand
         cmd.center(docksel[idxs[0]])
         cmd.zoom(docksel[idxs[0]], 10)
-    else: # Center on the crystal ligand if more than one ligand
+    else:  # Center on the crystal ligand if more than one ligand
         cmd.center(docksel[0])
         cmd.zoom(docksel[0], 8)
 
@@ -95,21 +129,23 @@ def loadflexdock(system, dataset, idxs=["1"], flexdist="3", pdbbindpath="../PDBb
     cmd.color("grey", "receptor")
 
     # Get residue index of atoms within FLEXDIST from the crystal ligand
-    # Exclude ALA, GLY, PRO 
+    # Exclude ALA, GLY, PRO
     noflex = ["ALA", "GLY"]
-    recsel = "receptor and not hydro " +  " ".join([f"and not resn {resn}" for resn in noflex])
+    recsel = "receptor and not hydro " + " ".join(
+        [f"and not resn {resn}" for resn in noflex]
+    )
     stored.list = []
     cmd.iterate(
-        f"({recsel}}) within {flexdist} of {docksel[0]}", # Selection
-        "stored.list.append((resn, resi, chain))" # Action
+        f"({recsel}) within {flexdist} of {docksel[0]}",  # Selection
+        "stored.list.append((resn, resi, chain))",  # Action
     )
 
     # Remove redundancies
-    flexres = set(stored.list) # Set of flexible residues
+    flexres = set(stored.list)  # Set of flexible residues
 
     # Outline flexible residues
     for resn, resi, chain in flexres:
-        if chain != "": # ???
+        if chain != "":  # ???
             sel = f"receptor and (resi {resi} in chain {chain})"
             cmd.show("licorice", sel)
             cmd.color("grey", sel)

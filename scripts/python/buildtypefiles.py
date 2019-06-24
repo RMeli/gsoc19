@@ -11,19 +11,18 @@ import re
 from typing import Optional
 
 datasets = ["test"]
-#datasets = ["refined", "other"]
-
+# datasets = ["refined", "other"]
 
 
 def parse(args: Optional[str] = None) -> ap.Namespace:
 
     parser = ap.ArgumentParser()
 
-    parser.add_argument('datapath', type=str, help="Path to database root.")
-    parser.add_argument('outpath', type=str, help="Path to gninatypes root.")
-    parser.add_argument('--folds', default=None, type=str, help="Folds file.")
-    parser.add_argument('--min', default=2, type=float)
-    parser.add_argument('--max', default=4, type=float)
+    parser.add_argument("datapath", type=str, help="Path to database root.")
+    parser.add_argument("outpath", type=str, help="Path to gninatypes root.")
+    parser.add_argument("--folds", default=None, type=str, help="Folds file.")
+    parser.add_argument("--min", default=2, type=float)
+    parser.add_argument("--max", default=4, type=float)
 
     args = parser.parse_args()
 
@@ -43,19 +42,26 @@ if __name__ == "__main__":
         print(f"Cross-validation with {n_folds} folds.")
 
     # List all folders containing gninatypes files
-    dirs = [d for d in os.listdir(args.outpath) if re.match("^....$", d) and os.path.isdir(os.path.join(args.outpath, d))]
+    dirs = [
+        d
+        for d in os.listdir(args.outpath)
+        if re.match("^....$", d) and os.path.isdir(os.path.join(args.outpath, d))
+    ]
 
     for system in dirs:
 
-        #fold = df_folds[df_folds["pdb"] == system]["fold"].values[0]
-        #print(fold)
+        # fold = df_folds[df_folds["pdb"] == system]["fold"].values[0]
+        # print(fold)
         # Choose at random for testing purposes:
         import numpy as np
-        fold = np.random.randint(0,3)
-        
+
+        fold = np.random.randint(0, 3)
+
         # Automatically check if system is in refined or other set
         for dataset in datasets:
-            scorepath=os.path.join(args.datapath, dataset, system, f"{system}_score.csv")
+            scorepath = os.path.join(
+                args.datapath, dataset, system, f"{system}_score.csv"
+            )
 
             if os.path.isfile(scorepath):
                 break
@@ -65,7 +71,7 @@ if __name__ == "__main__":
         # Open file for correct fold
         # TODO: Open files only once
         with open(os.path.join(args.outpath, f"alltrain{fold}.types"), "a") as fout:
-            
+
             # Iterate over different docking poses for a given system
             for idx, row in df_score.iterrows():
 
@@ -80,8 +86,8 @@ if __name__ == "__main__":
                     annotation = 0
                 elif rmsd >= args.max:
                     annotation = 1
-                else: # Discard (min, max) interval
-                    continue # Skip
+                else:  # Discard (min, max) interval
+                    continue  # Skip
 
                 score = float(row["score"])
 

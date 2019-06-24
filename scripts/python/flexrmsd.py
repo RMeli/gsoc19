@@ -10,6 +10,7 @@ import argparse as ap
 
 from typing import Optional, Tuple
 
+
 def parse(args: Optional[str] = None) -> ap.Namespace:
     """
     Parsed command line arguments.
@@ -29,12 +30,16 @@ def parse(args: Optional[str] = None) -> ap.Namespace:
     parser.add_argument("flex", type=str, help="Flexible residues (PDB)")
     parser.add_argument("protein", type=str, help="Protein structure (PDB)")
     parser.add_argument("crystal", type=str, help="Crystal structure (PDB)")
-    parser.add_argument("-o", "--output", type=str, default="cflex.pdb", help="Output residues")
+    parser.add_argument(
+        "-o", "--output", type=str, default="cflex.pdb", help="Output residues"
+    )
 
     return parser.parse_args(args)
 
 
-def load_systems(flexname: str, proteinname: str, crystalname: str) -> Tuple[mda.Universe, mda.Universe, mda.Universe]:
+def load_systems(
+    flexname: str, proteinname: str, crystalname: str
+) -> Tuple[mda.Universe, mda.Universe, mda.Universe]:
 
     flex = mda.Universe(flexname)
     protein = mda.Universe(proteinname)
@@ -44,7 +49,7 @@ def load_systems(flexname: str, proteinname: str, crystalname: str) -> Tuple[mda
 
 
 def rmsd(flex: mda.Universe, protein: mda.Universe, crystal: mda.Universe) -> float:
-    
+
     flexres = flex.select_atoms("protein").residues
 
     residues = []
@@ -54,8 +59,10 @@ def rmsd(flex: mda.Universe, protein: mda.Universe, crystal: mda.Universe) -> fl
     # Check that all flexible residues are listed
     assert len(residues) == len(flexres)
 
-    selection = "".join([f"(resid {id} and resname {name}) or " for id, name in residues])
-    selection = selection[:-4] # Remove final " or "
+    selection = "".join(
+        [f"(resid {id} and resname {name}) or " for id, name in residues]
+    )
+    selection = selection[:-4]  # Remove final " or "
 
     # Remove H atoms
     selection = f"({selection}) and not type H"
@@ -63,7 +70,7 @@ def rmsd(flex: mda.Universe, protein: mda.Universe, crystal: mda.Universe) -> fl
     p_atoms = protein.select_atoms(selection)
     c_atoms = crystal.select_atoms(selection)
 
-    #for p_atom, c_atom in zip(p_atoms, c_atoms):
+    # for p_atom, c_atom in zip(p_atoms, c_atoms):
     #    assert p_atom.type == c_atom.type
     #    assert p_atom.name == c_atom.name
     #    assert p_atom.resid == c_atom.resid
@@ -74,7 +81,6 @@ def rmsd(flex: mda.Universe, protein: mda.Universe, crystal: mda.Universe) -> fl
     assert len(p_atoms) == len(c_atoms)
 
     return RMS.rmsd(p_atoms.positions, c_atoms.positions)
-
 
 
 if __name__ == "__main__":
