@@ -1,5 +1,6 @@
 """
-Plot RMSD distributions for top ligand poses across the dataset.
+Plot RMSD distributions for top ligand poses across the dataset, given a CSV file
+containing the RMSDs for all systems and all ranks.
 """
 
 import argparse as ap
