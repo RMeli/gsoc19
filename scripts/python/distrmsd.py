@@ -36,15 +36,15 @@ def parse(args: Optional[str] = None) -> ap.Namespace:
     return parser.parse_args(args)
 
 
-def get_lig_rmsd_for_rank(rank : int, df : pd.DataFrame) -> np.ndarray:
+def get_lig_rmsd_for_rank(rank : int, rmsd_name: str, df : pd.DataFrame) -> np.ndarray:
 
-    return df["rmsd_lig"].loc[df["rank"] == rank].values
+    return df[rmsd_name].loc[df["rank"] == rank].values
 
-def plot(df: pd.DataFrame, maxrank: int, bins: int, ax):
+def plot(df: pd.DataFrame, rmsd_name: str, maxrank: int, bins: int, ax):
 
     for rank in range(1, maxrank + 1):
 
-        rmsd = get_lig_rmsd_for_rank(rank, df)
+        rmsd = get_lig_rmsd_for_rank(rank, rmsd_name, df)
 
         sns.distplot(rmsd, bins=bins, hist=True, kde=True, label = f"rank {rank}")
 
@@ -70,23 +70,32 @@ if __name__ == "__main__":
 
     plt.figure(figsize=(15,8))
 
-    ax = plt.subplot(1, 2, 1)
-    plot(df, args.maxrank, args.bins, ax)
+    ax = plt.subplot(1, 3, 1)
+    plot(df, "rmsd_lig", args.maxrank, args.bins, ax)
     ax.set_xlabel("RMSD (Å)")
     ax.set_xlim([0,None])
+    ax.title.set_text("Ligand")
     ax.legend()
 
-    ax = plt.subplot(1, 2, 2)
-    plot(df, args.maxrank, args.bins, ax)
+    ax = plt.subplot(1, 3, 2)
+    plot(df, "rmsd_flex", args.maxrank, args.bins, ax)
     ax.set_xlabel("RMSD (Å)")
-    ax.set_xlim([0,5])
+    ax.set_xlim([0,None])
+    ax.title.set_text("Flexible Residues")
+    ax.legend()
+
+    ax = plt.subplot(1, 3, 3)
+    plot(df, "rmsd_tot", args.maxrank, args.bins, ax)
+    ax.set_xlabel("RMSD (Å)")
+    ax.set_xlim([0,None])
+    ax.title.set_text("Ligand + Flexible Residues")
     ax.legend()
 
     plt.suptitle("Ligand RMSD Distribution")
     plt.savefig(os.path.join(args.outputpath, f"distrmsd.pdf"))
     plt.savefig(os.path.join(args.outputpath, f"distrmsd.png"))
 
-    rmsd = get_lig_rmsd_for_rank(1, df)
-    N = len(rmsd)
-    n = len(rmsd[rmsd < 1])
-    print(f"Number of sub-1Å top poses: {n} ({n / N * 100:.2f}%)")
+    #rmsd = get_lig_rmsd_for_rank(1, df)
+    #N = len(rmsd)
+    #n = len(rmsd[rmsd < 1])
+    #print(f"Number of sub-1Å top poses: {n} ({n / N * 100:.2f}%)")
