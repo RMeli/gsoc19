@@ -8,7 +8,7 @@ allscores="analysis/allscores.csv"
 rm -f ${allscores}
 echo ${csv_header} > ${allscores}
 
-for dataset in "refined"
+for dataset in "test"
 do
     for dir in $(ls -d ${dataset}/????)
     do

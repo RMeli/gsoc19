@@ -7,7 +7,7 @@ pdbbind=../../PDBbind18 # PDBbind18 directory
 # Working directory
 wd=$PWD
 
-for dataset in "refined"
+for dataset in "test"
 do
     for dir in $(ls -d ${ddir}/${dataset}/????)
     do
