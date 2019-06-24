@@ -44,6 +44,11 @@ The outputs are the ligand poses (`dock.pdb`), the flexible residues poses (`fle
 
 The script `03_analysis.py` automatize the detection of faulty or problematic systems, where flexible docking failed or required further invertigation.
 
+### 04 - Cleanup
+
+The script `04_cleanup.sh` removes the systems listed in `analysis/failed.dat`.
+
+
 ## Analysis
 
 The script `03_analysis.py` allows to automatically check how many systems have been docked successfully and provides some statistics.
