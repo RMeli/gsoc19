@@ -20,8 +20,8 @@ layer {
         balanced: false
         has_affinity: true
         root_folder: "DATA_ROOT"
-        ligmolcache: "refined_lig.molcache"
-        recmolcache: "refined_rec.molcache"
+        ligmolcache: "lig.molcache"
+        recmolcache: "rec.molcache"
     }
   }
   
@@ -52,8 +52,8 @@ layer {
         random_rotation: true
         random_translate: 6
         root_folder: "DATA_ROOT"
-        ligmolcache: "refined_lig.molcache"
-        recmolcache: "refined_rec.molcache"        
+        ligmolcache: "lig.molcache"
+        recmolcache: "rec.molcache"        
     }
 }
 
