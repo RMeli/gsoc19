@@ -93,7 +93,9 @@ def loadflexdock(
     docksel = {i: f"ligand_{i:04d}" for i in range(1, num_modes + 1)}
     docksel[0] = "cligand"  # Add index 0 for crystal
     flexsel = {i: f"flexres_{i:04d}" for i in range(1, num_modes + 1)}
-    flexsel[0] = (
+    flexsel[
+        0
+    ] = (
         f"(receptor and not hydro) within {flexdist} of {docksel[0]}"
     )  # Add index 0 for crystal
 

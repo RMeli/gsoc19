@@ -55,10 +55,10 @@ PDBLINE = "%s%-4s%s%8.3f%8.3f%8.3f%6.2f%6.2f          %2s\n"
 # Print flexible residues
 print("Flexres:", flexres)
 
-for ci in range(flex.numCoordsets()): # Loop over different MODELs (MODEL/ENDMDL)
+for ci in range(flex.numCoordsets()):  # Loop over different MODELs (MODEL/ENDMDL)
     which = defaultdict(int)
     out.write("MODEL %d\n" % ci)
-    for line in open(rigidname): # Read rigid receptor PDB file line-by-line
+    for line in open(rigidname):  # Read rigid receptor PDB file line-by-line
         if line.startswith("ATOM"):
             # Chain, residue and atom informations
             chain = line[21]
@@ -77,23 +77,23 @@ for ci in range(flex.numCoordsets()): # Loop over different MODELs (MODEL/ENDMDL
                     line = PDBLINE % (
                         line[:13],
                         aname,
-                        line[17:30], 
-                        c[0], 
+                        line[17:30],
+                        c[0],
                         c[1],
                         c[2],
                         1.0,
                         0.0,
                         atype,
                     )
-                else: 
+                else:
                     # Remove H atoms
                     line = ""
 
-        elif line.startswith("END"): 
+        elif line.startswith("END"):
             # Remove END card (for multiple MODELs)
             line = ""
 
         out.write(line)
-    
+
     out.write("ENDMDL\n")
 out.write("END\n")
