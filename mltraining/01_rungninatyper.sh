@@ -20,7 +20,7 @@ do
         do
             ligname=$(basename ${lig} .pdb)
 
-            ${gtyper} ${lig} ${wdir}/${ligname}
+            ${gtyper} ${lig} ${wdir}/${ligname}.gninatypes
         done
 
         # Type receptor poses
@@ -28,7 +28,7 @@ do
         do
             recname=$(basename ${rec} .pdb)
 
-            ${gtyper} ${rec} ${wdir}/${recname}
+            ${gtyper} ${rec} ${wdir}/${recname}.gninatypes
         done
 
     done    
