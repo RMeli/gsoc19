@@ -20,6 +20,8 @@ The build process requires `sudo` privilegies and might take a while. Once the c
 
 ## Use
 
+The `--nv` option to Singularity commands enables [Nvidia](https://www.nvidia.com/en-us/) support.
+
 ### Interactive Session
 
 An interactive session is useful for compilation and installation purposes and can be lunched as wollows:
