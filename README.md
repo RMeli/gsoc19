@@ -10,6 +10,7 @@
 
 List of contributions to [gnina](https://github.com/gnina/gnina):
 
+* Improved `makeflex.py` script to deal with PDB file without atom types ([PR #64](https://github.com/gnina/gnina/pull/64))
 * Added test support for newer versions of Boost ([PR #62](https://github.com/gnina/gnina/pull/62))
 * Provided documentation and PDB standardization for `makeflex.py` script ([PR #61](https://github.com/gnina/gnina/pull/61))
 * Provided fixes for the `makeflex.py` script ([PR #60](https://github.com/gnina/gnina/pull/60))
@@ -26,7 +27,7 @@ List of contributions to [libmolgrid](https://github.com/gnina/gnina):
 
 List of contributions to [smina]():
 
-* Fixed a problem with prolene residues, broken by flexible docking ([MR #3](https://sourceforge.net/p/smina/code/merge-requests/3/))
+* Fixed a problem with proline residues, broken by flexible docking ([MR #3](https://sourceforge.net/p/smina/code/merge-requests/3/))
 
 ### OpenBabel
 
