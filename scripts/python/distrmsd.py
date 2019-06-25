@@ -45,7 +45,7 @@ def parse(args: Optional[str] = None) -> ap.Namespace:
     return parser.parse_args(args)
 
 
-def get_lig_rmsd_for_rank(rank: int, rmsd_name: str, df: pd.DataFrame) -> np.ndarray:
+def get_rmsd_for_rank(rank: int, rmsd_name: str, df: pd.DataFrame) -> np.ndarray:
 
     return df[rmsd_name].loc[df["rank"] == rank].values
 
@@ -54,7 +54,7 @@ def plot(df: pd.DataFrame, rmsd_name: str, maxrank: int, bins: int, ax):
 
     for rank in range(1, maxrank + 1):
 
-        rmsd = get_lig_rmsd_for_rank(rank, rmsd_name, df)
+        rmsd = get_rmsd_for_rank(rank, rmsd_name, df)
 
         sns.distplot(rmsd, bins=bins, hist=True, kde=True, label=f"rank {rank}")
 
@@ -101,11 +101,23 @@ if __name__ == "__main__":
     ax.title.set_text("Ligand + Flexible Residues")
     ax.legend()
 
-    plt.suptitle("Ligand RMSD Distribution")
+    plt.suptitle("RMSD Distributions")
     plt.savefig(os.path.join(args.outputpath, f"distrmsd.pdf"))
     plt.savefig(os.path.join(args.outputpath, f"distrmsd.png"))
 
-    # rmsd = get_lig_rmsd_for_rank(1, df)
-    # N = len(rmsd)
-    # n = len(rmsd[rmsd < 1])
-    # print(f"Number of sub-1Å top poses: {n} ({n / N * 100:.2f}%)")
+    ###
+
+    rmsd_lig = get_rmsd_for_rank(1, "rmsd_lig", df)
+    N = len(rmsd_lig)
+    n = len(rmsd_lig[rmsd_lig < 1])
+    print(f"Number of sub-1Å RMSD ligands (top pose): {n} ({n / N * 100:.2f}%)")
+
+    rmsd_flex = get_rmsd_for_rank(1, "rmsd_flex", df)
+    N = len(rmsd_flex)
+    n = len(rmsd_flex[rmsd_flex < 1])
+    print(f"Number of sub-1Å RMSD flexible residues (top pose): {n} ({n / N * 100:.2f}%)")
+
+    rmsd_tot = get_rmsd_for_rank(1, "rmsd_tot", df)
+    N = len(rmsd_tot)
+    n = len(rmsd_tot[rmsd_tot < 2])
+    print(f"Number of sub-2Å RMSD ligands and flexible residues (top pose): {n} ({n / N * 100:.2f}%)")
