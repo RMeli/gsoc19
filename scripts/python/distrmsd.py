@@ -56,7 +56,7 @@ def plot(df: pd.DataFrame, rmsd_name: str, maxrank: int, bins: int, ax):
 
         rmsd = get_rmsd_for_rank(rank, rmsd_name, df)
 
-        sns.distplot(rmsd, bins=bins, hist=True, kde=True, label=f"rank {rank}")
+        sns.distplot(rmsd, bins=bins, hist=True, kde=True, label=f"rank {rank}", ax=ax)
 
 
 if __name__ == "__main__":
@@ -78,28 +78,28 @@ if __name__ == "__main__":
         df = df.replace([np.inf, -np.inf], np.nan)  # Change Inf with NaN
         df = df.dropna()  # Drop rows with NaN
 
-    plt.figure(figsize=(15, 8))
+    f, (ax1, ax2, ax3) = plt.subplots(1,3, figsize=(10, 5))
 
-    ax = plt.subplot(1, 3, 1)
-    plot(df, "rmsd_lig", args.maxrank, args.bins, ax)
-    ax.set_xlabel("RMSD (Å)")
-    ax.set_xlim([0, None])
-    ax.title.set_text("Ligand")
-    ax.legend()
+    plot(df, "rmsd_lig", args.maxrank, args.bins, ax1)
+    ax1.set_xlabel("RMSD (Å)")
+    ax1.set_xlim([0, None])
+    ax1.title.set_text("Ligand")
+    ax1.axvline(x=1, color='k', linestyle="--", label="1 Å")
+    ax1.legend()
 
-    ax = plt.subplot(1, 3, 2)
-    plot(df, "rmsd_flex", args.maxrank, args.bins, ax)
-    ax.set_xlabel("RMSD (Å)")
-    ax.set_xlim([0, None])
-    ax.title.set_text("Flexible Residues")
-    ax.legend()
+    plot(df, "rmsd_flex", args.maxrank, args.bins, ax2)
+    ax2.set_xlabel("RMSD (Å)")
+    ax2.set_xlim([0, None])
+    ax2.title.set_text("Flexible Residues")
+    ax2.axvline(x=1, color='k', linestyle="--", label="1 Å")
+    ax2.legend()
 
-    ax = plt.subplot(1, 3, 3)
-    plot(df, "rmsd_tot", args.maxrank, args.bins, ax)
-    ax.set_xlabel("RMSD (Å)")
-    ax.set_xlim([0, None])
-    ax.title.set_text("Ligand + Flexible Residues")
-    ax.legend()
+    plot(df, "rmsd_tot", args.maxrank, args.bins, ax3)
+    ax3.set_xlabel("RMSD (Å)")
+    ax3.set_xlim([0, None])
+    ax3.title.set_text("Ligand + Flexible Residues")
+    ax3.axvline(x=2, color='k', linestyle="--", label="2 Å")
+    ax3.legend()
 
     plt.suptitle("RMSD Distributions")
     plt.savefig(os.path.join(args.outputpath, f"distrmsd.pdf"))
