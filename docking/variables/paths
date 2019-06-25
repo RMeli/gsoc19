@@ -2,7 +2,7 @@
 pdbbind=../PDBbind18
 
 # smina exec
-smina=$HOME/Documents/git/smina/build/linux/release/smina
+smina=$HOME/Documents/git/smina-fork/build/linux/release/smina
 
 # Openbabel
 export LD_LIBRARY_PATH=$HOME/software/openbabel/lib/:$LD_LIBRARY_PATH

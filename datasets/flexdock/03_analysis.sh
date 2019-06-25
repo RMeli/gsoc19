@@ -2,7 +2,7 @@
 
 source variables/paths
 
-python ${pscripts}/distrmsd.py \
+python3.6 ${pscripts}/distrmsd.py \
     analysis/allscores.csv \
-    -mr 3 -b 100 \
+    -mr 5 -b 100 \
     -opath analysis/plots

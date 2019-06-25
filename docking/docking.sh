@@ -1,6 +1,6 @@
 #!/bin/bash
 
-list=analysis/noconf.dat
+list=analysis/icodes.dat
 
 source variables/paths
 
