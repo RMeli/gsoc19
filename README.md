@@ -33,6 +33,7 @@ List of contributions to [smina]():
 
 List of contributions to [openbabel](https://github.com/openbabel/openbabel):
 
+* Fixed various problems with PDB and PDBQT insertion codes ([PR #1998](https://github.com/openbabel/openbabel/pull/1998))
 * Fixed CMake when compiling without RapidJSON ([PR #1988](https://github.com/openbabel/openbabel/pull/1988))
 
 
