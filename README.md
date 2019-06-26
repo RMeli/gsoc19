@@ -10,6 +10,7 @@
 
 List of contributions to [gnina](https://github.com/gnina/gnina):
 
+* Added insertion code support to `makeflex.py` ([PR #65](https://github.com/gnina/gnina/pull/65))
 * Improved `makeflex.py` script to deal with PDB file without atom types ([PR #64](https://github.com/gnina/gnina/pull/64))
 * Added test support for newer versions of Boost ([PR #62](https://github.com/gnina/gnina/pull/62))
 * Provided documentation and PDB standardization for `makeflex.py` script ([PR #61](https://github.com/gnina/gnina/pull/61))
