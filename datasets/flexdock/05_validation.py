@@ -8,6 +8,9 @@ datasets = ["refined"]
 
 pdbbindpath="../../PDBbind18"
 
+def newline(yes : bool) -> str:
+    return "\n" if yes else ""
+
 def load(fpath: str, print_warnings=False) -> mda.Universe:
     """
     Load file with MDAnalysis, suppressing warnings by default.
@@ -59,14 +62,17 @@ for dataset in datasets:
             try:
                 assert len(rec.residues) == n_residues
             except AssertionError:
+                print(f"{newline(ok)}\tWrong number of residues!")
                 ok = False
-                print("\n\tWrong number of residues!")
 
             try:
                 assert len(rec.select_atoms("protein and not type H")) == n_hvy_atoms_rec
             except AssertionError:
+                print(f"{newline(ok)}\tWrong number of receptor heavy atoms!")
                 ok = False
-                print("\n\tWrong number of receptor heavy atoms!")
+            
+            if not ok:
+                break
 
         lignames = [
             lig for lig in os.listdir(os.path.join(dataset, system))
@@ -80,8 +86,11 @@ for dataset in datasets:
             try:
                 assert len(lig.select_atoms("not type H")) == n_hvy_atoms_lig
             except:
+                print(f"{newline(ok)}\tWrong number of ligand heavy atoms!")
                 ok = False
-                print("\n\tWrong number of ligand heavy atoms!")
+            
+            if not ok:
+                break
 
         flexnames = [
             flex for flex in os.listdir(os.path.join(dataset, system))
@@ -97,8 +106,11 @@ for dataset in datasets:
                 PRO = flex.select_atoms("protein and resname PRO")
                 assert len(PRO) == 0
             except AssertionError:
+                print(f"{newline(ok)}\tFlexible PRO residues!")
                 ok = False
-                print("\n\tFlexible PRO residues!")
+            
+            if not ok:
+                break
 
 
         if ok:
