@@ -30,3 +30,14 @@ The script `03_analysis.sh` plots the RMSD distributions for the ligand, the fle
 ### 04 - Fix No Flex
 
 The script `04_fixnoflex.sh` fix systems where no flexible residues where found by adding the crystal structure to the system folder.
+
+### 05 - Validation
+
+The script `05_validation.py` validates the dataset by checkin the following for each system:
+
+* Proline residues are not considered as flexible,
+* The receptor crystal structure has the same number of residues as the re-constructed receptor structures,
+* The receptor crystal structure and the re-constructed receptor structures have the same number of heavy atoms,
+* The ligand crystal structure has the same number of heavy atoms as the docked structures.
+
+This script requires the latest development version of [MDanalysis](https://www.mdanalysis.org/) (see [Issue #2261](https://github.com/MDAnalysis/mdanalysis/issues/2261)).
