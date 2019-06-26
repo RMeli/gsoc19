@@ -1,6 +1,9 @@
 # PDBbind database
 pdbbind=../../PDBbind18
 
+# Docking
+ddir=../../docking
+
 # Openbabel
 obabel=$HOME/software/openbabel-2.4.1/install/bin/obabel
 obrms=$HOME/software/openbabel-2.4.1/openbabel-install/bin/obrms
