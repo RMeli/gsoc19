@@ -8,8 +8,14 @@ datasets = ["refined"]
 
 pdbbindpath="../../PDBbind18"
 
+residue_selection = "protein and not type H"
+ligand_selection = "not type H"
+water_selection = "not protein and (resname WAT or resname HOH)"
+
+
 def newline(yes : bool) -> str:
     return "\n" if yes else ""
+
 
 def load(fpath: str, print_warnings=False) -> mda.Universe:
     """
@@ -47,8 +53,15 @@ for dataset in datasets:
         clig = load(cligpath)
 
         n_residues = len(crec.residues)
-        n_hvy_atoms_rec = len(crec.select_atoms("protein and not type H"))
-        n_hvy_atoms_lig = len(clig.select_atoms("not type H"))
+        assert n_residues != 0
+
+        n_hvy_atoms_rec = len(crec.select_atoms(residue_selection))
+        assert n_hvy_atoms_rec != 0
+        
+        n_hvy_atoms_lig = len(clig.select_atoms(ligand_selection))
+        assert n_hvy_atoms_lig != 0
+        
+        n_water = len(crec.select_atoms(water_selection))
 
         recnames = [
             rec for rec in os.listdir(os.path.join(dataset, system))
@@ -57,19 +70,33 @@ for dataset in datasets:
         for recname in recnames:
             recpath = os.path.join(dataset, system, recname)
 
-            rec = load(recpath)
+            try:
+                rec = load(recpath)
+            except Exception as e:
+                print(f"{newline(ok)}\tFiled loading {recpath}")
+                raise e
 
             try:
                 assert len(rec.residues) == n_residues
+
+                try:
+                    sel = rec.select_atoms(residue_selection)
+                    assert len(sel) == n_hvy_atoms_rec
+                except AssertionError:
+                    print(f"{newline(ok)}\tWrong number of receptor heavy atoms!")
+                    ok = False
+
             except AssertionError:
                 print(f"{newline(ok)}\tWrong number of residues!")
                 ok = False
 
             try:
-                assert len(rec.select_atoms("protein and not type H")) == n_hvy_atoms_rec
+                water = rec.select_atoms(water_selection)
+                assert len(water) == n_water
             except AssertionError:
-                print(f"{newline(ok)}\tWrong number of receptor heavy atoms!")
+                print(f"{newline(ok)}\tWrong number of water molecules!")
                 ok = False
+
             
             if not ok:
                 break
@@ -84,7 +111,8 @@ for dataset in datasets:
             lig = load(ligpath)
 
             try:
-                assert len(lig.select_atoms("not type H")) == n_hvy_atoms_lig
+                sel = lig.select_atoms(ligand_selection)
+                assert len(sel) == n_hvy_atoms_lig
             except:
                 print(f"{newline(ok)}\tWrong number of ligand heavy atoms!")
                 ok = False
