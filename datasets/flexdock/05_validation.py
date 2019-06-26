@@ -4,7 +4,7 @@ import os
 import re
 import warnings
 
-datasets = ["test"]
+datasets = ["refined"]
 
 pdbbindpath="../../PDBbind18"
 
@@ -97,7 +97,7 @@ for dataset in datasets:
                 PRO = flex.select_atoms("protein and resname PRO")
                 assert len(PRO) == 0
             except AssertionError:
-                of = False
+                ok = False
                 print("\n\tFlexible PRO residues!")
 
 
