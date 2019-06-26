@@ -43,7 +43,7 @@ outfile = args.out
 out = open(outfile, "w")
 
 flex = prody.parsePDB(flexname)
-flexres = set(zip(flex.getChids(), flex.getResnums()))
+flexres = set(zip(flex.getChids(), flex.getResnums(), flex.getIcodes()))
 backbone = {
     "N",
     "O",
@@ -79,7 +79,7 @@ def atype_perception(atype, aname):
         if atype[-1].isupper():
             atype = atype[0]
 
-    return atype
+    return atype.strip()
 
 for ci in range(flex.numCoordsets()):  # Loop over different MODELs (MODEL/ENDMDL)
     which = defaultdict(int)
@@ -93,11 +93,16 @@ for ci in range(flex.numCoordsets()):  # Loop over different MODELs (MODEL/ENDMD
             aname = line[12:16].strip()
             atype = atype_perception(line[76:].strip(), aname)
 
-            if (chain, resnum) in flexres and aname not in backbone:
+            # Insertion code
+            # strip() is needed because getIcodes() returns empty strings
+            icode = line[26].strip()  
+
+            if (chain, resnum, icode) in flexres and aname not in backbone:
                 if atype != "H":
                     resatoms = flex[chain].select("resnum %d and not name H" % resnum)
                     w = which[(chain, resnum)]
                     which[(chain, resnum)] += 1  # update to next index
+                    #print(resnum, aname, chain, [atom for atom in resatoms])
                     atom = resatoms[w]  # this is the atom to replace this line with
                     c = atom.getCoordsets(ci)
                     line = PDBLINE % (
