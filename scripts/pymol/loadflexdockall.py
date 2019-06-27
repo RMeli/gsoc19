@@ -42,7 +42,7 @@ colors = [
 ]
 
 
-def loadflexdock(
+def loadflexdockall(
     system,
     dataset,
     idxs=["1"],
@@ -55,7 +55,6 @@ def loadflexdock(
     cmd.reinitialize("everything")
 
     # Convert string of indices to numbers
-    idxs = idxs.split()
     idxs = [int(idx) for idx in idxs]
     if len(idxs) > 7:
         raise RuntimeError("Displaying more than 5 poses is not supported.")
