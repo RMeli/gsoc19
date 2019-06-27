@@ -33,7 +33,7 @@ def parse(args: Optional[str] = None) -> ap.Namespace:
 def write_record(df_score, outfile):
 
     # Iterate over different docking poses for a given system
-    for idx, row in df_score.iterrows():
+    for _, row in df_score.iterrows():
 
         ligname = f"{row['system']}_ligand-{row['rank']}.pdb"
         recname = ligname.replace("ligand", "protein")
@@ -92,7 +92,7 @@ if __name__ == "__main__":
         with open(trainfile, "w") as trainout, open(testfile, "w") as testout:
 
             # Loop over systems
-            for system in dirs: 
+            for system in dirs:
 
                 # Automatically check if system is in refined or other set
                 for dataset in datasets:
