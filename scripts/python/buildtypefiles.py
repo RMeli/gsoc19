@@ -118,29 +118,4 @@ if __name__ == "__main__":
                 elif fold in test: # System should be in test
                     write_record(df_score, testout) # Write on test file
                 else:
-                    print("PROBLEM!")
-
-
-"""
-    for system in dirs:
-
-        # fold = df_folds[df_folds["pdb"] == system]["fold"].values[0]
-        # print(fold)
-        
-        # Choose at random for testing purposes:
-        import numpy as np
-        fold = np.random.randint(0, 3)
-
-        # Automatically check if system is in refined or other set
-        for dataset in datasets:
-            scorepath = os.path.join(
-                args.datapath, dataset, system, f"{system}_score.csv"
-            )
-
-            if os.path.isfile(scorepath):
-                break
-
-        df_score = pd.read_csv(scorepath)
-
-        write_record(df_score, fold)
-"""
+                    raise ValueError(f"Fold {fold} is invalid.")
