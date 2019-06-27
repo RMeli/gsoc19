@@ -1,5 +1,8 @@
 import MDAnalysis as mda # Needs dev version of MDAnalysis
 
+import numpy as np
+import pandas as pd
+
 import os
 import re
 import warnings
@@ -21,7 +24,7 @@ def load(fpath: str, print_warnings=False) -> mda.Universe:
     """
     Load file with MDAnalysis, suppressing warnings by default.
 
-    MDAnslysis complains about MOL2 atom types and some metal atoms.
+    MDAnslysis complains about MOL2 atom types and some metal atoms in PDB files.
     """
 
     if not print_warnings:
@@ -33,6 +36,7 @@ def load(fpath: str, print_warnings=False) -> mda.Universe:
     return mda.Universe(fpath)
 
 
+# Loop over datasets
 for dataset in datasets:
 
     # List all systems in dataset
@@ -42,6 +46,7 @@ for dataset in datasets:
         if re.match("^....$", s) and os.path.isdir(os.path.join(dataset, s))
     ]
 
+    # Loop over systems
     for system in systems:
         ok : bool = True
         print(f"Validating {dataset}/{system}...", end="")
@@ -73,7 +78,7 @@ for dataset in datasets:
             try:
                 rec = load(recpath)
             except Exception as e:
-                print(f"{newline(ok)}\tFiled loading {recpath}")
+                print(f"{newline(ok)}    Failed loading {recpath}")
                 raise e
 
             try:
@@ -83,18 +88,18 @@ for dataset in datasets:
                     sel = rec.select_atoms(residue_selection)
                     assert len(sel) == n_hvy_atoms_rec
                 except AssertionError:
-                    print(f"{newline(ok)}\tWrong number of receptor heavy atoms!")
+                    print(f"{newline(ok)}    Wrong number of receptor heavy atoms!")
                     ok = False
 
             except AssertionError:
-                print(f"{newline(ok)}\tWrong number of residues!")
+                print(f"{newline(ok)}    Wrong number of residues!")
                 ok = False
 
             try:
                 water = rec.select_atoms(water_selection)
                 assert len(water) == n_water
             except AssertionError:
-                print(f"{newline(ok)}\tWrong number of water molecules!")
+                print(f"{newline(ok)}    Wrong number of water molecules!")
                 ok = False
 
             
@@ -103,7 +108,7 @@ for dataset in datasets:
 
         lignames = [
             lig for lig in os.listdir(os.path.join(dataset, system))
-            if re.match(system + "_ligand-?[0-9]{0,2}\.pdb", lig)
+            if re.match(system + "_ligand-[0-9]{1,2}\.pdb", lig)
         ]
         for ligname in lignames:
             ligpath = os.path.join(dataset, system, ligname)
@@ -114,7 +119,7 @@ for dataset in datasets:
                 sel = lig.select_atoms(ligand_selection)
                 assert len(sel) == n_hvy_atoms_lig
             except:
-                print(f"{newline(ok)}\tWrong number of ligand heavy atoms!")
+                print(f"{newline(ok)}    Wrong number of ligand heavy atoms!")
                 ok = False
             
             if not ok:
@@ -122,7 +127,7 @@ for dataset in datasets:
 
         flexnames = [
             flex for flex in os.listdir(os.path.join(dataset, system))
-            if re.match(system + "_flex-?[0-9]{0,2}\.pdb", flex)
+            if re.match(system + "_flex-[0-9]{1,2}\.pdb", flex)
         ]
         for flexname in flexnames:
             flexpath = os.path.join(dataset, system, flexname)
@@ -134,12 +139,32 @@ for dataset in datasets:
                 PRO = flex.select_atoms("protein and resname PRO")
                 assert len(PRO) == 0
             except AssertionError:
-                print(f"{newline(ok)}\tFlexible PRO residues!")
+                print(f"{newline(ok)}    Flexible PRO residues!")
                 ok = False
             
             if not ok:
                 break
 
+        # Load score
+        scorepath = os.path.join(dataset, system, f"{system}_score.csv")
+        df_score = pd.read_csv(scorepath)
+    
+        try:
+            ranks = df_score["rank"].max()
+            assert ranks == len(lignames)
+        except AssertionError:
+            print(f"{newline(ok)}    Number of scores mismatches number of poses!")
+            ok = False
+            
+        rmsd = ["rmsd_lig", "rmsd_flex", "rmsd_tot"]
+        for r in rmsd:
+            if np.isnan(df_score[r].to_numpy()).any():
+                print(f"{newline(ok)}    {r.upper()} contains NaN!")
+                ok = False
+
+            if np.isinf(df_score[r].to_numpy()).any():
+                print(f"{newline(ok)}    {r.upper()} contains Inf!")
+                ok = False
 
         if ok:
             print("ok")
