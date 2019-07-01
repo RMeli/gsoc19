@@ -7,14 +7,14 @@ PDBFILES=pdbfiles.lst
 
 rm -f ${PDBFILES}
 
-for dataset in "refined" "other"
+for dataset in "test"
 do
     for dir in $(ls -d ${dataset}/????) 
     do
         system=$(basename ${dir})
 
-        # Path relative to home directory
-        path=$(echo $PWD | sed "s#${HOME}#~#g")
+        # Absolute path
+        path=$PWD
         
         # Input and output absolute paths
         recname=${path}/${dir}/${system}_protein.pdb
