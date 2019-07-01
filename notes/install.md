@@ -23,7 +23,7 @@ git git build-essential \
 
 ### Download
 
-OpenBabel needs a few patches in order to work properly. Use the following fork: `https://github.com/RMeli/openbabel/tree/fix/icode`.
+OpenBabel needs a few patches in order to work properly for flexible docking. Use the following fork: `https://github.com/RMeli/openbabel/tree/fix/icode`.
 
 ```
 git clone https://github.com/RMeli/openbabel
@@ -75,7 +75,7 @@ apt install git build-essential libboost-all-dev libeigen3-dev
 
 Install OpenBabel as described above.
 
-The [Singularity]() conteiner defined by `smina.def` already has all the requirements.
+The [Singularity](https://sylabs.io/singularity/) conteiner defined by `smina.def` already has all the requirements.
 
 ### Download
 

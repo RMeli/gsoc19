@@ -1,6 +1,6 @@
 """
 Build GNINA .types file (containing annotations and receptor/ligand paths) from 
-.gninatypes files and a pre-computed cross-validation split.
+.gninatypes files for the different systems.
 """
 
 from sklearn.model_selection import KFold
@@ -21,7 +21,6 @@ def parse(args: Optional[str] = None) -> ap.Namespace:
 
     parser.add_argument("datapath", type=str, help="Path to database root.")
     parser.add_argument("outpath", type=str, help="Path to gninatypes root.")
-    parser.add_argument("--folds", default=None, type=str, help="Folds file.")
     parser.add_argument("--min", default=2, type=float)
     parser.add_argument("--max", default=4, type=float)
 
@@ -30,7 +29,7 @@ def parse(args: Optional[str] = None) -> ap.Namespace:
     return args
 
 
-def write_record(df_score, outfile):
+def write_record(df_score: pd.DataFrame, min: float, max: float, outfile):
 
     # Iterate over different docking poses for a given system
     for _, row in df_score.iterrows():
@@ -60,17 +59,6 @@ if __name__ == "__main__":
 
     args = parse()
 
-    # Load folds file
-    if args.folds is not None:
-        df_folds = pd.read_csv(args.folds)
-
-        n_folds = df_folds["fold"].max() + 1
-
-        print(f"Cross-validation with {n_folds} folds.")
-
-    else:
-        raise Exception # TODO: Support random splitting
-
     # List all folders containing gninatypes files
     dirs = [
         d
@@ -78,44 +66,24 @@ if __name__ == "__main__":
         if re.match("^....$", d) and os.path.isdir(os.path.join(args.outpath, d))
     ]
 
-    kf = KFold(n_splits=n_folds)
-
     # Loop over folds
-    for train, test in kf.split(range(n_folds), range(n_folds)):
-        idx = test[0]
+    for system in dirs:
 
-        print(f"   Building train {train} and test {test}...")
+        typesfile = f"{args.outpath}/{system}/{system}.types"
 
-        # Open type files for current fold
-        trainfile = f"{args.outpath}/alltrain{idx}.types"
-        testfile = f"{args.outpath}/alltest{idx}.types"
-        with open(trainfile, "w") as trainout, open(testfile, "w") as testout:
+        with open(typesfile, "w") as out:
 
-            # Loop over systems
-            for system in dirs:
+            # Automatically check if system is in refined or other set
+            for dataset in datasets:
+                scorepath = os.path.join(
+                    args.datapath, dataset, system, f"{system}_score.csv"
+                )
 
-                # Automatically check if system is in refined or other set
-                for dataset in datasets:
-                    scorepath = os.path.join(
-                        args.datapath, dataset, system, f"{system}_score.csv"
-                    )
+                if os.path.isfile(scorepath):
+                    break
 
-                    if os.path.isfile(scorepath):
-                        break
+            # Get system scores
+            df_score = pd.read_csv(scorepath)
 
-                # Get system scores
-                df_score = pd.read_csv(scorepath)
 
-                # Get actual fold of the system (pre-computed)
-                try:
-                    fold = df_folds[df_folds["pdb"] == system]["fold"].values[0]
-                except IndexError:
-                    print(f"WARNING: Skypping system {system} with unknown fold...")
-                    continue
-
-                if fold in train: # System should be in train
-                    write_record(df_score, trainout) # Write on train file
-                elif fold in test: # System should be in test
-                    write_record(df_score, testout) # Write on test file
-                else:
-                    raise ValueError(f"Fold {fold} is invalid.")
+            write_record(df_score, args.min, args.max, out) # Write record
