@@ -8,6 +8,7 @@ gcaffe=${groot}/caffe/python
 # dirs
 pscripts=../scripts/python
 database=../datasets/flexdock
+clusterdir=clustering
 typedir=gninatypes
 foldir=folds
 modeldir=models
