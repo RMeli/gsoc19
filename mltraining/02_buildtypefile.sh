@@ -3,7 +3,7 @@
 source variables/paths
 source variables/annotation
 
-python3.6 ${pscripts}/buildtypefiles.py \
+python ${pscripts}/buildtypefiles.py \
     ${database} \
     ${typedir}
 

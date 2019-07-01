@@ -34,7 +34,7 @@ def write_record(df_score: pd.DataFrame, min: float, max: float, outfile):
     # Iterate over different docking poses for a given system
     for _, row in df_score.iterrows():
 
-        ligname = f"{row['system']}_ligand-{row['rank']}.pdb"
+        ligname = f"{row['system']}_ligand-{row['rank']}"
         recname = ligname.replace("ligand", "protein")
 
         ligpath = f"{system}/{ligname}.gninatypes"
@@ -84,6 +84,5 @@ if __name__ == "__main__":
 
             # Get system scores
             df_score = pd.read_csv(scorepath)
-
 
             write_record(df_score, args.min, args.max, out) # Write record
