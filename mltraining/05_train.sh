@@ -10,10 +10,7 @@ source variables/paths
 
 mkdir ${traindir} && cd ${traindir}
 
-cp ../${dataroot}/*.types .
-cp ../${dataroot}/alltrain0.types alltest0.types
-cp ../${dataroot}/alltrain1.types alltest1.types
-cp ../${dataroot}/alltrain2.types alltest2.types
+cp ../${dataroot}/all*.types .
 cp ../variables/complete* .
 
 # Caffe
