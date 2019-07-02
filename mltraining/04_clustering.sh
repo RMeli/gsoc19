@@ -26,13 +26,9 @@ compute_row(){
 export -f compute_row
 
 # Compute similarity of one system with all other systems
-#for row in $(seq 0 ${n_cpus} $((${rows}-1)))
-#do
-#s=$(seq ${row} $((${row} + ${n_cpus} - 1)))
-#echo $s
+# Parallelised over all systems
 s=$(seq 0 $((${rows}-1))) # All rows
 parallel -j ${n_cpus} compute_row ::: ${s}
-#done
 
 # Combine similarity measures
 python ${gscripts}/combine_rows.py ${clusterdir}/row-*
