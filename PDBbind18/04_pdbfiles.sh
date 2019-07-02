@@ -7,7 +7,7 @@ PDBFILES=pdbfiles.lst
 
 rm -f ${PDBFILES}
 
-for dataset in "test"
+for dataset in "refined" "other"
 do
     for dir in $(ls -d ${dataset}/????) 
     do
