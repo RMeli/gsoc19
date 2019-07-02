@@ -2,7 +2,7 @@
 
 source variables/paths
 
-n_cpus=2
+n_cpus=8
 
 # Extract ligands SMILES and receptors sequences
 # Format: PDBCODE | SMILES | SEQ
