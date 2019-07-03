@@ -10,3 +10,24 @@
 ### Valgrind
 
 [Valgrind](http://valgrind.org/) is a system for debugging and profiling Linux programs which can automatically detect many memory management and threading bugs.
+
+
+## Scripting
+
+### GNU Parallel
+
+[GNU Parallel](https://www.gnu.org/software/parallel/) is a shell tool for executing jobs in parallel. A job can be a single command or a small script that has to be run for each of the lines in the input.
+
+The following bash function
+```
+BASH_FUNCTION(){
+    echo $1
+}
+
+# Export function for GNU parallel
+export -f BASH_FUNCTION 
+```
+can be easily run in parallel on `NUM_CPUS` CPUs for a list of different `INPUTS`
+```
+parallel -j NUM_CPUS BASH_FUNCTION ::: INPUTS
+```
