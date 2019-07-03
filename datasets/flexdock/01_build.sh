@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Number of CPUs
+n_cpus=8
+
 # List
 list=lists/test.dat
 
@@ -9,8 +12,15 @@ source variables/paths
 # Working directory
 wd=$PWD
 
-for dir in $(cat ${list})
-do
+# Export variables for GNU parallel
+export pdbbind=${pdbbind}
+export ddir=${ddir}
+export pscripts=${pscripts}
+
+# Build single system from docking
+makeflex(){
+    # Get directory name from argument
+    dir=$1
 
     # PDB name
     system=$(basename ${dir})
@@ -55,4 +65,13 @@ do
 
         python ${pscripts}/makeflex.py ${rigid} ${flex} ${dir}/${system}_protein-${idx}.pdb
     done
-done
+}
+
+# Export makeflex for GNU parallel
+export -f makeflex
+
+# List all directories
+dirs=$(cat ${list})
+
+# Reconstruct the dataset
+parallel -j ${n_cpus} makeflex ::: ${dirs}
