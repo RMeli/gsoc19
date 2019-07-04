@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Number of CPUs
-n_cpus=4
+n_cpus=12
 
 # List
 list=lists/refined.dat
