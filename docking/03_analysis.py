@@ -6,14 +6,30 @@ import pandas as pd
 from matplotlib import pyplot as plt
 
 import os
+import warnings
 
 # PDBbind subsets 
-datasets = ["refined", "other"]
+datasets = ["refined"]
 
 # Dataset column names
 col_names = ["n_modes", "n_flex"]
 
 df = pd.DataFrame(columns=col_names, dtype=int)
+
+def load(fpath: str, print_warnings=False) -> mda.Universe:
+    """
+    Load file with MDAnalysis, suppressing warnings by default.
+
+    MDAnslysis complains about MOL2 atom types and some metal atoms in PDB files.
+    """
+
+    if not print_warnings:
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            
+            return mda.Universe(fpath)
+
+    return mda.Universe(fpath)
 
 no_conf=[] # Systems where no conformation was found in search space
 no_flex=[] # Systems where no flexible residues are found
@@ -24,7 +40,7 @@ for dataset in datasets:
         fname = os.path.join(f"{dataset}/{system}", "flex.pdb")
         
         try:
-            u = mda.Universe(fname)
+            u = load(fname)
 
         except EOFError: # Empty PDB file when no conformations found
             print(f"No conformations found for system {system}.")
@@ -39,7 +55,7 @@ for dataset in datasets:
                 # Get number of modes from ligand poses
                 dname = os.path.join(f"{dataset}/{system}", "dock.pdb")
                 try: 
-                    u = mda.Universe(dname)
+                    u = load(dname)
 
                     n_modes = len(u.trajectory)
                     n_flex = 0 # No flexible residues
