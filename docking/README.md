@@ -72,9 +72,9 @@ The list of systems for which no flexible residues are found is printed in `anal
 
 #### No Flexible Residues Found
 
-For the following `refined` systems, no flexible residues are found (4 systems):
+For the following `refined` systems, no flexible residues are found (6 systems):
 ```
-3nee 2z94 2g5u 5lud
+3nee 2z94 2g5u 4k7i 3mss 5lud
 ```
 
 For the following `other` systems, no flexible residues are found (16 systems):
@@ -136,7 +136,7 @@ An closer inspection of these systems revealed that OpenBabel and `smina` do not
                {
                  atom = GetAtom(src_atom->GetIdx());
 ```
-and an updated version of `smina` (Jun 12 2019) solve the problem.
+and an updated version of `smina` (Jun 12 2019) solves the problem.
 
 
 ### Ring-Opening of Proline
