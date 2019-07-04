@@ -1,5 +1,6 @@
 # archives
 PDBbind18/*.tar.gz
+*.tar.gz
 *.zip
 
 # logs
