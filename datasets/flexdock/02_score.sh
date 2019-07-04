@@ -21,7 +21,7 @@ score(){
     dir=$1
     dataset=$2
 
-    echo ${dir} ${dataset}
+    echo ${dir}
 
     # PDB name
 	system=$(basename ${dir})
@@ -47,7 +47,7 @@ score(){
         # Flexible residues RMSD (with MDAnalysis)
         flex=${dir}/${system}_flex-${rank}.pdb
         protein=${dir}/${system}_protein-${rank}.pdb
-        rmsd_flex=$(python ${pscripts}/flexrmsd.py ${flex} ${protein} ${protein_crystal})
+        rmsd_flex=$(python3.6 ${pscripts}/flexrmsd.py ${flex} ${protein} ${protein_crystal})
 
         # Combined RMSD
         rmsd_tot=$(echo ${rmsd_lig} + ${rmsd_flex} | bc)

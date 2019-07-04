@@ -65,18 +65,19 @@ def rmsd(flex: mda.Universe, protein: mda.Universe, crystal: mda.Universe) -> fl
 
     residues = []
     for res in flexres:
-        residues.append((res.resid, res.resname))
+        residues.append((res.resid, res.resname, res.segid))
 
     # Check that all flexible residues are listed
     assert len(residues) == len(flexres)
 
     selection = "".join(
-        [f"(resid {id} and resname {name}) or " for id, name in residues]
+        [f"(resid {id} and resname {name} and segid {chain}) or " for id, name, chain in residues]
     )
     selection = selection[:-4]  # Remove final " or "
 
     # Remove H atoms
-    selection = f"({selection}) and not type H"
+    # TODO: Possibly need perception from atom name, when type is not present
+    selection = f"({selection}) and not (type H or name H*)"
 
     p_atoms = protein.select_atoms(selection)
     c_atoms = crystal.select_atoms(selection)
