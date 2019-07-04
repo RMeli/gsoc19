@@ -6,9 +6,6 @@ source variables/paths
 
 datasets="refined"
 
-# File with all the scores
-allscores="analysis/allscores.csv"
-
 # CSV Header
 csv_header="system,rank,rmsd_lig,rmsd_flex,rmsd_tot,score"
 
@@ -50,7 +47,7 @@ score(){
         # Flexible residues RMSD (with MDAnalysis)
         flex=${dir}/${system}_flex-${rank}.pdb
         protein=${dir}/${system}_protein-${rank}.pdb
-        rmsd_flex=$(python3.6 ${pscripts}/flexrmsd.py ${flex} ${protein} ${protein_crystal})
+        rmsd_flex=$(python ${pscripts}/flexrmsd.py ${flex} ${protein} ${protein_crystal})
 
         # Combined RMSD
         rmsd_tot=$(echo ${rmsd_lig} + ${rmsd_flex} | bc)
@@ -72,20 +69,4 @@ do
     dirs=$(ls -d ${dataset}/????)
 
     parallel -j ${n_cpus} score ::: ${dirs} ::: ${dataset}
-
 done
-
-# Create a file containing all the scores
-rm -f ${allscores}
-rm -f allscores.tmp # Remove tmp file
-touch allscores.tmp # Create tmp file
-for dataset in ${datasets}
-do
-    # Concatenate all score files
-    cat allscores.tmp ${dataset}/????/????_score.csv > tmp
-    mv tmp allscores.tmp
-done
-grep -v ${csv_header} allscores.tmp > ${allscores} # Remove all headers
-echo ${csv_header} | cat - ${allscores} > allscores.tmp # Add top header
-mv allscores.tmp ${allscores}
-rm -f allscores.tmp # Remove tmp file
