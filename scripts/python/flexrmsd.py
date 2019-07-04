@@ -7,6 +7,7 @@ import MDAnalysis as mda
 import MDAnalysis.analysis.rms as RMS
 
 import argparse as ap
+import warnings
 
 from typing import Optional, Tuple
 
@@ -38,12 +39,22 @@ def parse(args: Optional[str] = None) -> ap.Namespace:
 
 
 def load_systems(
-    flexname: str, proteinname: str, crystalname: str
+    flexname: str, proteinname: str, crystalname: str,
+    print_warnings=False
 ) -> Tuple[mda.Universe, mda.Universe, mda.Universe]:
 
-    flex = mda.Universe(flexname)
-    protein = mda.Universe(proteinname)
-    crystal = mda.Universe(crystalname)
+    if not print_warnings:
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            
+            flex = mda.Universe(flexname)
+            protein = mda.Universe(proteinname)
+            crystal = mda.Universe(crystalname)
+
+    else:
+        flex = mda.Universe(flexname)
+        protein = mda.Universe(proteinname)
+        crystal = mda.Universe(crystalname)
 
     return flex, protein, crystal
 
