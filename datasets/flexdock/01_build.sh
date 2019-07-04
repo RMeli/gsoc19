@@ -1,10 +1,10 @@
 #!/bin/bash
 
 # Number of CPUs
-n_cpus=8
+n_cpus=4
 
 # List
-list=lists/test.dat
+list=lists/refined.dat
 
 # Paths
 source variables/paths
@@ -21,6 +21,8 @@ export pscripts=${pscripts}
 makeflex(){
     # Get directory name from argument
     dir=$1
+
+    echo "makeflex ${dir}"
 
     # PDB name
     system=$(basename ${dir})

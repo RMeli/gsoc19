@@ -1,10 +1,10 @@
 #!/bin/bash
 
-n_cpus=2
+n_cpus=12
 
 source variables/paths
 
-datasets="test"
+datasets="refined"
 
 # File with all the scores
 allscores="analysis/allscores.csv"
