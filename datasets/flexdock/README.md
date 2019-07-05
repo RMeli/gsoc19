@@ -23,17 +23,30 @@ The script `02_score.sh` produces a `score.csv` file for every system, containin
 
 The same information for all the systems is also collected on a single file `analysis/allscores.csv` for convenience.
 
-### 03 - Analysis
+### 03 - Cleanup
 
-The script `03_analysis.sh` plots the RMSD distributions for the ligand, the flexible residues and the whole system (ligand and flexible residues).
+A very small number of systems fail during the execution of the scoring script `02_scoring.sh`. Errors are the following:
 
-### 04 - Fix No Flex
+* Failures to handle reisudes with a negative number `ValueError: Failed to parse value: -2`
+* Problems with RMSD calculation for the flexible residues: `RuntimeWarning: invalid value encountered in double_scalars`
 
-The script `04_fixnoflex.sh` fix systems where no flexible residues where found by adding the crystal structure to the system folder.
+The script `03_cleanup.sh` removes the problematic systems (listed in `analysis/problematic.lst`) from the dataset.
 
-### 05 - Validation
+### 04 - All Scores
 
-The script `05_validation.py` validates the dataset by checkin the following for each system:
+The script `04_allscores.sh` combine all the scores for every system in a single file, suited for analysis.
+
+### 05 - Analysis
+
+The script `05_analysis.sh` plots the RMSD distributions for the ligand, the flexible residues and the whole system (ligand and flexible residues).
+
+### 06 - Fix No Flex
+
+The script `06_fixnoflex.sh` fix systems where no flexible residues where found by adding the crystal structure to the system folder.
+
+### 07 - Validation
+
+The script `07_validation.py` validates the dataset by checkin the following for each system:
 
 * Proline residues are not considered as flexible,
 * The receptor crystal structure has the same number of residues as the re-constructed receptor structures,
