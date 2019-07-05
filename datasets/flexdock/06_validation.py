@@ -11,8 +11,8 @@ datasets = ["refined"]
 
 pdbbindpath="../../PDBbind18"
 
-residue_selection = "protein and not type H"
-ligand_selection = "not type H"
+residue_selection = "protein and not (type H or name H*)"
+ligand_selection = "not type H and not (type H or name H*)"
 water_selection = "not protein and (resname WAT or resname HOH)"
 
 
