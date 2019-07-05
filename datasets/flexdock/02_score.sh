@@ -69,4 +69,5 @@ do
     dirs=$(ls -d ${dataset}/????)
 
     parallel -j ${n_cpus} score ::: ${dirs} ::: ${dataset}
+
 done

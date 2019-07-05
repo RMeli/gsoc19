@@ -4,6 +4,8 @@ n_cpus=12
 
 datasets="refined"
 
+allscores="analysis/allscores.csv"
+
 # CSV Header
 csv_header="system,rank,rmsd_lig,rmsd_flex,rmsd_tot,score"
 
