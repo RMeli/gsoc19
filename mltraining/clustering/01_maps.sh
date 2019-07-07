@@ -11,6 +11,8 @@ echo "Number of rows: $rows"
 
 rm -f mapping.dat
 
+mkdir -p maps
+
 row=0
 while [ $row -lt $rows ]
 do
@@ -27,6 +29,6 @@ do
     done
 done
 
-split -d -l ${n} mapping.dat splits/split
+split -d -l ${n} mapping.dat maps/map
 
 rm mapping.dat
