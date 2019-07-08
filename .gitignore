@@ -12,8 +12,8 @@ PDBbind18/refined
 PDBbind18/other
 
 # docking
-docking/refined
-docking/other
+docking/refined*
+docking/other*
 
 # datasets
 datasets/flexdock/refined
