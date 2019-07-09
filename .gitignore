@@ -22,6 +22,7 @@ refined-*.tar.gz
 other-*.tar.gz
 
 # gnina
+mltraining/clustering/rows
 *prototxt
 training
 
