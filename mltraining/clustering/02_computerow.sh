@@ -1,13 +1,10 @@
 #!/bin/bash
 
-rows=$1
-
-echo "rows:\n${rows}"
-
-n_cpus=8 # Number of CPUs for parallel calculations
+rows=$(cat $1)
+n_cpus=$2 # Number of CPUs for parallel calculations
 
 # Paths
-source variables/paths
+source ../variables/paths
 
 # Export variables for GNU parallel
 export rows=${rows}
@@ -19,9 +16,9 @@ compute_row(){
     row=$1
 
     python ${gscripts}/compute_row.py \
-        --pdbseqs ${clusterdir}/seqs.dat \
+        --pdbseqs seqs.dat \
         --row ${row} \
-        --out ${clusterdir}/row-${row}
+        --out rows/row-${row}
 }
 
 # Export function for GNU parallel
