@@ -34,6 +34,20 @@ Set a breakpoint in `FILE` at line number `LINE`:
 (gdb) break FILE:LINE
 ```
 
+#### Explore Variables
+
+Print vairable value:
+
+```bash
+(gdb) print VARIABLE
+```
+
+Print variable type:
+
+```bash
+(gdb) ptype VARIABLE
+```
+
 ### Valgrind
 
 [Valgrind](http://valgrind.org/) is a system for debugging and profiling Linux programs which can automatically detect many memory management and threading bugs.
