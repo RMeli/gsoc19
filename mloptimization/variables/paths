@@ -1,0 +1,7 @@
+# gnina
+groot=$HOME/Documents/git/gnina/
+gnina=${groot}/build/bin/gnina
+gcaffe=${groot}/caffe/python
+
+# dirs
+dataroot=../PDBbind18
