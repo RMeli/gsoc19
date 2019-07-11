@@ -21,5 +21,5 @@ do
     --cnn default2017 \
     --cnn_scoring --minimize  \
     --gpu \
-    --out ${outdir}/${system}_ligand.pdb
+    --out ${outdir}/${system}_ligand-min.pdb
 done
