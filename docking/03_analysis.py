@@ -9,7 +9,7 @@ import os
 import warnings
 
 # PDBbind subsets 
-datasets = ["refined"]
+datasets = ["other"]
 
 # Dataset column names
 col_names = ["n_modes", "n_flex"]
