@@ -1,7 +1,7 @@
 #!/bin/bash
 
-failed=analysis/failed.dat
-noflex=analysis/noflex-refined.dat
+failed=analysis/failed.lst
+noflex=analysis/noflex.lst
 
 # Remove systems failed
 for dir in $(cat ${failed})
