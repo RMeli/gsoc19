@@ -79,8 +79,8 @@ For the following `refined` systems, no flexible residues are found (6 systems):
 
 For the following `other` systems, no flexible residues are found (16 systems):
 ```
-4his 5swg 1h9z 3grj 4wh7 5ea7 4z90 4e5i 2r1w 3tct 5vdu 4bnz 4nni 4u5t 5wbp
-1n1g
+4his 4o7e 5swg 1h9z 3grj 4wh7 5ea7 4z90 4e5i 2r1w 3tct 5vdu 4bnz 4nni 4u5t 5wbp
+3pp7 1n1g 1jdj
 ```
 
 #### Unsupported Metal Atoms
@@ -94,8 +94,8 @@ The following `refined` systems contain metal atoms (6 systems):
 
 The following `other` systems contain metal atoms (8 systems):
 ```
-1a52 (Au)   1ind (In)   2iw9 (Og)   2w54 (Ba)   3ump (Cs)   4k1e (Li)
-4q3r (Cs)   5ng9 (Li)
+1a52 (Au)   1ind (In)   2iw9 (Og)   2w54 (Ba)   3ump (Cs)   5ng9 (Li)
+4k1e (Li)   4q3r (Cs)   5ng9 (Li)
 ```
 
 #### No Conformations Found
