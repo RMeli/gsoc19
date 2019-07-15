@@ -4,7 +4,7 @@
 n_cpus=10
 
 # List
-list=lists/other.lst
+list=lists/refined.lst
 
 # Paths
 source variables/paths
