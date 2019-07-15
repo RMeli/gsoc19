@@ -6,7 +6,7 @@ The `flexdock` dataset is the main dataset produced by this Google Summer of Cod
 
 ### 01 - Build
 
-The script `01_build.sh` uses the results of flexible docking with `smina` to build the `flexdock` dataset. `smina` produces two `.pdb` files as a result of flexible docking: `dock.pdb` contains the different docking poses of the ligand (as models), while `flex.pdb` contains the different poses of the flexible residues (as models). 
+The script `01_build.sh` uses the results of flexible docking with `smina` to build the `flexdock` dataset. `smina` produces two `.pdb` files as a result of flexible docking: `dock.pdb` contains the different docking poses of the ligand (as models), while `flex.pdb` contains the different poses of the flexible residues (as models).
 
 In order to build the `flexdock` dataset, the different poses in `dock.pdb` and `flex.pdb` are split (using OpenBabel) and re-named. Finally, the flexible residue are re-inserted into the whole receptor crystal structure using the `makeflex.py` script (originally written by David R. Koes).
 
@@ -40,11 +40,7 @@ The script `04_allscores.sh` combine all the scores for every system in a single
 
 The script `05_analysis.sh` plots the RMSD distributions for the ligand, the flexible residues and the whole system (ligand and flexible residues).
 
-### 06 - Fix No Flex
-
-The script `06_fixnoflex.sh` fix systems where no flexible residues where found by adding the crystal structure to the system folder.
-
-### 07 - Validation
+### 06 - Validation
 
 The script `07_validation.py` validates the dataset by checkin the following for each system:
 

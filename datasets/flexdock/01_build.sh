@@ -1,10 +1,10 @@
 #!/bin/bash
 
 # Number of CPUs
-n_cpus=12
+n_cpus=10
 
 # List
-list=lists/refined.dat
+list=lists/other.lst
 
 # Paths
 source variables/paths
