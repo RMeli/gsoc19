@@ -2,7 +2,7 @@
 
 n_cpus=12
 
-datasets="refined"
+datasets="refined other"
 
 allscores="analysis/allscores.csv"
 
