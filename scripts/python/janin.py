@@ -6,6 +6,7 @@ import MDAnalysis as mda
 from MDAnalysis.analysis.dihedrals import Janin, Janin_ref
 
 import numpy as np
+import matplotlib
 from matplotlib import pyplot as plt
 from matplotlib import cm
 
@@ -156,10 +157,17 @@ if __name__ == "__main__":
 
     #sels = [get_flexres_selection(system, path) for system, path in systems.items()]
 
-    fig, ax = plt.subplots(figsize=plt.figaspect(1))
+    fig, ax = plt.subplots()
+    ax.set_aspect("equal")
 
     plot_reference(ax)
     
     plot(ax, systems)
-    
+
+    cm = matplotlib.colors.LinearSegmentedColormap.from_list('cm', list(colors.values()))
+    Z = [[0,0],[0,0]]
+    levels = range(1,22)
+    im = ax.contourf(Z, levels, cmap=cm)
+    fig.colorbar(im)
+
     plt.show()
