@@ -1,6 +1,7 @@
 import MDAnalysis as mda
-from MDAnalysis.analysis.dihedrals import Janin
+from MDAnalysis.analysis.dihedrals import Janin, Janin_ref
 
+import numpy as np
 from matplotlib import pyplot as plt
 
 import argparse as ap
@@ -26,7 +27,7 @@ def parse(args: Optional[str] = None) -> ap.Namespace:
 
     parser = ap.ArgumentParser(description="Compute center of geometry of a molecule.")
 
-    parser.add_argument("system", type=str, help="")
+    parser.add_argument("systems", type=str, help="List of paths to systems")
     parser.add_argument("-r", "--root", type=str, default="", help="")
 
     return parser.parse_args(args)
@@ -55,13 +56,34 @@ def load_as_traj(system: str, rootdir: str = ""):
 
     return flex, prot
 
+def list_systems(syslist: str, rootdir: str = ""):
+
+    systems = {}
+    with open(syslist, "r") as file:
+        for line in file:
+            l = line.strip()
+            system = os.path.basename(l)
+            systems[system] = os.path.join(rootdir, l)
+
+    return systems
+
 def select_flexres(flex : mda.Universe, prot: mda.Universe) -> mda.AtomGroup:
+    """
+    Given a protein and a series of flexible residues, selectss the full flexible
+    residues (including backbone atoms) from the protein structure.
+
+    Args:
+        flex (mda.Universe): flexible residues
+        prot (mda.Universe): protein
+
+    Returns:
+        An `mda.AtomGroup` containing the atoms corresponding to flexible residues
+        extracted from the protein (including backbone atoms)
+    """
 
     fres = []
     for res in flex.residues:
         fres.append((res.resid, res.icode, res.segid))
-
-    print(fres)
 
     sel = "".join(
         [
@@ -69,18 +91,16 @@ def select_flexres(flex : mda.Universe, prot: mda.Universe) -> mda.AtomGroup:
             for id, icode, chain in fres
             if icode == ""
         ]
-    ).join(
-        [
+    ) + "".join([
             f"(resnum {id} and icode {icode} and segid {chain}) or " 
             for id, icode, chain in fres
             if icode != ""
         ]
     )
 
-    sel=sel[:-4]
-
-    print(sel)
-
+    # Sanitize selection and remove residues without Janin dihedrals
+    # Ignoring them explicitly removes a warning
+    sel=sel[:-4] + "and not (resname ALA or resname CYS or resname GLY or resname PRO or resname SER or resname THR or resname VAL)"
     return prot.select_atoms(sel)
 
 
@@ -107,11 +127,19 @@ if __name__ == "__main__":
 
     args = parse()
 
-    sel = get_flexres_selection(args.system, args.root)
-    
-    J = Janin(sel).run()
+    systems = list_systems(args.systems, args.root)
+
+    sels = [get_flexres_selection(system, path) for system, path in systems.items()]
 
     fig, ax = plt.subplots(figsize=plt.figaspect(1))
-    J.plot(ax=ax, color='k', ref=True)
-    plt.show()
 
+    X, Y = np.meshgrid(np.arange(0, 360, 6), np.arange(0, 360, 6))
+    levels = [1, 6, 600]
+    colors = ['#A1D4FF', '#35A1FF']
+    ax.contourf(X, Y, np.load(Janin_ref), levels=levels, colors=colors)
+    
+    for sel in sels:
+        J = Janin(sel).run()
+        J.plot(ax=ax, color="k", ref=False)
+    
+    plt.show()
