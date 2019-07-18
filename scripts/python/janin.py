@@ -1,3 +1,7 @@
+"""
+Janin plot for flexible residues.
+"""
+
 import MDAnalysis as mda
 from MDAnalysis.analysis.dihedrals import Janin, Janin_ref
 
@@ -9,7 +13,7 @@ import os
 import re
 import warnings
 
-from typing import Optional
+from typing import Optional, Dict
 
 def parse(args: Optional[str] = None) -> ap.Namespace:
     """
@@ -33,6 +37,14 @@ def parse(args: Optional[str] = None) -> ap.Namespace:
     return parser.parse_args(args)
 
 def load_as_traj(system: str, rootdir: str = ""):
+    """
+    Load a single pose for flexible residues and all the poses in a single trajectory
+    for the receptor.
+
+    Args:
+        system (str): Name of the system
+        rootdir (str): Root directory for the system
+    """
 
     # List all protein paths
     protnames = [
@@ -56,7 +68,19 @@ def load_as_traj(system: str, rootdir: str = ""):
 
     return flex, prot
 
-def list_systems(syslist: str, rootdir: str = ""):
+def list_systems(syslist: str, rootdir: str = "") -> Dict[str, str]:
+    """
+    List all systems in a given list and store them in a dictionary (as key) along with
+    the path to the system (as value).
+
+    Args:
+        syslist (str): Name of the files listing the systems
+        rootdir (str): Root directory (to be appended to the path in `syslist`)
+
+    Returns:
+        Dictionaty containing the systems' names as keys and corresponding paths as
+        valuse
+    """
 
     systems = {}
     with open(syslist, "r") as file:
@@ -101,12 +125,17 @@ def select_flexres(flex : mda.Universe, prot: mda.Universe) -> mda.AtomGroup:
     # Sanitize selection and remove residues without Janin dihedrals
     # Ignoring them explicitly removes a warning
     sel=sel[:-4] + "and not (resname ALA or resname CYS or resname GLY or resname PRO or resname SER or resname THR or resname VAL)"
+    
     return prot.select_atoms(sel)
 
 
 def get_flexres_selection(
     system: str, rootdir: str = "", print_warnings : bool =False
-) -> mda.Universe:
+) -> mda.AtomGroup:
+    """
+    For a given system, extract the flexible residues from the protein (including 
+    backbone atoms) and return the corresponding selection/
+    """
 
     if not print_warnings:
         with warnings.catch_warnings():
