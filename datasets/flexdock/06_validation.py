@@ -7,7 +7,7 @@ import os
 import re
 import warnings
 
-datasets = ["refined"]
+datasets = ["refined", "other"]
 
 pdbbindpath="../../PDBbind18"
 
@@ -170,4 +170,4 @@ with open("analysis/invalid.lst", "w") as fout:
             if ok:
                 print("ok")
             else:
-                fout.write("{dataset}/{system}\n")
+                fout.write(f"{dataset}/{system}\n")
