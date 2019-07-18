@@ -7,6 +7,7 @@ from MDAnalysis.analysis.dihedrals import Janin, Janin_ref
 
 import numpy as np
 from matplotlib import pyplot as plt
+from matplotlib import cm
 
 import argparse as ap
 import os
@@ -14,6 +15,10 @@ import re
 import warnings
 
 from typing import Optional, Dict
+
+# Colormap for different ranks
+cmap = cm.get_cmap('magma')
+colors = {i + 1 : cmap(c) for i, c in enumerate(np.linspace(0,1,20))}
 
 def parse(args: Optional[str] = None) -> ap.Namespace:
     """
@@ -36,37 +41,26 @@ def parse(args: Optional[str] = None) -> ap.Namespace:
 
     return parser.parse_args(args)
 
-def load_as_traj(system: str, rootdir: str = ""):
-    """
-    Load a single pose for flexible residues and all the poses in a single trajectory
-    for the receptor.
-
-    Args:
-        system (str): Name of the system
-        rootdir (str): Root directory for the system
-    """
+def list_poses(system: str, rootdir: str = ""):
 
     # List all protein paths
     protnames = [
         os.path.join(rootdir, prot) 
         for prot in os.listdir(os.path.join(rootdir))
-        if re.match(system + "_protein-?[0-9]{0,2}\.pdb", prot)
+        if re.match(system + "_protein-[0-9]{1,2}\.pdb", prot)
     ]
-
-    # Load all proteins in trajectory
-    prot = mda.Universe(protnames[0], protnames)
 
     # List all flexible residues paths
     flexnames = [
-        os.path.join(rootdir, flex) 
-        for flex in os.listdir(os.path.join(rootdir))
-        if re.match(system + "_flex-?[0-9]{0,2}\.pdb", flex)
+        name.replace("protein", "flex") for name in protnames
     ]
 
-    # Load a single flexible residue
-    flex = mda.Universe(flexnames[0])
+    # Extract ranks
+    names = [os.path.basename(name).replace(".pdb","") for name in flexnames]
+    ranks = [int(name.replace(f"{system}_flex-","")) for name in names]
 
-    return flex, prot
+    return zip(ranks, flexnames, protnames)
+
 
 def list_systems(syslist: str, rootdir: str = "") -> Dict[str, str]:
     """
@@ -90,6 +84,7 @@ def list_systems(syslist: str, rootdir: str = "") -> Dict[str, str]:
             systems[system] = os.path.join(rootdir, l)
 
     return systems
+
 
 def select_flexres(flex : mda.Universe, prot: mda.Universe) -> mda.AtomGroup:
     """
@@ -125,32 +120,33 @@ def select_flexres(flex : mda.Universe, prot: mda.Universe) -> mda.AtomGroup:
     # Sanitize selection and remove residues without Janin dihedrals
     # Ignoring them explicitly removes a warning
     sel=sel[:-4] + "and not (resname ALA or resname CYS or resname GLY or resname PRO or resname SER or resname THR or resname VAL)"
-    
+
     return prot.select_atoms(sel)
 
 
-def get_flexres_selection(
-    system: str, rootdir: str = "", print_warnings : bool =False
-) -> mda.AtomGroup:
-    """
-    For a given system, extract the flexible residues from the protein (including 
-    backbone atoms) and return the corresponding selection/
-    """
+def plot_reference(ax, ref=None):
+    if ref is None:
+        ref = np.load(Janin_ref)
 
-    if not print_warnings:
-        with warnings.catch_warnings():
-            warnings.simplefilter("ignore")
-            
-            flex, prot = load_as_traj(system, rootdir)
+    X, Y = np.meshgrid(np.arange(0, 360, 6), np.arange(0, 360, 6))
+    levels = [1, 6, 600]
+    colors = ['#A1D4FF', '#35A1FF']
+    ax.contourf(X, Y, ref, levels=levels, colors=colors)
 
-            flexsel = select_flexres(flex, prot)
 
-    else:
-        flex, prot = load_as_traj(system, rootdir)
+def plot(ax, systems):
 
-        flexsel = select_flexres(flex, prot)
+    for system, path in systems.items():
+        for rank, flexname, protname in list_poses(system, path):
+            print(flexname, protname)
 
-    return flexsel
+            flex = mda.Universe(flexname)
+            prot = mda.Universe(protname)
+
+            sel = select_flexres(flex, prot)
+
+            J = Janin(sel).run()
+            J.plot(ax=ax, color=colors[rank], ref=False)
 
 if __name__ == "__main__":
 
@@ -158,17 +154,12 @@ if __name__ == "__main__":
 
     systems = list_systems(args.systems, args.root)
 
-    sels = [get_flexres_selection(system, path) for system, path in systems.items()]
+    #sels = [get_flexres_selection(system, path) for system, path in systems.items()]
 
     fig, ax = plt.subplots(figsize=plt.figaspect(1))
 
-    X, Y = np.meshgrid(np.arange(0, 360, 6), np.arange(0, 360, 6))
-    levels = [1, 6, 600]
-    colors = ['#A1D4FF', '#35A1FF']
-    ax.contourf(X, Y, np.load(Janin_ref), levels=levels, colors=colors)
+    plot_reference(ax)
     
-    for sel in sels:
-        J = Janin(sel).run()
-        J.plot(ax=ax, color="k", ref=False)
+    plot(ax, systems)
     
     plt.show()
