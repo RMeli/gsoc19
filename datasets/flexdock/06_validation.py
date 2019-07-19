@@ -71,7 +71,7 @@ with open("analysis/invalid.lst", "w") as fout:
 
             recnames = [
                 rec for rec in os.listdir(os.path.join(dataset, system))
-                if re.match(system + "_protein-?[0-9]{0,2}\.pdb", rec)
+                if re.match(system + "_protein-[0-9]{0,2}\.pdb", rec)
             ]
             for recname in recnames:
                 recpath = os.path.join(dataset, system, recname)
