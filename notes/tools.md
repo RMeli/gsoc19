@@ -48,6 +48,17 @@ Print variable type:
 (gdb) ptype VARIABLE
 ```
 
+#### Debug a Segmentation Fault
+
+When a `Segmentation Fault` accurs withing GDB, the backtrace can be printed with
+```
+(gdb) backtrace
+```
+or
+```
+(gdb) where
+```
+
 ### Valgrind
 
 [Valgrind](http://valgrind.org/) is a system for debugging and profiling Linux programs which can automatically detect many memory management and threading bugs.
