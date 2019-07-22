@@ -35,7 +35,7 @@ def load(fpath: str, print_warnings=False) -> mda.Universe:
 
     return mda.Universe(fpath)
 
-with open("analysis/invalid.lst", "w") as fout:
+with open("analysis/invalid.lst", "w") as finvalid, open("analysis/valid.lst", "w") as fvalid:
 
     # Loop over datasets
     for dataset in datasets:
@@ -169,5 +169,6 @@ with open("analysis/invalid.lst", "w") as fout:
 
             if ok:
                 print("ok")
+                fvalid.write(f"{dataset}/{system}\n")
             else:
-                fout.write(f"{dataset}/{system}\n")
+                finvalid.write(f"{dataset}/{system}\n")
