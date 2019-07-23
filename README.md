@@ -10,6 +10,7 @@
 
 List of contributions to [gnina](https://github.com/gnina/gnina):
 
+* Small fixes to `gninavis` for gradients ([PR #72](https://github.com/gnina/gnina/pull/72))
 * Fixed Python3 `pickle` in clustering pipeline ([PR #26](https://github.com/gnina/scripts/pull/26)) 
 * Added insertion code support to `makeflex.py` ([PR #65](https://github.com/gnina/gnina/pull/65))
 * Improved `makeflex.py` script to deal with PDB file without atom types ([PR #64](https://github.com/gnina/gnina/pull/64))
