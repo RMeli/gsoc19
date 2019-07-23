@@ -28,7 +28,7 @@ List of contributions to [libmolgrid](https://github.com/gnina/gnina):
 
 ### SMINA
 
-List of contributions to [smina]():
+List of contributions to [smina](https://sourceforge.net/projects/smina/):
 
 * Fixed a problem with proline residues, broken by flexible docking ([MR #3](https://sourceforge.net/p/smina/code/merge-requests/3/))
 
