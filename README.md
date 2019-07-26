@@ -8,10 +8,10 @@
 
 ### GNINA
 
-List of contributions to [gnina](https://github.com/gnina/gnina):
+List of contributions to [gnina](https://github.com/gnina/gnina) and [gnina-scripts](https://github.com/gnina/scripts):
 
 * Small fixes to `gninavis` for gradients ([PR #72](https://github.com/gnina/gnina/pull/72))
-* Fixed Python3 `pickle` in clustering pipeline ([PR #26](https://github.com/gnina/scripts/pull/26)) 
+* Fixed Python3 `pickle` in clustering pipeline ([PR #26](https://github.com/gnina/scripts/pull/26))
 * Added insertion code support to `makeflex.py` ([PR #65](https://github.com/gnina/gnina/pull/65))
 * Improved `makeflex.py` script to deal with PDB file without atom types ([PR #64](https://github.com/gnina/gnina/pull/64))
 * Added test support for newer versions of Boost ([PR #62](https://github.com/gnina/gnina/pull/62))
@@ -38,7 +38,6 @@ List of contributions to [openbabel](https://github.com/openbabel/openbabel):
 
 * Fixed various problems with PDB and PDBQT insertion codes ([PR #1998](https://github.com/openbabel/openbabel/pull/1998))
 * Fixed CMake when compiling without RapidJSON ([PR #1988](https://github.com/openbabel/openbabel/pull/1988))
-
 
 ## Mentors
 

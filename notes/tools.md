@@ -12,26 +12,45 @@
 #### Run Program
 
 Hook program to GDB:
+
 ```bash
 gdb PROGRAM
 ```
 
 To run the program, use `run`:
+
 ```bash
 (gdb) run
 ```
 
 To hook a program to GDB, including its command-line arguments:
+
 ```bash
 gdb --args PROGRAM ARGS
 ```
+
 The program can be run by simply typing `run` as before.
 
 #### Set Breakpoint
 
 Set a breakpoint in `FILE` at line number `LINE`:
+
 ```bash
 (gdb) break FILE:LINE
+```
+
+#### Remove Breakpoint
+
+Information about all breakpoints can be accessed via
+
+```bash
+info break
+```
+
+Single breakpoints can be removed as follows:
+
+```bash
+del BREAKPOINT_NUMBER
 ```
 
 #### Explore Variables
