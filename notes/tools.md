@@ -67,6 +67,20 @@ Print variable type:
 (gdb) ptype VARIABLE
 ```
 
+#### Continue Execution
+
+In order to resume execution after hitting a breakpoint, use
+
+```bash
+(gdb) contine
+```
+
+Sometimes it's useful to skip loops or other constructs. In order to achieve this, the execution can be restarted until a given line
+
+```bash
+(gdb) until LINE_NUMBER
+```
+
 #### Debug a Segmentation Fault
 
 When a `Segmentation Fault` accurs withing GDB, the backtrace can be printed with
