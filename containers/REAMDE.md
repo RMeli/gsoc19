@@ -8,15 +8,15 @@ Because of the many dependencies of `libomogrid` and `gnina`, a Singularity cont
 
 ### Singularity 2.4
 
-
 ## Build a Container
 
 A Singularity container can be easily built from a single definition (`.def`) file:
-```
+
+```bash
 singularity build CONTAINER.img CONTAINER.def
 ```
 
-The build process requires `sudo` privilegies and might take a while. Once the container is built, it can be copied or moved on different platforms.
+The build process requires `sudo` privileges and might take a while. Once the container is built, it can be copied or moved on different platforms.
 
 ## Use
 
@@ -24,14 +24,16 @@ The `--nv` option to Singularity commands enables [Nvidia](https://www.nvidia.co
 
 ### Interactive Session
 
-An interactive session is useful for compilation and installation purposes and can be lunched as wollows:
-```
+An interactive session is useful for compilation and installation purposes and can be lunched as follows:
+
+```bash
 singularity shell CONTAINER
 ```
 
 ### Run Scripts
 
 Scripts can be easily run inside a Singularity container as follows:
-```
+
+```bash
 singularity exec CONTAINER ./SCRIPT
 ```

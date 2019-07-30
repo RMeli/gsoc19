@@ -1,13 +1,12 @@
 # Tools
 
-
 ## C++ Programming
 
 ### GDB
 
 [GDB](https://www.gnu.org/software/gdb/)
 
-[GDB-CUDA]()
+[GDB-CUDA](https://developer.nvidia.com/cuda-gdb)
 
 #### Run Program
 
@@ -55,7 +54,7 @@ del BREAKPOINT_NUMBER
 
 #### Explore Variables
 
-Print vairable value:
+Print variable value:
 
 ```bash
 (gdb) print VARIABLE
@@ -72,7 +71,7 @@ Print variable type:
 In order to resume execution after hitting a breakpoint, use
 
 ```bash
-(gdb) contine
+(gdb) continue
 ```
 
 Sometimes it's useful to skip loops or other constructs. In order to achieve this, the execution can be restarted until a given line
@@ -83,19 +82,21 @@ Sometimes it's useful to skip loops or other constructs. In order to achieve thi
 
 #### Debug a Segmentation Fault
 
-When a `Segmentation Fault` accurs withing GDB, the backtrace can be printed with
-```
+When a `Segmentation Fault` occurs within GDB, the backtrace can be printed with
+
+```bash
 (gdb) backtrace
 ```
+
 or
-```
+
+```bash
 (gdb) where
 ```
 
 ### Valgrind
 
 [Valgrind](http://valgrind.org/) is a system for debugging and profiling Linux programs which can automatically detect many memory management and threading bugs.
-
 
 ## Scripting
 
@@ -104,15 +105,18 @@ or
 [GNU Parallel](https://www.gnu.org/software/parallel/) is a shell tool for executing jobs in parallel. A job can be a single command or a small script that has to be run for each of the lines in the input.
 
 The following bash function
-```
+
+```bash
 BASH_FUNCTION(){
     echo $1
 }
 
 # Export function for GNU parallel
-export -f BASH_FUNCTION 
+export -f BASH_FUNCTION
 ```
+
 can be easily run in parallel on `NUM_CPUS` CPUs for a list of different `INPUTS`
-```
+
+```bash
 parallel -j NUM_CPUS BASH_FUNCTION ::: INPUTS
 ```

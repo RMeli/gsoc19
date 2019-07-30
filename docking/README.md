@@ -6,7 +6,7 @@ Flexible docking is performed using `smina` (Feb 12 2019 and Jun 12 2019) on the
 
 Flexible docking is performed using automatic flexible residue (`--flexdist_ligand`) and box size (`--autobox_ligand`) detection, with the following parameters (see `variables/docking`):
 
-| Option            | Value | 
+| Option            | Value |
 | :----------------:|:-----:|
 | `--flexdist`      | 3     |
 | `--autobox_add`   | 10    |
@@ -39,7 +39,6 @@ The script `02_docking.sub` submits multiple flexible docking jobs on an HPC clu
 
 The outputs are the ligand poses (`dock.pdb`), the flexible residues poses (`flex.pdb`) and the `smina` output (`logs/smina.log`).
 
-
 ### 03 - Analysis
 
 The script `03_analysis.py` automatize the detection of faulty or problematic systems, where flexible docking failed or required further invertigation.
@@ -47,7 +46,6 @@ The script `03_analysis.py` automatize the detection of faulty or problematic sy
 ### 04 - Cleanup
 
 The script `04_cleanup.sh` removes the systems listed in `analysis/failed.dat`.
-
 
 ## Analysis
 
@@ -58,27 +56,29 @@ The script `03_analysis.py` allows to automatically check how many systems have 
 Detected failures are of three types:
 
 * No flexible residues found (for the given `--flexdist`)
-    * Docking completes successfully
-    * Ligand binding modes in `dock.pdb`
-    * Valid `flex.pdb` with no residues
+  * Docking completes successfully
+  * Ligand binding modes in `dock.pdb`
+  * Valid `flex.pdb` with no residues
 * No conformations found within the search space
-    * `smina` terminates with a `WARNING`
-    * PDB files `dock.pdb` and `flex.pdb` are empty
+  * `smina` terminates with a `WARNING`
+  * PDB files `dock.pdb` and `flex.pdb` are empty
 * Unsupported metal atoms
-    * `smina` terminates with a `Parse error`
-    * PDB files `dock.pdb` and `flex.pdb` are not created
+  * `smina` terminates with a `Parse error`
+  * PDB files `dock.pdb` and `flex.pdb` are not created
 
 The list of systems for which no flexible residues are found is printed in `analysis/noflex.dat`, the list of systems for which no conformations are found within the search space is printed in `analysis/noconf.dat`, the list of system failing (likely because of the presence of unsupported metal atoms) is printed in `analysis/failed.dat`.
 
 #### No Flexible Residues Found
 
 For the following `refined` systems, no flexible residues are found (6 systems):
-```
+
+```text
 3nee 2z94 2g5u 4k7i 3mss 5lud
 ```
 
 For the following `other` systems, no flexible residues are found (16 systems):
-```
+
+```text
 4his 4o7e 5swg 1h9z 3grj 4wh7 5ea7 4z90 4e5i 2r1w 3tct 5vdu 4bnz 4nni 4u5t 5wbp
 3pp7 1n1g 1jdj
 ```
@@ -88,12 +88,14 @@ For the following `other` systems, no flexible residues are found (16 systems):
 Some systems contain metal atoms and therefore `smina` terminates with `ATOM syntax incorrect: "METALATOMNAME" is not a valid AutoDock type.`.
 
 The following `refined` systems contain metal atoms (6 systems):
-```
+
+```text
 2rio (Sr)   3rv4 (Cs)   4igt (Li)   4o3c (Li)   5fhm (Li)   5tcj (Cs)
 ```
 
 The following `other` systems contain metal atoms (8 systems):
-```
+
+```text
 1a52 (Au)   1ind (In)   2iw9 (Og)   2w54 (Ba)   3ump (Cs)   5ng9 (Li)
 4k1e (Li)   4q3r (Cs)   5ng9 (Li)
 ```
@@ -101,7 +103,8 @@ The following `other` systems contain metal atoms (8 systems):
 #### No Conformations Found
 
 With `smina` Feb 12 2019, the following `refined` systems terminate with `WARNING: Could not find any conformations completely within the search space`:
-```
+
+```text
 1k22 2bmk 3bpc 2zgx 3qtv 2jh6 1mu6 1mue 4o97 2zfp 1ype 2jh0 3f68 4hfp 4ax9
 3qto 3tu7 3shc 1c4u 1nt1 1g32 1mu8 4loy 3hzm 1qbv 1g30 4e7r 1d6w 2cf8 1nm6
 3si4 4isi 3qx5 2cf9 1ta6 3bv9 3hzk 3qwc 1bhx 3p17 4nj9 1zgi 4m7j 2jh5 1sl3
@@ -110,7 +113,8 @@ With `smina` Feb 12 2019, the following `refined` systems terminate with `WARNIN
 ```
 
 With `smina` Feb 12 2019, the following `other` systems terminate with `WARNING: Could not find any conformations completely within the search space`:
-```
+
+```text
 2fx8 3s7f 1qhr 1qj6 1ett 3dux 5icz 2fes 1ca8 4hs8 1wun 4zxy 1dwc 1wss 4jyu
 4rn6 5wqd 2aei 2anm 1w2k 1f3j 1nzq 2bxt 3c1k 5j6d 1klg 2zp0 3chd 1o0d 1a2c
 3dhk 1bmm 3tpu 4ufg 1ny2 2c8y 2ank 1wqv 1dwd 1qj7 1wtg 1c4y 1uvu 1w7x 2c8w
@@ -120,6 +124,7 @@ With `smina` Feb 12 2019, the following `other` systems terminate with `WARNING:
 ```
 
 An closer inspection of these systems revealed that OpenBabel and `smina` do not correctly handle insertion codes in PDB files. The following patch to OpenBabel (by David R. Koes)
+
 ```c++
 --- a/src/mol.cpp
 +++ b/src/mol.cpp
@@ -136,15 +141,16 @@ An closer inspection of these systems revealed that OpenBabel and `smina` do not
                {
                  atom = GetAtom(src_atom->GetIdx());
 ```
-and an updated version of `smina` (Jun 12 2019) solves the problem.
 
+and an updated version of `smina` (Jun 12 2019) solves the problem.
 
 ### Ring-Opening of Proline
 
 Visual inspection of multiple systems (using `scripts/pumol/loadflexdock.py`) outlined an evident problem with the proline (PRO) residue: the ring breaks as a result of flexible docking since non-backbone atoms are allowed to move.
 
 The systems where proline is a flexible residue can be listed using the following commands:
-```
+
+```bash
 grep -l PRO refined/????/flex.pdb | sed "s#/flex.pdb##g" > analysis/proline.dat
 grep -l PRO other/????/flex.pdb | sed "s#/flex.pdb##g" >> analysis/proline.dat
 ```
