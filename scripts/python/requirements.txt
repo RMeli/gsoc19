@@ -1,4 +1,5 @@
 MDAnalysis
+rdkit
 
 numpy
 pandas
