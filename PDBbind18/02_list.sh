@@ -2,7 +2,7 @@
 
 # List all paths to PDBbind18 systems
 
-lname=pdbbind18
+lname=pdbbind18-all
 
 rm -f ${lname}.list
 
@@ -12,6 +12,7 @@ do
     do
 	system=$(basename ${dir})
 
-	echo "${dataset}/${system}" >> ${lname}.list 	
+	echo "${dataset}/${system}" >> ${lname}.list
+    
     done
 done
