@@ -1,6 +1,6 @@
 #!/bin/bash
 
-rows=$(cat $1)
+rows=$(cat $1) # File with list of rows
 n_cpus=$2 # Number of CPUs for parallel calculations
 
 # Paths

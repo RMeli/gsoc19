@@ -5,22 +5,21 @@ import argparse as ap
 
 from typing import Optional
 
-def smiles(fname: str):
+def molweight(fname: str):
 
-    with open(fname, 'r') as f:
-        smiles = f.read().strip()
+    mols = Chem.SDMolSupplier(fname)
 
-    return smiles
+    mol = next(mols)
 
-def molweight(smiles: str):
-
-    mol = Chem.MolFromSmiles(smiles)
+    print(mol)
 
     return Descriptors.ExactMolWt(mol)
 
-def hvymolweight(smiles: str):
+def hvymolweight(fname: str):
 
-    mol = Chem.MolFromSmiles(smiles)
+    mol = Chem.MolFromSDFFile(fname)
+
+    print(mol)
 
     return Descriptors.HeavyAtomMolWt(mol)
 
@@ -38,13 +37,10 @@ if __name__ == "__main__":
 
     args = parse()
 
-    # Get SMILES from file
-    smi = smiles(args.input)
-
     # Get molecular weight from SMILES
-    mw = molweight(smi)
+    mw = molweight(args.input)
 
-    hamw = hvymolweight(smi)
+    hamw = hvymolweight(args.input)
 
     # Print molecular weight
     print(f"{mw:.5f} {hamw:.5f}")
