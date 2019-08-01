@@ -8,11 +8,13 @@ listall=pdbbind18-all # Complete list
 list=pdbbind18 # Filtered list
 PDBFILES=pdbfiles # PDBFILES list
 
+max_mass=1000 # Max allowed ligand mass
+
 rm -f ${listall}.lst
 rm -f ${list}.lst
 rm -f ${PDBFILES}.lst
 
-for dataset in "refined" "other"
+for dataset in "refined"
 do
     for dir in $(ls -d ${dataset}/????) 
     do
@@ -29,7 +31,7 @@ do
     sminame=${path}/${dir}/${system}_ligand.smi
 
     # PDBFILES 
-    echo ${system} ${recname} ${sminame} >> ${PDBFILES}
+    echo ${system} ${recname} ${sminame} >> ${PDBFILES}.lst
 
     # Heavy atoms molecular weight
     hamw=$(python ../scripts/python/molweight.py ${sminame} | awk '{print $2}')
