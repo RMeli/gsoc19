@@ -14,7 +14,7 @@ rm -f ${listall}.lst
 rm -f ${list}.lst
 rm -f ${PDBFILES}.lst
 
-for dataset in "refined"
+for dataset in "refined" "other"
 do
     for dir in $(ls -d ${dataset}/????) 
     do
