@@ -11,6 +11,8 @@ import warnings
 
 from typing import Optional, Tuple
 
+import sys
+
 
 def parse(args: Optional[str] = None) -> ap.Namespace:
     """
@@ -61,20 +63,42 @@ def load_systems(
 
 def rmsd(flex: mda.Universe, protein: mda.Universe, crystal: mda.Universe) -> float:
 
+    def sel(resnum, resname, segid, icode) -> str:
+        s = f"(resid {resnum}{icode} and resname {resname} and segid {segid})"
+
+        return s
+
     flexres = flex.select_atoms("protein").residues
 
+    max_rmsd = -1
+
     residues = []
+    selection = ""
     for res in flexres:
-        residues.append((res.resid, res.resname, res.segid, res.icode))
+        ressel = sel(res.resnum, res.resname, res.segid, res.icode) + " and not (type H or name H*)"
+
+        # Select single residue
+        p_res = protein.select_atoms(ressel)
+        c_res = crystal.select_atoms(ressel)
+
+        # Compute minimised RMSD for single residue
+        res_rmsd = RMS.rmsd(p_res.positions, c_res.positions, superposition=True)
+            
+        # Store the maximum RMSD for a single residue
+        if res_rmsd > max_rmsd:
+            max_rmsd = res_rmsd
+
+        residues.append((res.resnum, res.resname, res.segid, res.icode))
 
     # Check that all flexible residues are listed
     assert len(residues) == len(flexres)
 
+    # TODO: Can be improved by using ressel
     selection = "".join(
         [ 
-            f"(resid {id} and resname {name} and segid {chain}) or "
-            if icode == "" else f"(resid {id} and resname {name} and segid {chain} and icode {icode}) or "
-            for id, name, chain, icode in residues]
+            sel(id, name, chain, icode) + " or "
+            for id, name, chain, icode in residues
+        ]
     )
     selection = selection[:-4]  # Remove final " or "
 
@@ -88,8 +112,7 @@ def rmsd(flex: mda.Universe, protein: mda.Universe, crystal: mda.Universe) -> fl
     # Check that the number of atoms in the two selections is equal
     assert len(p_atoms) == len(c_atoms)
 
-    return RMS.rmsd(p_atoms.positions, c_atoms.positions)
-
+    return RMS.rmsd(p_atoms.positions, c_atoms.positions), max_rmsd
 
 if __name__ == "__main__":
 
@@ -97,6 +120,6 @@ if __name__ == "__main__":
 
     flex, protein, crystal = load_systems(args.flex, args.protein, args.crystal)
 
-    r = rmsd(flex, protein, crystal)
+    r, maxr = rmsd(flex, protein, crystal)
 
-    print(f"{r:.5f}")
+    print(f"{r:.5f} {maxr:.5}")
