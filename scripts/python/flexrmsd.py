@@ -65,13 +65,16 @@ def rmsd(flex: mda.Universe, protein: mda.Universe, crystal: mda.Universe) -> fl
 
     residues = []
     for res in flexres:
-        residues.append((res.resid, res.resname, res.segid))
+        residues.append((res.resid, res.resname, res.segid, res.icode))
 
     # Check that all flexible residues are listed
     assert len(residues) == len(flexres)
 
     selection = "".join(
-        [f"(resid {id} and resname {name} and segid {chain}) or " for id, name, chain in residues]
+        [ 
+            f"(resid {id} and resname {name} and segid {chain}) or "
+            if icode == "" else f"(resid {id} and resname {name} and segid {chain} and icode {icode}) or "
+            for id, name, chain, icode in residues]
     )
     selection = selection[:-4]  # Remove final " or "
 
@@ -81,13 +84,6 @@ def rmsd(flex: mda.Universe, protein: mda.Universe, crystal: mda.Universe) -> fl
 
     p_atoms = protein.select_atoms(selection)
     c_atoms = crystal.select_atoms(selection)
-
-    # for p_atom, c_atom in zip(p_atoms, c_atoms):
-    #    assert p_atom.type == c_atom.type
-    #    assert p_atom.name == c_atom.name
-    #    assert p_atom.resid == c_atom.resid
-    #    assert p_atom.resname == c_atom.resname
-    #    assert p_atom.segid == c_atom.segid
 
     # Check that the number of atoms in the two selections is equal
     assert len(p_atoms) == len(c_atoms)
