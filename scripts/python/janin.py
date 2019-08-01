@@ -103,18 +103,12 @@ def select_flexres(flex : mda.Universe, prot: mda.Universe) -> mda.AtomGroup:
 
     fres = []
     for res in flex.residues:
-        fres.append((res.resid, res.icode, res.segid))
+        fres.append((res.resnum, res.resname, res.icode, res.segid))
 
     sel = "".join(
         [
-            f"(resnum {id} and segid {chain}) or " 
-            for id, icode, chain in fres
-            if icode == ""
-        ]
-    ) + "".join([
-            f"(resnum {id} and icode {icode} and segid {chain}) or " 
-            for id, icode, chain in fres
-            if icode != ""
+            f"(resid {num}{icode} and resname {name} and segid {chain}) or " 
+            for num, name, icode, chain in fres
         ]
     )
 
