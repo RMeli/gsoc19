@@ -1,27 +1,35 @@
 #!/bin/bash
 
-# List all paths to PDBbind18 systems
+# List all PDBbind18 systems
+# List all PDBbind18 systems with valid SMILES and molecular weight lower than 1000
+# Create PDBFILES file used by gnina clustering.py script (for cross-validation)
 
-lname=pdbbind18-test # Complete list
-list=pdbbind18-t # Filtered list
+listall=pdbbind18-all # Complete list
+list=pdbbind18 # Filtered list
+PDBFILES=pdbfiles # PDBFILES list
 
-rm -f ${lname}.lst
+rm -f ${listall}.lst
 rm -f ${list}.lst
+rm -f ${PDBFILES}.lst
 
-for dataset in "test"
+for dataset in "refined" "other"
 do
     for dir in $(ls -d ${dataset}/????) 
     do
 	system=$(basename ${dir})
 
     # Append to complete list
-	echo "${dataset}/${system}" >> ${lname}.lst
+	echo "${dataset}/${system}" >> ${listall}.lst
 
     # Absolute path
     path=$PWD
 
     # Input
+    recname=${path}/${dir}/${system}_protein.pdb
     sminame=${path}/${dir}/${system}_ligand.smi
+
+    # PDBFILES 
+    echo ${system} ${recname} ${sminame} >> ${PDBFILES}
 
     # Heavy atoms molecular weight
     hamw=$(python ../scripts/python/molweight.py ${sminame} | awk '{print $2}')
