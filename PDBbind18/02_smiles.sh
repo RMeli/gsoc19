@@ -2,7 +2,7 @@
 
 # Compute SMILES strings for all the ligands
 
-for dataset in "other"
+for dataset in "test"
 do
     for dir in $(ls -d ${dataset}/????) 
     do
