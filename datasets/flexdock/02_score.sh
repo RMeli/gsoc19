@@ -4,10 +4,10 @@ n_cpus=12
 
 source variables/paths
 
-datasets="other"
+datasets="test"
 
 # CSV Header
-csv_header="system,rank,rmsd_lig,rmsd_flex,rmsd_tot,score"
+csv_header="system,rank,rmsd_lig,rmsd_flex,rmsd_fmax,rmsd_tot,score"
 
 # Export variables for GNU parallel
 export csv_header=${csv_header}
@@ -47,7 +47,9 @@ score(){
         # Flexible residues RMSD (with MDAnalysis)
         flex=${dir}/${system}_flex-${rank}.pdb
         protein=${dir}/${system}_protein-${rank}.pdb
-        rmsd_flex=$(python3.6 ${pscripts}/flexrmsd.py ${flex} ${protein} ${protein_crystal})
+        rmsd=$(python3.6 ${pscripts}/flexrmsd.py ${flex} ${protein} ${protein_crystal})
+        rmsd_flex=$(echo $rmsd | awk '{print $1}')
+        rmsd_fmax=$(echo $rmsd | awk '{print $2}')
 
         # Combined RMSD
         rmsd_tot=$(echo ${rmsd_lig} + ${rmsd_flex} | bc)
@@ -55,7 +57,7 @@ score(){
         # Score (from ligand file)
         score=$(grep "minimizedAffinity" ${ligand} | awk '{print $3}')
 
-        info="${system},${rank},${rmsd_lig},${rmsd_flex},${rmsd_tot},${score}"
+        info="${system},${rank},${rmsd_lig},${rmsd_flex},${rmsd_fmax},${rmsd_tot},${score}"
         echo ${info} >> ${csvfile}
        
     done
