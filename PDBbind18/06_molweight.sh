@@ -25,6 +25,8 @@ do
         if (( $(echo "${hamw} < ${max_mass}" | bc -l) )) 
         then
             echo ${dataset}/${system} >> ${list}
+        else
+            echo "Discarding ${dataset}/${system} (mw = ${hamw})..."
         fi
     done
 done
