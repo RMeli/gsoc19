@@ -10,6 +10,7 @@
 
 List of contributions to [gnina](https://github.com/gnina/gnina) and [gnina-scripts](https://github.com/gnina/scripts):
 
+* Considerably reduced memory usage of `combine_rows.py` ([PR #30](https://github.com/gnina/scripts/pull/30))
 * Small fixes to `gninavis` for gradients ([PR #72](https://github.com/gnina/gnina/pull/72))
 * Fixed Python3 `pickle` in clustering pipeline ([PR #26](https://github.com/gnina/scripts/pull/26))
 * Added insertion code support to `makeflex.py` ([PR #65](https://github.com/gnina/gnina/pull/65))
