@@ -94,10 +94,10 @@ if __name__ == "__main__":
     ax2.axvline(x=1, color='k', linestyle="--", label="1 Å")
     ax2.legend()
 
-    plot(df, "rmsd_tot", args.maxrank, args.bins, ax3)
+    plot(df, "rmsd_fmax", args.maxrank, args.bins, ax3)
     ax3.set_xlabel("RMSD (Å)")
     ax3.set_xlim([0, None])
-    ax3.title.set_text("Ligand + Flexible Residues")
+    ax3.title.set_text("MAX Flexible Residue")
     ax3.axvline(x=2, color='k', linestyle="--", label="2 Å")
     ax3.legend()
 
