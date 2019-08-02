@@ -1,7 +1,5 @@
 #!/bin/bash
 
-n_cpus=12
-
 datasets="refined other"
 
 allscores="analysis/allscores.csv"
