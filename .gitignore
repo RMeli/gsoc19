@@ -2,6 +2,7 @@
 PDBbind18/*.tar.gz
 *.tar.gz
 *.zip
+*.pickle
 
 # logs
 logs/
