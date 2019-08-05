@@ -25,7 +25,7 @@ do
     receptor=${dir}/${system}_protein.pdb
 
     # Docking parameters
-    source variables/docking
+    source variables/opt
 
     # Run docking
     echo "--receptor ${receptor}" | tee ${ddir}/logs/smina.log

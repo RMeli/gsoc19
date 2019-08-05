@@ -2,4 +2,4 @@
 flexdist=3          # Distance from ligand of flexible residue
 autobox_add=10      # Padding for autobox
 
-cpu=6              # Number of CPU cores
+cpu=6               # Number of CPU cores
