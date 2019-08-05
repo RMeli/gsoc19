@@ -31,6 +31,9 @@ mltraining/clustering/rows
 *prototxt
 training
 
+# python
+__pycache__
+
 # untraked
 untracked
 
