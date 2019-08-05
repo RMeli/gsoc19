@@ -7,7 +7,7 @@ import os
 import re
 import warnings
 
-datasets = ["test"]
+datasets = ["refined", "other"]
 
 pdbbindpath="../../PDBbind18"
 
