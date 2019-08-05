@@ -52,7 +52,7 @@ with open("analysis/invalid.lst", "w") as finvalid, open("analysis/valid.lst", "
             ok : bool = True
             print(f"Validating {dataset}/{system}...", end="")
 
-            crecpath = os.path.join(pdbbindpath, dataset, system, f"{system}_protein.pdb")
+            crecpath = os.path.join(pdbbindpath, dataset, system, f"{system}_protein-wat.pdb")
             cligpath = os.path.join(pdbbindpath, dataset, system, f"{system}_ligand.mol2")
 
             crec = load(crecpath)  
