@@ -7,7 +7,7 @@ import os
 import re
 import warnings
 
-datasets = ["refined", "other"]
+datasets = ["test"]
 
 pdbbindpath="../../PDBbind18"
 
@@ -83,24 +83,25 @@ with open("analysis/invalid.lst", "w") as finvalid, open("analysis/valid.lst", "
                     raise e
 
                 try:
-                    assert len(rec.residues) == n_residues
+                    sel = rec.select_atoms(residue_selection)
+                    assert len(sel) == n_hvy_atoms_rec
+
 
                     try:
-                        sel = rec.select_atoms(residue_selection)
-                        assert len(sel) == n_hvy_atoms_rec
+                        assert len(rec.residues) == n_residues
                     except AssertionError:
-                        print(f"{newline(ok)}    Wrong number of receptor heavy atoms!")
+                        print(f"{newline(ok)}    Wrong number of residues ({len(rec.residues)} vs {n_residues})!")
                         ok = False
 
                 except AssertionError:
-                    print(f"{newline(ok)}    Wrong number of residues!")
+                    print(f"{newline(ok)}    Wrong number of receptor heavy atoms ({len(sel)} vs {n_hvy_atoms_rec})!")
                     ok = False
 
                 try:
                     water = rec.select_atoms(water_selection)
                     assert len(water) == n_water
                 except AssertionError:
-                    print(f"{newline(ok)}    Wrong number of water molecules!")
+                    print(f"{newline(ok)}    Wrong number of water molecules ({len(water)} vs {n_water})!")
                     ok = False
 
                 
@@ -120,7 +121,7 @@ with open("analysis/invalid.lst", "w") as finvalid, open("analysis/valid.lst", "
                     sel = lig.select_atoms(ligand_selection)
                     assert len(sel) == n_hvy_atoms_lig
                 except:
-                    print(f"{newline(ok)}    Wrong number of ligand heavy atoms!")
+                    print(f"{newline(ok)}    Wrong number of ligand heavy atoms ({len(sel)} vs {n_hvy_atoms_lig})!")
                     ok = False
                 
                 if not ok:
@@ -154,7 +155,7 @@ with open("analysis/invalid.lst", "w") as finvalid, open("analysis/valid.lst", "
                 ranks = df_score["rank"].max()
                 assert ranks == len(lignames)
             except AssertionError:
-                print(f"{newline(ok)}    Number of scores mismatches number of poses!")
+                print(f"{newline(ok)}    Number of scores mismatches number of poses ({ranks} vs {len(lignames)}!")
                 ok = False
                 
             rmsd = ["rmsd_lig", "rmsd_flex", "rmsd_tot"]
