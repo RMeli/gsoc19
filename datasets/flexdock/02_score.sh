@@ -4,7 +4,7 @@ n_cpus=12
 
 source variables/paths
 
-datasets="test"
+datasets="refined other"
 
 # CSV Header
 csv_header="system,rank,rmsd_lig,rmsd_flex,rmsd_fmax,rmsd_tot,score"

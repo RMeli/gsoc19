@@ -7,7 +7,7 @@ python ${pscripts}/distrmsd.py \
     -mr 5 -b 100 \
     -opath analysis/plots
 
-python ${pscripts}/rmsdthreshold.py \
-    analysis/allscores.csv \
-    -mr 5 -b 100 \
-    -opath analysis/plots
+#python ${pscripts}/rmsdthreshold.py \
+#    analysis/allscores-other.csv \
+#    -mr 5 -b 100 \
+#    -opath analysis/plots

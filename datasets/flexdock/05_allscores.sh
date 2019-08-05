@@ -5,7 +5,7 @@ datasets="refined other"
 allscores="analysis/allscores.csv"
 
 # CSV Header
-csv_header="system,rank,rmsd_lig,rmsd_flex,rmsd_tot,score"
+csv_header="system,rank,rmsd_lig,rmsd_flex,rmsd_fmax,rmsd_tot,score"
 
 # Create a file containing all the scores
 rm -f ${allscores}
