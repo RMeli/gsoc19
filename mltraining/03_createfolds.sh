@@ -6,4 +6,5 @@ source variables/paths
 python ${gscripts}/clustering.py \
     --cpickle ${clusterdir}/matrix.pickle \
     --input ${typedir}/all.types \
+    -s2 0.40 \
     --output ${typedir}/all
