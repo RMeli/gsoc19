@@ -1,13 +1,23 @@
 #!/bin/bash
 
+n_cpus=8
+
 source variables/paths
 
-list=${database}/lists/test.lst
+list=${database}/analysis/valid.lst
 
 mkdir -p ${typedir}
 
-for sys in $(cat ${list})
-do
+# Export variables for GNU parallel
+export typedir=${typedir}
+export database=${database}
+export pdbbind=${pdbbind}
+export gtyper=${gtyper}
+
+type(){
+    # Get system name from argument
+    sys=$1
+
     systempath=${database}/${sys}
 
     system=$(basename ${systempath})
@@ -30,4 +40,13 @@ do
 
         ${gtyper} ${rec} ${wdir}/${recname}.gninatypes
     done 
-done
+}
+
+# Export makeflex for GNU parallel
+export -f type
+
+# List all directories
+sys=$(cat ${list})
+
+# Reconstruct the dataset
+parallel -j ${n_cpus} type ::: ${sys}
