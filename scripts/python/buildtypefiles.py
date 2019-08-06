@@ -3,8 +3,6 @@ Build GNINA .types file (containing annotations and receptor/ligand paths) from
 .gninatypes files for the different systems.
 """
 
-from sklearn.model_selection import KFold
-
 import argparse as ap
 import os
 import pandas as pd
@@ -12,8 +10,7 @@ import re
 
 from typing import Optional
 
-datasets = ["test"]
-# datasets = ["refined", "other"]
+datasets = ["refined", "other"]
 
 def parse(args: Optional[str] = None) -> ap.Namespace:
 
@@ -29,12 +26,12 @@ def parse(args: Optional[str] = None) -> ap.Namespace:
     return args
 
 
-def write_record(df_score: pd.DataFrame, min: float, max: float, outfile):
+def write_record(system: str, df_score: pd.DataFrame, min: float, max: float, outfile):
 
     # Iterate over different docking poses for a given system
     for _, row in df_score.iterrows():
 
-        ligname = f"{row['system']}_ligand-{row['rank']}"
+        ligname = f"{system}_ligand-{row['rank']}"
         recname = ligname.replace("ligand", "protein")
 
         ligpath = f"{system}/{ligname}.gninatypes"
@@ -85,4 +82,4 @@ if __name__ == "__main__":
             # Get system scores
             df_score = pd.read_csv(scorepath)
 
-            write_record(df_score, args.min, args.max, out) # Write record
+            write_record(system, df_score, args.min, args.max, out) # Write record

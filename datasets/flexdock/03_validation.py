@@ -149,7 +149,11 @@ with open("analysis/invalid.lst", "w") as finvalid, open("analysis/valid.lst", "
 
             # Load score
             scorepath = os.path.join(dataset, system, f"{system}_score.csv")
-            df_score = pd.read_csv(scorepath)
+            try:
+                df_score = pd.read_csv(scorepath)
+            except:
+                print(f"{newline(ok)}    Scores file not found ({scorepath})!")
+                ok = False
         
             try:
                 ranks = df_score["rank"].max()
