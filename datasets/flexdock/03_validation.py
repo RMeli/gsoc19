@@ -1,4 +1,4 @@
-import MDAnalysis as mda # Needs dev version of MDAnalysis
+import MDAnalysis as mda  # Needs dev version of MDAnalysis
 
 import numpy as np
 import pandas as pd
@@ -9,14 +9,14 @@ import warnings
 
 datasets = ["refined", "other"]
 
-pdbbindpath="../../PDBbind18"
+pdbbindpath = "../../PDBbind18"
 
 residue_selection = "protein and not (type H or name H*)"
 ligand_selection = "not type H and not (type H or name H*)"
 water_selection = "not protein and (resname WAT or resname HOH)"
 
 
-def newline(yes : bool) -> str:
+def newline(yes: bool) -> str:
     return "\n" if yes else ""
 
 
@@ -30,12 +30,15 @@ def load(fpath: str, print_warnings=False) -> mda.Universe:
     if not print_warnings:
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
-            
+
             return mda.Universe(fpath)
 
     return mda.Universe(fpath)
 
-with open("analysis/invalid.lst", "w", buffering=1) as finvalid, open("analysis/valid.lst", "w", buffering=1) as fvalid:
+
+with open("analysis/invalid.lst", "w", buffering=1) as finvalid, open(
+    "analysis/valid.lst", "w", buffering=1
+) as fvalid:
 
     # Loop over datasets
     for dataset in datasets:
@@ -49,11 +52,15 @@ with open("analysis/invalid.lst", "w", buffering=1) as finvalid, open("analysis/
 
         # Loop over systems
         for system in systems:
-            ok : bool = True
+            ok: bool = True
             print(f"Validating {dataset}/{system}...", end="")
 
-            crecpath = os.path.join(pdbbindpath, dataset, system, f"{system}_protein.pdb")
-            cligpath = os.path.join(pdbbindpath, dataset, system, f"{system}_ligand.mol2")
+            crecpath = os.path.join(
+                pdbbindpath, dataset, system, f"{system}_protein.pdb"
+            )
+            cligpath = os.path.join(
+                pdbbindpath, dataset, system, f"{system}_ligand.mol2"
+            )
 
             crec = load(crecpath)
             clig = load(cligpath)
@@ -63,14 +70,15 @@ with open("analysis/invalid.lst", "w", buffering=1) as finvalid, open("analysis/
 
             n_hvy_atoms_rec = len(crec.select_atoms(residue_selection))
             assert n_hvy_atoms_rec != 0
-            
+
             n_hvy_atoms_lig = len(clig.select_atoms(ligand_selection))
             assert n_hvy_atoms_lig != 0
-            
+
             n_water = len(crec.select_atoms(water_selection))
 
             recnames = [
-                rec for rec in os.listdir(os.path.join(dataset, system))
+                rec
+                for rec in os.listdir(os.path.join(dataset, system))
                 if re.match(system + "_protein-[0-9]{0,2}\.pdb", rec)
             ]
             for recname in recnames:
@@ -87,30 +95,35 @@ with open("analysis/invalid.lst", "w", buffering=1) as finvalid, open("analysis/
                     sel = rec.select_atoms(residue_selection)
                     assert len(sel) == n_hvy_atoms_rec
 
-
                     try:
                         assert len(rec.residues) == n_residues
                     except AssertionError:
-                        print(f"{newline(ok)}    Wrong number of residues ({len(rec.residues)} vs {n_residues})!")
+                        print(
+                            f"{newline(ok)}    Wrong number of residues ({len(rec.residues)} vs {n_residues})!"
+                        )
                         ok = False
 
                 except AssertionError:
-                    print(f"{newline(ok)}    Wrong number of receptor heavy atoms ({len(sel)} vs {n_hvy_atoms_rec})!")
+                    print(
+                        f"{newline(ok)}    Wrong number of receptor heavy atoms ({len(sel)} vs {n_hvy_atoms_rec})!"
+                    )
                     ok = False
 
                 try:
                     water = rec.select_atoms(water_selection)
                     assert len(water) == n_water
                 except AssertionError:
-                    print(f"{newline(ok)}    Wrong number of water molecules ({len(water)} vs {n_water})!")
+                    print(
+                        f"{newline(ok)}    Wrong number of water molecules ({len(water)} vs {n_water})!"
+                    )
                     ok = False
 
-                
                 if not ok:
                     break
 
             lignames = [
-                lig for lig in os.listdir(os.path.join(dataset, system))
+                lig
+                for lig in os.listdir(os.path.join(dataset, system))
                 if re.match(system + "_ligand-[0-9]{1,2}\.pdb", lig)
             ]
             for ligname in lignames:
@@ -127,14 +140,17 @@ with open("analysis/invalid.lst", "w", buffering=1) as finvalid, open("analysis/
                     sel = lig.select_atoms(ligand_selection)
                     assert len(sel) == n_hvy_atoms_lig
                 except:
-                    print(f"{newline(ok)}    Wrong number of ligand heavy atoms ({len(sel)} vs {n_hvy_atoms_lig})!")
+                    print(
+                        f"{newline(ok)}    Wrong number of ligand heavy atoms ({len(sel)} vs {n_hvy_atoms_lig})!"
+                    )
                     ok = False
-                
+
                 if not ok:
                     break
 
             flexnames = [
-                flex for flex in os.listdir(os.path.join(dataset, system))
+                flex
+                for flex in os.listdir(os.path.join(dataset, system))
                 if re.match(system + "_flex-[0-9]{1,2}\.pdb", flex)
             ]
             for flexname in flexnames:
@@ -149,7 +165,7 @@ with open("analysis/invalid.lst", "w", buffering=1) as finvalid, open("analysis/
                 except AssertionError:
                     print(f"{newline(ok)}    Flexible PRO residues!")
                     ok = False
-                
+
                 if not ok:
                     break
 
@@ -160,14 +176,16 @@ with open("analysis/invalid.lst", "w", buffering=1) as finvalid, open("analysis/
             except:
                 print(f"{newline(ok)}    Scores file not found ({scorepath})!")
                 ok = False
-        
+
             try:
                 ranks = df_score["rank"].max()
                 assert ranks == len(lignames)
             except AssertionError:
-                print(f"{newline(ok)}    Number of scores mismatches number of poses ({ranks} vs {len(lignames)}!")
+                print(
+                    f"{newline(ok)}    Number of scores mismatches number of poses ({ranks} vs {len(lignames)}!"
+                )
                 ok = False
-                
+
             rmsd = ["rmsd_lig", "rmsd_flex", "rmsd_tot"]
             for r in rmsd:
                 if np.isnan(df_score[r].to_numpy()).any():
