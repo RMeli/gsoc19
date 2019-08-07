@@ -55,7 +55,7 @@ with open("analysis/invalid.lst", "w") as finvalid, open("analysis/valid.lst", "
             crecpath = os.path.join(pdbbindpath, dataset, system, f"{system}_protein.pdb")
             cligpath = os.path.join(pdbbindpath, dataset, system, f"{system}_ligand.mol2")
 
-            crec = load(crecpath)  
+            crec = load(crecpath)
             clig = load(cligpath)
 
             n_residues = len(crec.residues)
@@ -78,9 +78,10 @@ with open("analysis/invalid.lst", "w") as finvalid, open("analysis/valid.lst", "
 
                 try:
                     rec = load(recpath)
-                except Exception as e:
+                except Exception:
                     print(f"{newline(ok)}    Failed loading {recpath}")
-                    raise e
+                    ok = False
+                    continue
 
                 try:
                     sel = rec.select_atoms(residue_selection)
@@ -115,7 +116,12 @@ with open("analysis/invalid.lst", "w") as finvalid, open("analysis/valid.lst", "
             for ligname in lignames:
                 ligpath = os.path.join(dataset, system, ligname)
 
-                lig = load(ligpath)
+                try:
+                    lig = load(ligpath)
+                except Exception:
+                    print(f"{newline(ok)}    Failed loading {recpath}")
+                    ok = False
+                    continue
 
                 try:
                     sel = lig.select_atoms(ligand_selection)
