@@ -41,6 +41,12 @@ List of contributions to [openbabel](https://github.com/openbabel/openbabel):
 * Fixed various problems with PDB and PDBQT insertion codes ([PR #1998](https://github.com/openbabel/openbabel/pull/1998))
 * Fixed CMake when compiling without RapidJSON ([PR #1988](https://github.com/openbabel/openbabel/pull/1988))
 
+### MDAnalysis
+
+List of contributions to [MDAnalysis](https://github.com/MDAnalysis/mdanalysis):
+
+* Allowed MOL2 parser to ignore status bit strings ([PR #2319](https://github.com/MDAnalysis/mdanalysis/pull/2319))
+
 ## Mentors
 
 * [**Dr. David Ryan Koes**](http://bits.csb.pitt.edu/), Assistant Professor, Department of Computational and Systems Biology, University of Pittsburgh
