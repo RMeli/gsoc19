@@ -24,21 +24,25 @@ A small `test` dataset (only 6 structures) is extracted from the `refined` set. 
 
 The script `01_get.sh` downloads the two parts (`refined` and `other`) of the PDBbind 2018 database for ligand-protein complexes under `PDBbind18/refined` and `PDBbind18/other`, respectively.
 
-### 02 - List
+### 02 - SMILES
 
-The script `02_list.sh` list all the names of the PDB files in the PDBbind18 dataset, prepended by the part they belong to (`refined` or `other`).
+The script `02_smiles.sh` compute SMILES strings for all the ligands in the PDBbind18 dataset. This script uses [OpenBabel](http://openbabel.org/wiki/Main_Page) to perform the conversion from `.mol2` files to SMILES strings (saved on `.smi` files).
 
-This list is useful to create splits for docking multiple systems in parallel on HPC clusters.
+### 03 - List
 
-### 03 - SMILES
+The script `02_slist.sh` produces three lists:
 
-The script `03_smiles.sh` compute SMILES strings for all the ligands in the PDBbind18 dataset. This script uses [OpenBabel](http://openbabel.org/wiki/Main_Page) to perform the conversion from `.mol2` files to SMILES strings (saved on `.smi` files).
+* A list with all the PDB codes in the PDBbind18 dataset, prepended by the part dataset belong to (`refined` or `other`)
+* A list where ligands with heavy-atoms molecular weight higher than 1000 are filtered out (using the `molweight.py` script)
+* A list pof PDB codes, paths to the receptor PDB file and paths to the ligand SMILES file (separated by one space)
 
-### 04 - PDB Files
+The first two lists are useful to create splits for docking multiple systems in parallel on HPC clusters.
 
-The script `03_pdbfiles.sh` creates a list of PDB codes, paths to the receptor PDB file and paths to the ligand SMILES file (separated by one space).
+The last list is used to generate cross-validation folds using `gnina`'s `clustering.py` script (or pipeline).
 
-The output of this script is used to generate cross-validation folds using `gnina`'s `clustering.py` script (or pipeline).
+### 04 - NoWat
+
+The script `04_nowat.sh` renames the original protein PDB files (as `SYSTEM_protein-wat.pdb`) and creates a PDB file with the original names where water molecules are stripped out.
 
 ## References
 
