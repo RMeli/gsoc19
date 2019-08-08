@@ -61,7 +61,7 @@ def load_systems(
     return flex, protein, crystal
 
 
-def rmsd(flex: mda.Universe, protein: mda.Universe, crystal: mda.Universe) -> float:
+def rmsd(flex: mda.Universe, protein: mda.Universe, crystal: mda.Universe, verbose=False) -> float:
 
     def sel(resnum, resname, segid, icode) -> str:
         s = f"(resid {resnum}{icode} and resname {resname} and segid {segid})"
@@ -81,8 +81,11 @@ def rmsd(flex: mda.Universe, protein: mda.Universe, crystal: mda.Universe) -> fl
         p_res = protein.select_atoms(ressel)
         c_res = crystal.select_atoms(ressel)
 
-        # Compute minimised RMSD for single residue
-        res_rmsd = RMS.rmsd(p_res.positions, c_res.positions, superposition=True)
+        # Compute RMSD for single residue
+        res_rmsd = RMS.rmsd(p_res.positions, c_res.positions, superposition=False)
+
+        if(verbose):
+            print(f"{res.resname} {res.resnum}{res.icode}: {res_rmsd:.4f} A")
             
         # Store the maximum RMSD for a single residue
         if res_rmsd > max_rmsd:
