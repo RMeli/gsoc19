@@ -40,10 +40,10 @@ def flexrmsd(
 
     # Compute flexible residues RMSD
     flex, receptor, crystal = frmsd.load_systems(flexpath, receptorpath, crystalpath)
-    r, maxr = frmsd.rmsd(flex, receptor, crystal)
+    r, maxr = frmsd.rmsd(flex, receptor, crystal, verbose=True)
 
     print(f"RMSD = {r:.5f}")
-    print(f"MAX min(RMSD) = {maxr:.5f}")
+    print(f"max res RMSD = {maxr:.5f}")
 
     # Load ligand and receptor
     cmd.load(ligandpath, "ligand")  # Selection name: ligand
