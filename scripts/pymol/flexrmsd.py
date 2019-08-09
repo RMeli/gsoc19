@@ -8,9 +8,11 @@ import re
 # Show interpreter
 # print(sys.executable)
 
-def print_resrmsd(df):
+def print_resrmsd(df, rank):
 
-    for _, row in df.iterrows():
+    df_rank = df[df["rank"] == rank]
+
+    for _, row in df_rank.iterrows():
         res = row["res"]
         rmsd = row["rmsd"]
 
@@ -58,7 +60,7 @@ def flexrmsd(
     df_rmsd = pd.read_csv(os.path.join(dataset, system, f"{system}_score.csv"))
     df_recrmsd = pd.read_csv(os.path.join(dataset, system, "resrmsd.csv"))
 
-    print_resrmsd(df_recrmsd)
+    print_resrmsd(df_recrmsd, idx)
 
     # Load ligand and receptor
     cmd.load(ligandpath, "ligand")  # Selection name: ligand
