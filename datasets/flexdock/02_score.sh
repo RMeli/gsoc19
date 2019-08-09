@@ -6,6 +6,8 @@ source variables/paths
 
 datasets="test"
 
+
+
 # CSV Header
 csv_header="system,rank,rmsd_lig,rmsd_flex,rmsd_fmax,rmsd_tot,score"
 
@@ -35,6 +37,10 @@ score(){
     ligand_crystal=${pdbbind}/${dataset}/${system}/${system}_ligand.mol2
     protein_crystal=${pdbbind}/${dataset}/${system}/${system}_protein.pdb
 
+    # File to store residues RMSD
+    rrfname=${dir}"/resrmsd.csv"
+    echo "rank,res,rmsd" > ${rrfname}
+    
     for ligand in $(ls ${dir}/${system}_ligand-*.pdb)
     do
         # Ligand name and rank
@@ -42,7 +48,7 @@ score(){
         rank=$( echo $name | sed "s#${system}_ligand-##g" )
 
         # Ligand RMSD (with OpenBabel)
-        rmsd_lig=$(${obrms} ${ligand_crystal} ${ligand} | awk  '{print $2}')
+        rmsd_lig=$(${obrms} ${ligand_crystal} ${ligand} | awk  '{print $3}')
 
         # Flexible residues RMSD (with MDAnalysis)
         flex=${dir}/${system}_flex-${rank}.pdb
@@ -52,11 +58,7 @@ score(){
         python3.6 ${pscripts}/getflex.py ${flex} ${protein} ${protein_crystal} --dir ${dir}
         
         # Compute RMSD for flexible residues
-        rmsd_flex=$(${obrms} ${dir}/pflex.pdb ${dir}/cflex.pdb | awk  '{print $2}')
-
-        # File to store residues RMSD
-        rrfname=${dir}"/resrmsd.csv"
-        echo "res,rmsd" > ${rrfname}
+        rmsd_flex=$(${obrms} ${dir}/pflex.pdb ${dir}/cflex.pdb | awk  '{print $3}')
 
         rmsd_fmax=-1
         for pfname in $(ls ${dir}/pflex-*.pdb)
@@ -64,13 +66,13 @@ score(){
             cfname=$( echo $pfname | sed "s#pflex#cflex#g" )
             
             # Single residue RMSD
-            rmsd_res=$(${obrms} ${pfname} ${cfname} | awk  '{print $2}')
+            rmsd_res=$(${obrms} ${pfname} ${cfname} | awk  '{print $3}')
             
             rmsdresname=$( echo $(basename $pfname) | sed "s#pflex-##g" | sed "s#.pdb##g" )
 
-            echo "${rmsdresname},${rmsd_res}" >> ${rrfname}
+            echo "${rank},${rmsdresname},${rmsd_res}" >> ${rrfname}
 
-            if (( $(echo "$rmsd_res > $rmsd_fmax" |bc -l) )); then
+            if (( $(echo "$rmsd_res > $rmsd_fmax" | bc -l) )); then
                 rmsd_fmax=${rmsd_res}
             fi
         done
