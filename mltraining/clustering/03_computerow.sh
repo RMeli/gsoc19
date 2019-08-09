@@ -26,4 +26,4 @@ export -f compute_row
 
 # Compute similarity of one system with all other systems
 # Parallelised over all systems
-nohup parallel -j ${n_cpus} compute_row ::: ${rows}
+nohup parallel -j ${n_cpus} --timeout 3600 compute_row ::: ${rows}
