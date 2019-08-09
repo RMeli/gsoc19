@@ -28,6 +28,7 @@ other-*.tar.gz
 
 # gnina
 mltraining/clustering/rows
+mltraining/clustering/rows-wat
 mltraining/gninatypes/????
 *.molcache2
 *prototxt
