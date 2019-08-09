@@ -4,7 +4,7 @@ n_cpus=12
 
 source variables/paths
 
-datasets="refined other"
+datasets="test"
 
 # CSV Header
 csv_header="system,rank,rmsd_lig,rmsd_flex,rmsd_fmax,rmsd_tot,score"
@@ -47,9 +47,34 @@ score(){
         # Flexible residues RMSD (with MDAnalysis)
         flex=${dir}/${system}_flex-${rank}.pdb
         protein=${dir}/${system}_protein-${rank}.pdb
-        rmsd=$(python3.6 ${pscripts}/flexrmsd.py ${flex} ${protein} ${protein_crystal})
-        rmsd_flex=$(echo $rmsd | awk '{print $1}')
-        rmsd_fmax=$(echo $rmsd | awk '{print $2}')
+
+        # Extract flexible residues from current protein and original crystal structure
+        python3.6 ${pscripts}/getflex.py ${flex} ${protein} ${protein_crystal} --dir ${dir}
+        
+        # Compute RMSD for flexible residues
+        rmsd_flex=$(${obrms} ${dir}/pflex.pdb ${dir}/cflex.pdb | awk  '{print $2}')
+
+        # File to store residues RMSD
+        rrfname=${dir}"/rmsd.dat"
+        rm -f ${rrfname}
+
+        rmsd_fmax=-1
+        for pfname in $(ls ${dir}/pflex-*.pdb)
+        do
+            cfname=$( echo $pfname | sed "s#pflex#cflex#g" )
+            
+            # Single residue RMSD
+            rmsd_res=$(${obrms} ${pfname} ${cfname} | awk  '{print $2}')
+
+            echo ${rmsd_res} >> ${rrfname}
+
+            if (( $(echo "$rmsd_res > $rmsd_fmax" |bc -l) )); then
+                rmsd_fmax=${rmsd_res}
+            fi
+        done
+
+        # Remove temporary flex files
+        rm ${dir}/pflex*.pdb ${dir}/cflex*.pdb
 
         # Combined RMSD
         rmsd_tot=$(echo ${rmsd_lig} + ${rmsd_flex} | bc)
