@@ -15,6 +15,7 @@ export clusterdir=${clusterdir}
 compute_row(){
     row=$1
 
+    /usr/bin/time -a -o time.dat -f "%E %C" \
     python ${gscripts}/compute_row.py \
         --pdbseqs seqs.dat \
         --row ${row} \
@@ -26,4 +27,4 @@ export -f compute_row
 
 # Compute similarity of one system with all other systems
 # Parallelised over all systems
-nohup parallel -j ${n_cpus} --timeout 3600 compute_row ::: ${rows}
+parallel -j ${n_cpus} --timeout 1800 compute_row ::: ${rows}
