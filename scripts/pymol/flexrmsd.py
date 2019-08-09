@@ -62,6 +62,8 @@ def flexrmsd(
 
     print_resrmsd(df_recrmsd, idx)
 
+    print(df_rmsd[df_rmsd['rank']==idx])
+
     # Load ligand and receptor
     cmd.load(ligandpath, "ligand")  # Selection name: ligand
     cmd.load(flexpath, "flex")  # Selection name: flex
