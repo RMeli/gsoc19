@@ -1,8 +1,3 @@
-"""
-Given a PDB file containing a list of flexible residues, get the corresponding residues
-of the crystal structure.
-"""
-
 import MDAnalysis as mda
 import MDAnalysis.analysis.rms as RMS
 
@@ -33,9 +28,6 @@ def parse(args: Optional[str] = None) -> ap.Namespace:
     parser.add_argument("flex", type=str, help="Flexible residues (PDB)")
     parser.add_argument("protein", type=str, help="Protein structure (PDB)")
     parser.add_argument("crystal", type=str, help="Crystal structure (PDB)")
-    parser.add_argument(
-        "-o", "--output", type=str, default="cflex.pdb", help="Output residues"
-    )
 
     return parser.parse_args(args)
 
