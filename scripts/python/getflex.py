@@ -79,8 +79,8 @@ def save_systems(flex: mda.Universe, protein: mda.Universe, crystal: mda.Univers
 
         assert p_res.n_atoms == c_res.n_atoms
 
-        pfname = os.path.join(dir, f"pflex-{res.segid}{res.resnum}{res.icode}.pdb")
-        cfname = os.path.join(dir, f"cflex-{res.segid}{res.resnum}{res.icode}.pdb")
+        pfname = os.path.join(dir, f"pflex-{res.resname}-{res.segid}{res.resnum}{res.icode}.pdb")
+        cfname = os.path.join(dir, f"cflex-{res.resname}-{res.segid}{res.resnum}{res.icode}.pdb")
 
         # Write out PDB files
         p_res.write(pfname)
