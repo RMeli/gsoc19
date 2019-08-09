@@ -67,8 +67,8 @@ score(){
             rmsd_res=$(${obrms} ${pfname} ${cfname} | awk  '{print $2}')
             
             rmsdresname=$( echo $(basename $pfname) | sed "s#pflex-##g" | sed "s#.pdb##g" )
-            echo $rmsdresname
-            echo ${rmsd_res} >> ${rrfname}
+
+            echo "${rmsdresname},${rmsd_res}" >> ${rrfname}
 
             if (( $(echo "$rmsd_res > $rmsd_fmax" |bc -l) )); then
                 rmsd_fmax=${rmsd_res}
