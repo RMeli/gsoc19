@@ -55,8 +55,8 @@ score(){
         rmsd_flex=$(${obrms} ${dir}/pflex.pdb ${dir}/cflex.pdb | awk  '{print $2}')
 
         # File to store residues RMSD
-        rrfname=${dir}"/rmsd.dat"
-        rm -f ${rrfname}
+        rrfname=${dir}"/resrmsd.csv"
+        echo "res,rmsd" > ${rrfname}
 
         rmsd_fmax=-1
         for pfname in $(ls ${dir}/pflex-*.pdb)
@@ -65,7 +65,9 @@ score(){
             
             # Single residue RMSD
             rmsd_res=$(${obrms} ${pfname} ${cfname} | awk  '{print $2}')
-
+            
+            rmsdresname=$( echo $(basename $pfname) | sed "s#pflex-##g" | sed "s#.pdb##g" )
+            echo $rmsdresname
             echo ${rmsd_res} >> ${rrfname}
 
             if (( $(echo "$rmsd_res > $rmsd_fmax" |bc -l) )); then
