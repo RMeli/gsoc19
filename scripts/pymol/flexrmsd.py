@@ -1,10 +1,26 @@
 from pymol import cmd, stored
 
+import pandas as pd
+
 import os, sys
+import re
 
-sys.path.insert(1, '../../scripts/python/')
+# Show interpreter
+# print(sys.executable)
 
-import flexrmsd as frmsd
+def print_resrmsd(df):
+
+    for _, row in df.iterrows():
+        res = row["res"]
+        rmsd = row["rmsd"]
+
+        resname, resinfo = res.split("-")
+
+        chain = re.search("^[A-Z]", resinfo)
+        resnum = re.search("[0-9]+", resinfo)
+        icode = re.search("[A-Z]$", resinfo)
+
+        print(f"{resname} {chain.group(0) if chain is not None else ''} {resnum.group(0):5}{icode.group(0) if icode is not None else '':1} : {rmsd:.5f} A")
 
 def flexrmsd(
     system,
@@ -39,11 +55,10 @@ def flexrmsd(
     )  # Crystal receptor
 
     # Compute flexible residues RMSD
-    flex, receptor, crystal = frmsd.load_systems(flexpath, receptorpath, crystalpath)
-    r, maxr = frmsd.rmsd(flex, receptor, crystal, verbose=True)
+    df_rmsd = pd.read_csv(os.path.join(dataset, system, f"{system}_score.csv"))
+    df_recrmsd = pd.read_csv(os.path.join(dataset, system, "resrmsd.csv"))
 
-    print(f"RMSD = {r:.5f}")
-    print(f"max res RMSD = {maxr:.5f}")
+    print_resrmsd(df_recrmsd)
 
     # Load ligand and receptor
     cmd.load(ligandpath, "ligand")  # Selection name: ligand
