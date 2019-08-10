@@ -4,7 +4,7 @@ n_cpus=12
 
 source variables/paths
 
-datasets="test"
+datasets="refined other"
 
 
 
