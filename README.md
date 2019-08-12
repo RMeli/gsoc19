@@ -45,6 +45,7 @@ List of contributions to [openbabel](https://github.com/openbabel/openbabel):
 
 List of contributions to [MDAnalysis](https://github.com/MDAnalysis/mdanalysis):
 
+* Fixed issues with PDB `HEADER` filed in `PDBReader` and `PDBWriter` ([PR #2325](https://github.com/MDAnalysis/mdanalysis/pull/2325))
 * Allowed MOL2 parser to ignore status bit strings ([PR #2319](https://github.com/MDAnalysis/mdanalysis/pull/2319))
 
 ## Mentors
