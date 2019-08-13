@@ -30,7 +30,7 @@ The script `03_createfolds.sh` uses protein sequence distances and ligand simila
 
 The script `04_molcache.sh` cache all the the `.gninatype` files in monolithic receptor and ligand cache files for reduced I/O operations.
 
-## Traning
+## Training
 
 ### 05 - Train
 
