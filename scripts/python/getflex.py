@@ -101,7 +101,7 @@ def save_systems(flex: mda.Universe, protein: mda.Universe, crystal: mda.Univers
     selection = selection[:-4]  # Remove final " or "
 
     # Remove H atoms
-    # TODO: Possibly need perception from atom name, when type is not present
+    # TODO: Possibly need perception for atom name, when type is not present
     selection = f"({selection}) and not (type H or name H*)"
 
     p_atoms = protein.select_atoms(selection)
