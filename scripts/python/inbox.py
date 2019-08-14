@@ -27,6 +27,8 @@ def min_xyz(u: mda.Universe) -> np.ndarray:
 
     coords = u.trajectory[0].positions
 
+    print(coords)
+
     return np.min(coords,axis=0)
 
 def max_xyz(u: mda.Universe) -> np.ndarray:
@@ -35,12 +37,14 @@ def max_xyz(u: mda.Universe) -> np.ndarray:
 
     return np.max(coords,axis=0)
 
-def in_box(c, fmin, fmax, L) -> bool:
-    dplus = fmax - c
-    dminus = c - fmin
+def in_box(c, mmin, mmax, L) -> bool:
 
-    return True if np.alltrue(dplus < L / 2) and np.alltrue(dminus < L / 2) else False
+    L2 = L / 2.0 # Half box size
 
+    dplus = mmax - c
+    dminus = c - mmin
+
+    return True if np.alltrue(dplus < L2) and np.alltrue(dminus < L2) else False
 
 
 def parse(args: Optional[str] = None) -> ap.Namespace:
@@ -82,6 +86,8 @@ if __name__ == "__main__":
     # Flexible residues min and max positions
     fmin = min_xyz(flex)
     fmax = max_xyz(flex)
+
+    #print(c, lmin, lmax, fmin, fmax)
 
     ligin : bool = in_box(c, lmin, lmax, args.box_size)
     flexin : bool = in_box(c, fmin, fmax, args.box_size)
