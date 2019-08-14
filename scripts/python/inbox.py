@@ -1,0 +1,82 @@
+import MDAnalysis as mda
+
+import argparse as ap
+import numpy as np
+import os
+import warnings
+
+from typing import Optional
+
+def load(fname: str) -> mda.Universe:
+
+    if not os.path.isfile(fname):
+        raise IOError(f"{fname} does not exsist.")
+
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+
+        u = mda.Universe(fname)
+
+    return u
+
+def center(u: mda.Universe) -> np.ndarray:
+
+    return u.atoms.center_of_geometry()
+
+def min_xyz(u: mda.Universe) -> np.ndarray:
+
+    coords = u.trajectory[0].positions
+
+    return np.min(coords,axis=0)
+
+def max_xyz(u: mda.Universe) -> np.ndarray:
+
+    coords = u.trajectory[0].positions
+
+    return np.max(coords,axis=0)
+
+def in_box(c, fmin, fmax, L) -> bool:
+    dplus = fmax - c
+    dminus = c - fmin
+
+    return True if np.alltrue(dplus < L / 2) and np.alltrue(dminus < L / 2) else False
+
+
+
+def parse(args: Optional[str] = None) -> ap.Namespace:
+    """
+    Parsed command line arguments.
+
+    Args:
+        args (str, optional): String to parse
+
+    Returns:
+        An `ap.Namespace` containing the parsed options
+
+    .. note::
+        If ``args is None``, parse from ``sys.argv``
+    """
+
+    parser = ap.ArgumentParser(description="Compute center of geometry of a molecule.")
+
+    parser.add_argument("ligand", type=str, help="Ligand file (.mol2)")
+    parser.add_argument("flex", type=str, help="Flexible residues file (PDB)")
+    parser.add_argument("-L", "--box_size", type=float, default=23.5, help="Box size")
+
+    return parser.parse_args(args)
+
+if __name__ == "__main__":
+
+    args = parse()
+
+    ligand = load(args.ligand)
+    flex = load(args.flex)
+
+    c = center(ligand)
+
+    fmin = min_xyz(flex)
+    fmax = max_xyz(flex)
+
+    print(c, fmin, fmax)
+
+    print(in_box(c, fmin, fmax, args.box_size))
