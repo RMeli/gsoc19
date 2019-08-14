@@ -12,7 +12,6 @@ from typing import Optional
 
 datasets = ["refined", "other"]
 
-
 def parse(args: Optional[str] = None) -> ap.Namespace:
 
     parser = ap.ArgumentParser()
@@ -61,7 +60,7 @@ def write_record(
 
         score = float(row["score"])
 
-        record = f"{annotation} {recpath} {ligpath} # {rmsd_lig:.4f}  {rmsd_flex:.4f} {score:.4f}\n"
+        record = f"{annotation} {recpath} {ligpath} # {rmsd_lig:.4f} {rmsd_flex:.4f} {score:.4f}\n"
 
         outfile.write(record)
 
