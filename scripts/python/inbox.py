@@ -72,11 +72,18 @@ if __name__ == "__main__":
     ligand = load(args.ligand)
     flex = load(args.flex)
 
+    # Ligand center (box center)
     c = center(ligand)
 
+    # Ligand min and max positions
+    lmin = min_xyz(ligand)
+    lmax = max_xyz(ligand)
+
+    # Flexible residues min and max positions
     fmin = min_xyz(flex)
     fmax = max_xyz(flex)
 
-    print(c, fmin, fmax)
+    ligin : bool = in_box(c, lmin, lmax, args.box_size)
+    flexin : bool = in_box(c, fmin, fmax, args.box_size)
 
-    print(in_box(c, fmin, fmax, args.box_size))
+    print(ligin, flexin)
