@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Paths
-source ../variables/paths
+spath=../../scripts/python
 
 # Combine similarity measures
-python ${gscripts}/combine_rows_lowmem.py rows/row-*
+python ${spath}/combine_rows_lowmem.py rows.lst -out dist-lsim.pickle
