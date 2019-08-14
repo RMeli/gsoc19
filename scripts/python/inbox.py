@@ -7,6 +7,7 @@ import warnings
 
 from typing import Optional
 
+
 def load(fname: str) -> mda.Universe:
 
     if not os.path.isfile(fname):
@@ -19,9 +20,11 @@ def load(fname: str) -> mda.Universe:
 
     return u
 
+
 def center(u: mda.Universe) -> np.ndarray:
 
     return u.atoms.center_of_geometry()
+
 
 def min_xyz(u: mda.Universe) -> np.ndarray:
 
@@ -29,17 +32,19 @@ def min_xyz(u: mda.Universe) -> np.ndarray:
 
     print(coords)
 
-    return np.min(coords,axis=0)
+    return np.min(coords, axis=0)
+
 
 def max_xyz(u: mda.Universe) -> np.ndarray:
 
     coords = u.trajectory[0].positions
 
-    return np.max(coords,axis=0)
+    return np.max(coords, axis=0)
+
 
 def in_box(c, mmin, mmax, L) -> bool:
 
-    L2 = L / 2.0 # Half box size
+    L2 = L / 2.0  # Half box size
 
     dplus = mmax - c
     dminus = c - mmin
@@ -69,6 +74,7 @@ def parse(args: Optional[str] = None) -> ap.Namespace:
 
     return parser.parse_args(args)
 
+
 if __name__ == "__main__":
 
     args = parse()
@@ -87,9 +93,9 @@ if __name__ == "__main__":
     fmin = min_xyz(flex)
     fmax = max_xyz(flex)
 
-    #print(c, lmin, lmax, fmin, fmax)
+    # print(c, lmin, lmax, fmin, fmax)
 
-    ligin : bool = in_box(c, lmin, lmax, args.box_size)
-    flexin : bool = in_box(c, fmin, fmax, args.box_size)
+    ligin: bool = in_box(c, lmin, lmax, args.box_size)
+    flexin: bool = in_box(c, fmin, fmax, args.box_size)
 
     print(ligin, flexin)

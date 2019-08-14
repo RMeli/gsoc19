@@ -5,12 +5,14 @@ import argparse as ap
 
 from typing import Optional
 
+
 def smiles(fname: str):
 
-    with open(fname, 'r') as f:
+    with open(fname, "r") as f:
         smiles = f.read().strip()
 
     return smiles
+
 
 def molweight(smiles: str):
 
@@ -22,6 +24,7 @@ def molweight(smiles: str):
 
     return Descriptors.ExactMolWt(mol)
 
+
 def hvymolweight(smiles: str):
 
     mol = Chem.MolFromSmiles(smiles)
@@ -31,6 +34,7 @@ def hvymolweight(smiles: str):
         exit(1)
 
     return Descriptors.HeavyAtomMolWt(mol)
+
 
 if __name__ == "__main__":
 

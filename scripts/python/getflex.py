@@ -39,14 +39,13 @@ def parse(args: Optional[str] = None) -> ap.Namespace:
 
 
 def load_systems(
-    flexname: str, proteinname: str, crystalname: str,
-    print_warnings=False
+    flexname: str, proteinname: str, crystalname: str, print_warnings=False
 ) -> Tuple[mda.Universe, mda.Universe, mda.Universe]:
 
     if not print_warnings:
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
-            
+
             flex = mda.Universe(flexname)
             protein = mda.Universe(proteinname)
             crystal = mda.Universe(crystalname)
@@ -58,8 +57,10 @@ def load_systems(
 
     return flex, protein, crystal
 
-def save_systems(flex: mda.Universe, protein: mda.Universe, crystal: mda.Universe, dir: str):
 
+def save_systems(
+    flex: mda.Universe, protein: mda.Universe, crystal: mda.Universe, dir: str
+):
     def sel(resnum, resname, segid, icode) -> str:
         s = f"(resid {resnum}{icode} and resname {resname} and segid {segid})"
 
@@ -71,7 +72,10 @@ def save_systems(flex: mda.Universe, protein: mda.Universe, crystal: mda.Univers
 
     residues = []
     for res in flexres:
-        ressel = sel(res.resnum, res.resname, res.segid, res.icode) + " and not (type H or name H*)"
+        ressel = (
+            sel(res.resnum, res.resname, res.segid, res.icode)
+            + " and not (type H or name H*)"
+        )
 
         # Select single residue
         p_res = protein.select_atoms(ressel)
@@ -79,8 +83,12 @@ def save_systems(flex: mda.Universe, protein: mda.Universe, crystal: mda.Univers
 
         assert p_res.n_atoms == c_res.n_atoms
 
-        pfname = os.path.join(dir, f"pflex-{res.resname}-{res.segid}{res.resnum}{res.icode}.pdb")
-        cfname = os.path.join(dir, f"cflex-{res.resname}-{res.segid}{res.resnum}{res.icode}.pdb")
+        pfname = os.path.join(
+            dir, f"pflex-{res.resname}-{res.segid}{res.resnum}{res.icode}.pdb"
+        )
+        cfname = os.path.join(
+            dir, f"cflex-{res.resname}-{res.segid}{res.resnum}{res.icode}.pdb"
+        )
 
         # Write out PDB files
         p_res.write(pfname)
@@ -93,10 +101,7 @@ def save_systems(flex: mda.Universe, protein: mda.Universe, crystal: mda.Univers
 
     # TODO: Can be improved by using ressel
     selection = "".join(
-        [ 
-            sel(id, name, chain, icode) + " or "
-            for id, name, chain, icode in residues
-        ]
+        [sel(id, name, chain, icode) + " or " for id, name, chain, icode in residues]
     )
     selection = selection[:-4]  # Remove final " or "
 
@@ -115,6 +120,7 @@ def save_systems(flex: mda.Universe, protein: mda.Universe, crystal: mda.Univers
 
     p_atoms.write(pfname)
     c_atoms.write(cfname)
+
 
 if __name__ == "__main__":
 

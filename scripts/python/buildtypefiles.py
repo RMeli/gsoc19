@@ -12,6 +12,7 @@ from typing import Optional
 
 datasets = ["refined", "other"]
 
+
 def parse(args: Optional[str] = None) -> ap.Namespace:
 
     parser = ap.ArgumentParser()
@@ -28,12 +29,20 @@ def parse(args: Optional[str] = None) -> ap.Namespace:
     return args
 
 
-def write_record(system: str, df_score: pd.DataFrame, lmin: float, lmax: float, fmin: float, fmax: float, outfile: str):
+def write_record(
+    system: str,
+    df_score: pd.DataFrame,
+    lmin: float,
+    lmax: float,
+    fmin: float,
+    fmax: float,
+    outfile: str,
+):
 
     # Iterate over different docking poses for a given system
     for _, row in df_score.iterrows():
 
-        rank=int(round(row['rank']))
+        rank = int(round(row["rank"]))
 
         ligname = f"{system}_ligand-{rank}"
         recname = ligname.replace("ligand", "protein")
@@ -87,4 +96,6 @@ if __name__ == "__main__":
             # Get system scores
             df_score = pd.read_csv(scorepath)
 
-            write_record(system, df_score, args.lmin, args.lmax, args.fmin, args.fmax, out) # Write record
+            write_record(
+                system, df_score, args.lmin, args.lmax, args.fmin, args.fmax, out
+            )  # Write record
