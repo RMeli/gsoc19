@@ -94,10 +94,10 @@ if __name__ == "__main__":
     ax2.set_xlim([0, None])
     ax2.title.set_text("Flexible Residues")
 
-    plot(df, "rmsd_tot", ax3, 0, 10)
+    plot(df, "rmsd_fmax", ax3, 0, 5)
     ax3.set_xlabel("RMSD Threshold (Å)")
     ax3.set_xlim([0, None])
-    ax3.title.set_text("Ligand + Flexible Residues")
+    ax3.title.set_text("MAX Flexible Residue")
 
     plt.suptitle("Number of Good Poses vs RMSD Threshold")
     plt.savefig(os.path.join(args.outputpath, f"rmsdthreshold.pdf"))
