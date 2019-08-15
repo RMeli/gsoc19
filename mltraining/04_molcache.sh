@@ -11,6 +11,6 @@ python ${gscripts}/create_caches2.py \
     "${traindir}/alltest0.types" \
     "${traindir}/alltest1.types" \
     "${traindir}/alltest2.types" \
-    -c 1 -d ${traindir} \
+    -c 1 -d ${typedir} \
     --recmolcache "${traindir}/rec.molcache2" \
     --ligmolcache "${traindir}/lig.molcache2"

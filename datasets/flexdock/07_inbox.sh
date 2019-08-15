@@ -2,10 +2,9 @@
 
 n_cpus=8
 fout="analysis/outbox.lst"
+datasets="refined other"
 
 source variables/paths
-
-datasets="test"
 
 # Export variables for GNU parallel
 export fout=${fout}

@@ -1,16 +1,15 @@
 #!/bin/bash
 
-traindir=training
+traindir=$1
 
 # This scrit is designed to run within a Singularity container
 # The correct Python interpreter depend on the container 
 
-source variables/training
+source ${traindir}/training.vars
 source variables/paths
 
-mkdir ${traindir} && cd ${traindir}
+cd ${traindir}
 
-cp ../${dataroot}/all*.types .
 cp ../variables/complete* .
 
 # Caffe
@@ -23,4 +22,7 @@ python3.6 ${gscripts}/train.py \
     -d ../${dataroot} \
     -i ${iters} \
     -t ${testinterval} \
-    -g ${gpu}
+    --base_lr ${base_lr} \
+    -g ${gpu} \
+    --percent_reduced ${percent_reduced} \
+    --dynamic --lr_policy fixed
