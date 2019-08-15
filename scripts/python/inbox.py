@@ -30,8 +30,6 @@ def min_xyz(u: mda.Universe) -> np.ndarray:
 
     coords = u.trajectory[0].positions
 
-    print(coords)
-
     return np.min(coords, axis=0)
 
 
