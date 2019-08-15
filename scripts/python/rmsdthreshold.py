@@ -46,7 +46,7 @@ def get_num_for_threshold(df: pd.DataFrame, threshold: float, rmsd_name: str) ->
 
     n_rmsd = df[rmsd_name].loc[df[rmsd_name] < threshold].count()
 
-    return n_rmsd / n * 100.
+    return n_rmsd / n * 100.0
 
 
 def plot(df: pd.DataFrame, rmsd_name: str, ax, tmin: float = 0, tmax: float = 4):
@@ -81,7 +81,7 @@ if __name__ == "__main__":
         df = df.replace([np.inf, -np.inf], np.nan)  # Change Inf with NaN
         df = df.dropna()  # Drop rows with NaN
 
-    f, (ax1, ax2, ax3) = plt.subplots(1,3, figsize=(10, 5))
+    f, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(10, 5))
 
     plot(df, "rmsd_lig", ax1, 0, 10)
     ax1.set_xlabel("RMSD Threshold (Å)")

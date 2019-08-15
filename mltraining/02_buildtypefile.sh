@@ -8,4 +8,4 @@ python ${pscripts}/buildtypefiles.py \
     ${typedir}
 
 # Concatenate all .types files into one
-cat ${typedir}/????/????.types > ${typedir}/all.types
+find gninatypes -name "????.types" | xargs cat > ${typedir}/all.types

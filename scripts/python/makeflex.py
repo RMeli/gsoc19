@@ -55,6 +55,7 @@ PDBLINE = "%s%-4s%s%8.3f%8.3f%8.3f%6.2f%6.2f          %2s\n"
 # Print flexible residues
 print("Flexres:", flexres)
 
+
 def atype_perception(atype, aname):
     """
     Automatically perceive atom type from atom name, when the atom type is not
@@ -67,8 +68,8 @@ def atype_perception(atype, aname):
     """
 
     atype = atype.strip()
-    
-    if atype == "": # PDB file is missing atom types
+
+    if atype == "":  # PDB file is missing atom types
         # Remove numbers from atom name
         atype = "".join(c for c in aname if not c.isdigit())
         atype = atype[:2]
@@ -80,6 +81,7 @@ def atype_perception(atype, aname):
             atype = atype[0]
 
     return atype.strip()
+
 
 for ci in range(flex.numCoordsets()):  # Loop over different MODELs (MODEL/ENDMDL)
     which = defaultdict(int)
@@ -95,14 +97,14 @@ for ci in range(flex.numCoordsets()):  # Loop over different MODELs (MODEL/ENDMD
 
             # Insertion code
             # strip() is needed because getIcodes() returns empty strings
-            icode = line[26].strip()  
+            icode = line[26].strip()
 
             if (chain, resnum, icode) in flexres and aname not in backbone:
                 if atype != "H":
                     resatoms = flex[chain].select("resnum %d and not name H" % resnum)
                     w = which[(chain, resnum)]
                     which[(chain, resnum)] += 1  # update to next index
-                    #print(resnum, aname, chain, [atom for atom in resatoms])
+                    # print(resnum, aname, chain, [atom for atom in resatoms])
                     atom = resatoms[w]  # this is the atom to replace this line with
                     c = atom.getCoordsets(ci)
                     line = PDBLINE % (
