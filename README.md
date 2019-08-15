@@ -10,8 +10,10 @@
 
 List of contributions to [gnina](https://github.com/gnina/gnina) and [gnina-scripts](https://github.com/gnina/scripts):
 
-* Considerably reduced memory usage of `combine_rows.py` ([PR #30](https://github.com/gnina/scripts/pull/30))
-* Added serialization of `struct residue` ([PR #74](https://github.com/gnina/gnina/pull/74)) 
+* Added option to `pymol_arrows.py` ([PR #31](https://github.com/gnina/scripts/pull/31))
+* Low-memory and faster substitute `combine_rows.py` ([PR #30](https://github.com/gnina/scripts/pull/30))
+* Attempt to decrease memory usage of `combine_rows.py` ([PR #29](https://github.com/gnina/scripts/pull/29))
+* Added serialization of `struct residue` ([PR #74](https://github.com/gnina/gnina/pull/74))
 * Small fixes to `gninavis` for gradients ([PR #72](https://github.com/gnina/gnina/pull/72))
 * Fixed Python3 `pickle` in clustering pipeline ([PR #26](https://github.com/gnina/scripts/pull/26))
 * Added insertion code support to `makeflex.py` ([PR #65](https://github.com/gnina/gnina/pull/65))
