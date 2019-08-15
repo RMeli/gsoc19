@@ -2,13 +2,15 @@
 
 source variables/paths
 
+traindir=$1
+
 python ${gscripts}/create_caches2.py \
-    "${typedir}/alltrain0.types" \
-    "${typedir}/alltrain1.types" \
-    "${typedir}/alltrain2.types" \
-    "${typedir}/alltest0.types" \
-    "${typedir}/alltest1.types" \
-    "${typedir}/alltest2.types" \
-    -c 1 -d ${typedir} \
-    --recmolcache "${typedir}/rec.molcache2" \
-    --ligmolcache "${typedir}/lig.molcache2"
+    "${traindir}/alltrain0.types" \
+    "${traindir}/alltrain1.types" \
+    "${traindir}/alltrain2.types" \
+    "${traindir}/alltest0.types" \
+    "${traindir}/alltest1.types" \
+    "${traindir}/alltest2.types" \
+    -c 1 -d ${traindir} \
+    --recmolcache "${traindir}/rec.molcache2" \
+    --ligmolcache "${traindir}/lig.molcache2"
