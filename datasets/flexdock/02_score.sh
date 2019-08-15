@@ -50,16 +50,17 @@ score(){
         # Ligand RMSD (with OpenBabel)
         rmsd_lig=$(${obrms} ${ligand_crystal} ${ligand} | awk  '{print $3}')
 
-        # Flexible residues RMSD (with MDAnalysis)
+        # Flexible  residues and protein filenames
         flex=${dir}/${system}_flex-${rank}.pdb
         protein=${dir}/${system}_protein-${rank}.pdb
 
         # Extract flexible residues from current protein and original crystal structure
         python3.6 ${pscripts}/getflex.py ${flex} ${protein} ${protein_crystal} --dir ${dir}
         
-        # Compute RMSD for flexible residues
+        # Compute RMSD for all flexible residues using OBRMS
         rmsd_flex=$(${obrms} ${dir}/pflex.pdb ${dir}/cflex.pdb | awk  '{print $3}')
 
+        # Compute RMSD for single flexible residues using OBRMS (and store MAX)
         rmsd_fmax=-1
         for pfname in $(ls ${dir}/pflex-*.pdb)
         do
