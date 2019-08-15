@@ -82,23 +82,23 @@ if __name__ == "__main__":
 
     plot(df, "rmsd_lig", args.maxrank, args.bins, ax1)
     ax1.set_xlabel("RMSD (Å)")
-    ax1.set_xlim([0, None])
+    ax1.set_xlim([0, 20])
     ax1.title.set_text("Ligand")
-    ax1.axvline(x=1, color='k', linestyle="--", label="1 Å")
+    ax1.axvline(x=2, color='k', linestyle="--", label="2 Å")
     ax1.legend()
 
     plot(df, "rmsd_flex", args.maxrank, args.bins, ax2)
     ax2.set_xlabel("RMSD (Å)")
-    ax2.set_xlim([0, None])
+    ax2.set_xlim([0, 3])
     ax2.title.set_text("Flexible Residues")
     ax2.axvline(x=1, color='k', linestyle="--", label="1 Å")
     ax2.legend()
 
     plot(df, "rmsd_fmax", args.maxrank, args.bins, ax3)
     ax3.set_xlabel("RMSD (Å)")
-    ax3.set_xlim([0, None])
+    ax3.set_xlim([0, 2.5])
     ax3.title.set_text("MAX Flexible Residue")
-    ax3.axvline(x=2, color='k', linestyle="--", label="2 Å")
+    ax3.axvline(x=1, color='k', linestyle="--", label="1 Å")
     ax3.legend()
 
     plt.suptitle("RMSD Distributions")
@@ -109,7 +109,7 @@ if __name__ == "__main__":
 
     rmsd_lig = get_rmsd_for_rank(1, "rmsd_lig", df)
     N = len(rmsd_lig)
-    n = len(rmsd_lig[rmsd_lig < 1])
+    n = len(rmsd_lig[rmsd_lig < 2])
     print(f"Number of sub-1Å RMSD ligands (top pose): {n} ({n / N * 100:.2f}%)")
 
     rmsd_flex = get_rmsd_for_rank(1, "rmsd_flex", df)
@@ -117,7 +117,7 @@ if __name__ == "__main__":
     n = len(rmsd_flex[rmsd_flex < 1])
     print(f"Number of sub-1Å RMSD flexible residues (top pose): {n} ({n / N * 100:.2f}%)")
 
-    rmsd_tot = get_rmsd_for_rank(1, "rmsd_tot", df)
+    rmsd_tot = get_rmsd_for_rank(1, "rmsd_fmax", df)
     N = len(rmsd_tot)
-    n = len(rmsd_tot[rmsd_tot < 2])
+    n = len(rmsd_tot[rmsd_tot < 1])
     print(f"Number of sub-2Å RMSD ligands and flexible residues (top pose): {n} ({n / N * 100:.2f}%)")
