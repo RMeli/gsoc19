@@ -2,18 +2,18 @@
 
 source variables/paths
 
-outdir=$1
+traindir=$1
 
-if [[ $outdir == "" ]]
+if [[ $traindir == "" ]]
 then
-  echo "OUTDIR must be specified."
+  echo "TRAINDIR must be specified."
   exit
 fi
 
 # Create folds
 python ${gscripts}/clustering.py \
     --cpickle ${clusterdir}/dist-lsim.pickle \
-    --input ${outdir}/all.types \
+    --input ${traindir}/all.types \
     -s2 0.4 \
-    -v --output ${outdir}/all \
-    | tee ${outdir}/clustering.log
+    -v --output ${traindir}/all \
+    | tee ${traindir}/clustering.log

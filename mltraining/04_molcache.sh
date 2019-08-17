@@ -4,6 +4,12 @@ source variables/paths
 
 traindir=$1
 
+if [[ $traindir == "" ]]
+then
+  echo "TRAINDIR must be specified."
+  exit
+fi
+
 python ${gscripts}/create_caches2.py \
     "${traindir}/alltrain0.types" \
     "${traindir}/alltrain1.types" \
