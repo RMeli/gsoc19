@@ -20,4 +20,5 @@ python ${pscripts}/buildtypefile.py \
     ${typedir} \
     --lmin ${min} --lmax ${max} --fmin ${fmin} --lmax ${fmax} \
     -L ${box_size} -d ${datasets} \
-    -o ${traindir}
+    -o ${traindir} \
+    | tee ${traindir}/buildtypefile.log

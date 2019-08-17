@@ -25,6 +25,7 @@ def parse(args: Optional[str] = None) -> ap.Namespace:
     parser.add_argument("-L", "--box_size", default=23.5, type=float)
     parser.add_argument("-o", "--out", default="all.types", type=str)
     parser.add_argument("-d", "--datasets", nargs="+", default=["refined", "other"], type=str)
+    parser.add_argument("-v", "--verbose", action="store_true", default=False)
 
     args = parser.parse_args()
 
@@ -89,6 +90,15 @@ def write_record(
 if __name__ == "__main__":
 
     args = parse()
+
+    if args.verbose:
+        print("BUILDTYPEFILE")
+        print(f"datapath =", args.datapath)
+        print(f"typespath =", args.typespath)
+        print(f"datasets =", args.datasets)
+        print(f"lmin = {args.lmin:.2f}\tlmax = {args.lmax:.2f}")
+        print(f"fmin = {args.fmin:.2f}\tfmax = {args.fmax:.2f}")
+        print(f"box_size = {args.box_size:.2f}")
 
     # List all folders containing gninatypes files
     dirs = [
