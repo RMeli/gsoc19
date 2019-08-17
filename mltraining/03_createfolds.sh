@@ -4,12 +4,16 @@ source variables/paths
 
 outdir=$1
 
-# Copy all.types in training folder
-cp ${typedir}/all.types ${outdir}
+if [[ $outdir == "" ]]
+then
+  echo "OUTDIR must be specified."
+  exit
+fi
 
 # Create folds
 python ${gscripts}/clustering.py \
     --cpickle ${clusterdir}/dist-lsim.pickle \
-    --input ${typedir}/all.types \
+    --input ${outdir}/all.types \
     -s2 0.4 \
-    -v --output ${outdir}/all
+    -v --output ${outdir}/all \
+    | tee ${outdir}/clustering.log
