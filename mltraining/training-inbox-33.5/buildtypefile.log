@@ -1,0 +1,7 @@
+BUILDTYPEFILE
+datapath = ../datasets/flexdock
+typespath = gninatypes
+datasets = ['refined', 'other']
+lmin = 2.00	lmax = 1.50
+fmin = 1.00	fmax = 1.50
+box_size = 33.50
