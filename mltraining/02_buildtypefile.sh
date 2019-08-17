@@ -1,17 +1,24 @@
 #!/bin/bash
 
-box_size=28.5
+
 
 source variables/paths
 source variables/annotation
 
-datasets="redined other"
+datasets="refined other"
 
 traindir=$1
+box_size=$2
 
 if [[ $traindir == "" ]]
 then
   echo "TRAINDIR must be specified."
+  exit
+fi
+
+if [[ $box_size == "" ]]
+then
+  echo "BOXSIZE must be specified."
   exit
 fi
 
@@ -20,5 +27,5 @@ python ${pscripts}/buildtypefile.py \
     ${typedir} \
     --lmin ${min} --lmax ${max} --fmin ${fmin} --lmax ${fmax} \
     -L ${box_size} -d ${datasets} \
-    -o ${traindir} \
+    --verbose -o ${traindir}/all.types \
     | tee ${traindir}/buildtypefile.log

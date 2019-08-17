@@ -1,3 +1,5 @@
 # min/max annotation
 min=2
 max=4
+fmin=1
+fmax=1.5
