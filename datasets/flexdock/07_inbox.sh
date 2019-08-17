@@ -1,5 +1,7 @@
 #!/bin/bash
 
+box_size=28.5
+
 n_cpus=8
 fout="analysis/outbox.lst"
 datasets="refined other"
@@ -7,6 +9,7 @@ datasets="refined other"
 source variables/paths
 
 # Export variables for GNU parallel
+export box_size=${box_size}
 export fout=${fout}
 export pscripts=${pscripts}
 
@@ -29,7 +32,7 @@ inbox(){
         flex=${dir}/${system}_flex-${rank}.pdb
 
         # Extract flexible residues from current protein and original crystal structure
-        out=$(python ${pscripts}/inbox.py ${ligand} ${flex})
+        out=$(python ${pscripts}/inbox.py ${ligand} ${flex} -L ${box_size})
 
         ligin=$(echo $out | awk '{print $1}')
         flexin=$(echo $out | awk '{print $2}')
