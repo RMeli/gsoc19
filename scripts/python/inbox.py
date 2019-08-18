@@ -5,7 +5,7 @@ import numpy as np
 import os
 import warnings
 
-from typing import Optional
+from typing import Optional, Tuple
 
 
 def load(fname: str) -> mda.Universe:
@@ -49,6 +49,26 @@ def in_box(c, mmin, mmax, L) -> bool:
 
     return True if np.alltrue(dplus < L2) and np.alltrue(dminus < L2) else False
 
+def inbox(ligname: str, flexname: str, box_size: float) -> Tuple[bool, bool]:
+
+    ligand = load(ligname)
+    flex = load(flexname)
+
+    # Ligand center (box center)
+    c = center(ligand)
+
+    # Ligand min and max positions
+    lmin = min_xyz(ligand)
+    lmax = max_xyz(ligand)
+
+    # Flexible residues min and max positions
+    fmin = min_xyz(flex)
+    fmax = max_xyz(flex)
+
+    ligin: bool = in_box(c, lmin, lmax, box_size)
+    flexin: bool = in_box(c, fmin, fmax, box_size)
+
+    return ligin, flexin
 
 def parse(args: Optional[str] = None) -> ap.Namespace:
     """
@@ -77,23 +97,6 @@ if __name__ == "__main__":
 
     args = parse()
 
-    ligand = load(args.ligand)
-    flex = load(args.flex)
-
-    # Ligand center (box center)
-    c = center(ligand)
-
-    # Ligand min and max positions
-    lmin = min_xyz(ligand)
-    lmax = max_xyz(ligand)
-
-    # Flexible residues min and max positions
-    fmin = min_xyz(flex)
-    fmax = max_xyz(flex)
-
-    # print(c, lmin, lmax, fmin, fmax)
-
-    ligin: bool = in_box(c, lmin, lmax, args.box_size)
-    flexin: bool = in_box(c, fmin, fmax, args.box_size)
+    ligin, flexin = inbox(args.ligand, args.flex, args.box_size)
 
     print(ligin, flexin)
