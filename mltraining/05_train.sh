@@ -5,6 +5,12 @@ traindir=$1
 # This scrit is designed to run within a Singularity container
 # The correct Python interpreter depend on the container 
 
+if [[ $traindir == "" ]]
+then
+  echo "TRAINDIR must be specified."
+  exit
+fi
+
 source ${traindir}/training.vars
 source variables/paths
 

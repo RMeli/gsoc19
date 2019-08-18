@@ -5,12 +5,16 @@ traindir=$1
 # This scrit is designed to run within a Singularity container
 # The correct Python interpreter depend on the container 
 
+if [[ $traindir == "" ]]
+then
+  echo "TRAINDIR must be specified."
+  exit
+fi
+
 source ${traindir}/training.vars
 source variables/paths
 
 cd ${traindir}
-
-cp ../variables/complete* .
 
 # Caffe
 export PYTHONPATH=${gcaffe}:${PYTHONPATH}
@@ -21,7 +25,7 @@ do
     python3.6 ${gscripts}/predict.py \
         -m ../${modeldir}/${model} \
         -d ../${dataroot} \
-        -w default2017-pose.*.${fold}_iter_*.caffemodel \
+        -w *.${fold}_iter_*.caffemodel \
         -i alltest${fold}.types \
         -g ${gpu} \
         -s 0 \
