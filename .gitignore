@@ -38,6 +38,7 @@ training
 __pycache__
 
 # untraked
+backup-*
 untracked
 
 # editors
