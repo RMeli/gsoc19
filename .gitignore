@@ -47,6 +47,11 @@ completerec
 *auc.train
 mltraining/*/*.?.out
 
+# training folders
+mltraining/training-random
+mltraining/training-nobox-23.5
+mltraining/training-inbox-28.5
+
 # python
 __pycache__
 
