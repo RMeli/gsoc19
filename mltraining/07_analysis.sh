@@ -23,4 +23,4 @@ python -m scripts.plot.pr \
     *.?.auc.finaltrain *.?.auc.finaltest \
      -g 0 0 0 1 1 1 \
      -l "Train 0" "Train 1" "Train 2" "Test 0" "Test 1" "Test 2" \
-     -o auc.pdf
+     -o pr.pdf
