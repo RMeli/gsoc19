@@ -30,9 +30,22 @@ other-*.tar.gz
 mltraining/clustering/rows
 mltraining/clustering/rows-wat
 mltraining/gninatypes/????
+
+# training
+*reduced*.types
+completelig
+completerec
 *.molcache2
 *prototxt
-training
+*solverstate
+*caffemodel
+*finaltest
+*finaltrain
+*_train.pdf
+*_test.pdf
+*auc.test
+*auc.train
+mltraining/*/*.?.out
 
 # python
 __pycache__
