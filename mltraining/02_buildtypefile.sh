@@ -1,7 +1,5 @@
 #!/bin/bash
 
-
-
 source variables/paths
 source variables/annotation
 
