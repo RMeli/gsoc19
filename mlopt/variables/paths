@@ -4,4 +4,4 @@ gnina=${groot}/build/bin/gnina
 gcaffe=${groot}/caffe/python
 
 # dirs
-dataroot=../PDBbind18
+dataroot=../../datasets/flexdock
