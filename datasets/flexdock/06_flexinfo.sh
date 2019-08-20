@@ -1,7 +1,6 @@
 #!/bin/bash
 
 datasets="refined other"
-datasets="test"
 
 n_cpus=8
 
