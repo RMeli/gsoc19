@@ -24,7 +24,7 @@ do
 
     system=$(basename ${dir})
 
-    outdir=${optdir}/minimized/${system}
+    outdir=minimized/${system}
     mkdir -p ${outdir}
 
     ligand=${dataroot}/${dir}/${system}_ligand-${rank}.pdb
@@ -39,7 +39,7 @@ do
     cp ${flex} ${outdir}
 
     ${gnina} -l ${ligand} -r ${receptor} \
-    --flexdist 3 --flexdist_ligand ${ligand} \
+    --flexres $(cat ${dataroot}/${dir}/${system}_flex.info) \
     --cnn_model *.model \
     --cnn_weights ${weights} \
     --cnn_scoring --minimize  \
