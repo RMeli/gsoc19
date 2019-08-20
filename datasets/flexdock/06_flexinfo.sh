@@ -1,5 +1,6 @@
 #!/bin/bash
 
+datasets="refined other"
 datasets="test"
 
 n_cpus=8
@@ -28,7 +29,7 @@ flexinfo(){
     flexlist=$(echo ${flexlist} | sed 's#,$##g')
 
     # Store flexible residue list to file for later use
-    echo ${flexlist} > ${dataset}/${system}/flex.info
+    echo ${flexlist} > ${dataset}/${system}/${system}_flex.info
 }
 
 export -f flexinfo
