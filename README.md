@@ -47,6 +47,7 @@ List of contributions to [openbabel](https://github.com/openbabel/openbabel):
 
 List of contributions to [MDAnalysis](https://github.com/MDAnalysis/mdanalysis):
 
+* Improved mass guess ([PR #2331](https://github.com/MDAnalysis/mdanalysis/pull/2331))
 * Fixed issues with PDB `HEADER` field in `PDBReader` and `PDBWriter` ([PR #2325](https://github.com/MDAnalysis/mdanalysis/pull/2325))
 * Allowed MOL2 parser to ignore status bit strings ([PR #2319](https://github.com/MDAnalysis/mdanalysis/pull/2319))
 
