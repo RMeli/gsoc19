@@ -17,6 +17,11 @@ flexinfo(){
     flexstr=$(grep "Flexible residues:" ${dir}/logs/smina.log)
     flexstr=$(echo $flexstr | sed "s#Flexible residues:##g")
 
+    # TODO: Remove waters beforehand and fix this (there might be PDB with empty chains)
+    # Remove empty chains (usually water!)
+    flexstr=$(echo $flexstr | sed "s# :[0-9]*##g")
+    flexstr=$(echo $flexstr | sed "s#^:[0-9]*##g")
+
     # Concatenate flexible residues in comma-separated list
     flexlist=""
     for res in ${flexstr}
