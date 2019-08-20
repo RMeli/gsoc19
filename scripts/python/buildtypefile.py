@@ -26,6 +26,7 @@ def parse(args: Optional[str] = None) -> ap.Namespace:
     parser.add_argument("-o", "--out", default="all.types", type=str)
     parser.add_argument("-d", "--datasets", nargs="+", default=["refined", "other"], type=str)
     parser.add_argument("-v", "--verbose", action="store_true", default=False)
+    parser.add_argument("--all", action="store_true", default=False, help="Do not exclude poses in [lmin,lmax] and [fmin,fmax]")
 
     args = parser.parse_args()
 
@@ -39,6 +40,7 @@ def write_record(
     lmax: float,
     fmin: float,
     fmax: float,
+    keepall: bool,
     box_size: float,
     path: float,
     outfile: str,
@@ -67,7 +69,8 @@ def write_record(
             # Check that ligand and flexible residues are within the box
             ligin, flexin = inbox(ligpdbpath, flexpdbpath, box_size)
             if ligin == False or flexin == False:
-                continue
+                if not keepall:
+                    continue
 
         elif rmsd_lig >= lmax and rmsd_flex >= fmax:
             annotation = 0 # Negative label
@@ -75,10 +78,14 @@ def write_record(
             # Check that ligand and flexible residues are within the box
             ligin, flexin = inbox(ligpdbpath, flexpdbpath, box_size)
             if ligin == False or flexin == False:
-                continue
+                if not keepall:
+                    continue
 
         else:  # Discard (lmin, lmax) and (fmin, fmax) intervals
-            continue  # Skip
+            if not keepall:
+                continue  # Skip
+            else:
+                annotation = 0
 
         score = float(row["score"])
 
@@ -93,12 +100,14 @@ if __name__ == "__main__":
 
     if args.verbose:
         print("BUILDTYPEFILE")
-        print(f"datapath =", args.datapath)
-        print(f"typespath =", args.typespath)
-        print(f"datasets =", args.datasets)
-        print(f"lmin = {args.lmin:.2f}\tlmax = {args.lmax:.2f}")
-        print(f"fmin = {args.fmin:.2f}\tfmax = {args.fmax:.2f}")
-        print(f"box_size = {args.box_size:.2f}")
+        print(f"  datapath =", args.datapath)
+        print(f"  typespath =", args.typespath)
+        print(f"  datasets =", args.datasets)
+        print(f"  lmin = {args.lmin:.2f}\tlmax = {args.lmax:.2f}")
+        print(f"  fmin = {args.fmin:.2f}\tfmax = {args.fmax:.2f}")
+        print(f"  box_size = {args.box_size:.2f}")
+        if args.all:
+            print("  WARNING: Including all systems in the typefile.")
 
     # List all folders containing gninatypes files
     dirs = [
@@ -128,5 +137,5 @@ if __name__ == "__main__":
             path = os.path.join(args.datapath, dataset, system)
 
             write_record(
-                system, df_score, args.lmin, args.lmax, args.fmin, args.fmax, args.box_size, path, out
+                system, df_score, args.lmin, args.lmax, args.fmin, args.fmax, args.all, args.box_size, path, out
             )  # Write record
