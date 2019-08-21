@@ -22,7 +22,7 @@ def parse(args: Optional[str] = None) -> ap.Namespace:
     parser.add_argument("--lmax", default=4, type=float)
     parser.add_argument("--fmin", default=1, type=float)
     parser.add_argument("--fmax", default=1.5, type=float)
-    parser.add_argument("-L", "--box_size", default=23.5, type=float)
+    parser.add_argument("-L", "--box_size", default=None, type=float)
     parser.add_argument("-o", "--out", default="all.types", type=str)
     parser.add_argument("-d", "--datasets", nargs="+", default=["refined", "other"], type=str)
     parser.add_argument("-v", "--verbose", action="store_true", default=False)
@@ -67,18 +67,18 @@ def write_record(
             annotation = 1 # Positive label
 
             # Check that ligand and flexible residues are within the box
-            ligin, flexin = inbox(ligpdbpath, flexpdbpath, box_size)
-            if ligin == False or flexin == False:
-                if not keepall:
+            if not keepall:
+                ligin, flexin = inbox(ligpdbpath, flexpdbpath, box_size)
+                if ligin == False or flexin == False:
                     continue
 
         elif rmsd_lig >= lmax and rmsd_flex >= fmax:
             annotation = 0 # Negative label
 
             # Check that ligand and flexible residues are within the box
-            ligin, flexin = inbox(ligpdbpath, flexpdbpath, box_size)
-            if ligin == False or flexin == False:
-                if not keepall:
+            if not keepall:
+                ligin, flexin = inbox(ligpdbpath, flexpdbpath, box_size)
+                if ligin == False or flexin == False:
                     continue
 
         else:  # Discard (lmin, lmax) and (fmin, fmax) intervals
