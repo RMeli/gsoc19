@@ -18,6 +18,7 @@ export PYTHONPATH=${gcaffe}:${PYTHONPATH}
 python3.6 ${gscripts}/calctop.py \
     -m ../${modeldir}/${model} \
     -p ${prefix} \
-    -c default2017-pose.${caffemodelnum} \
+    -c def2017-pose-33.5.${caffemodelnum} \
     -d ../${dataroot} \
+    -t 10 \
     -o top
