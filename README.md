@@ -11,7 +11,7 @@ This Google Summer of Code 2019 project aims to extend the capabilities of [gnin
 The main goals of the project are the following:
 
 * Build a high-quality training dataset of docking with flexible side chains
-* Enable optimisation of flexible side chains
+* Enable optimisation of flexible side chains (see [PR #73](https://github.com/gnina/gnina/pull/73))
   * Split ligand and receptor movable atoms in the correct channels
   * Combine ligand and receptor gradients for geometry optimisation
 * Evaluate the performance of a CNN-based scoring function for docking with flexible side chains
