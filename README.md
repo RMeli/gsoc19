@@ -4,12 +4,26 @@
 
 > Molecular docking—the prediction of binding modes and binding affinity of a molecule to a target of known structure—is a great computational tool for structure-based drug design. However, docking scoring functions are mostly empirical or knowledge-based and the flexibility of the receptor is completely neglected in most docking studies. Recent advances in the field showed that scoring functions can be effectively learnt by convolutional neural networks (CNNs). Here we want to build on top of these findings and develop a CNN scoring function for flexible docking by extending the capabilities of `gnina`—a state-of-the-art deep learning framework for molecular docking—and by building an high-quality training dataset for flexible docking.
 
+## Project Description
+
+This Google Summer of Code 2019 project aims to extend the capabilities of [gnina](https://github.com/gnina), the deep learning framework for molecular docking devloped in [David Koes](http://bits.csb.pitt.edu/)'s group, to build a CNN-based scoring function for docking with flexible side chains.
+
+The main goals of the project are the following:
+
+* Build a high-quality training dataset of docking with flexible side chains
+* Enable optimisation of flexible side chains
+  * Split ligand and receptor movable atoms in the correct channels
+  * Combine ligand and receptor gradients for geometry optimisation
+* Evaluate the performance of a CNN-based scoring function for docking with flexible side chains
+* Iterate training on datasets augmented with CNN-optimised poses
+
 ## Contributions
 
 ### GNINA
 
 List of contributions to [gnina](https://github.com/gnina/gnina) and [gnina-scripts](https://github.com/gnina/scripts):
 
+* Optimisation of flexible side chains ([PR #73](https://github.com/gnina/gnina/pull/73))
 * Added option to `pymol_arrows.py` ([PR #31](https://github.com/gnina/scripts/pull/31))
 * Low-memory and faster substitute `combine_rows.py` ([PR #30](https://github.com/gnina/scripts/pull/30))
 * Attempt to decrease memory usage of `combine_rows.py` ([PR #29](https://github.com/gnina/scripts/pull/29))
