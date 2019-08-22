@@ -52,6 +52,9 @@ mltraining/training-random
 mltraining/training-nobox-23.5
 mltraining/training-inbox-28.5
 
+# optimization datasets
+mlopt/opt-33.5-I/minimized
+
 # python
 __pycache__
 
