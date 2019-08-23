@@ -31,12 +31,14 @@ makeflex(){
     pdbout=${dir}/${system}_ligand-0.pdb
 
     grep -v "MODEL" ${pdbin} | grep -v "ENDMDL" > ${pdbout}
+    rm ${pdbin}
 
     # Define flexible residues input and output names
     pdbin=${dir}/flex.pdb
     pdbout=${dir}/${system}_flex-0.pdb
 
     grep -v "MODEL" ${pdbin} | grep -v "ENDMDL" > ${pdbout}
+    rm ${pdbin}
 
     # Combine flexible and rigid part of the receptor
     flex=${dir}/${system}_flex-0.pdb
