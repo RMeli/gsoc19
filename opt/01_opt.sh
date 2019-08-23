@@ -46,11 +46,11 @@ opt(){
     ${smina} -r ${receptor} -l ${ligand} \
         --flexdist_ligand ${ligand} --flexdist 3 \
         --autobox_ligand ${ligand} --autobox_add ${autobox_add} \
-	    --minimize --cpu 2 \
+	    --minimize --cpu 4 \
         --out ${ddir}/dock.pdb --out_flex ${ddir}/flex.pdb \
         2>&1 | tee ${ddir}/logs/smina.log
 }
 
 export -f opt
 
-parallel -j 6 opt ::: $(cat ${list})
+parallel -j 3 opt ::: $(cat ${list})
