@@ -2,14 +2,21 @@
 
 source variables/paths
 
-list=${pdbbind}/refined.lst
+list=${pdbbind}/test.lst
 
 # Store working directory
 wd=$PWD
 
-for path in $(cat ${list})
-do
- 	# PDB name
+export pdbbind=${pdbbind}
+export smina=${smina}
+export autobox_add=${autobox_add}
+export exhaustiveness=${exhaustiveness}
+export num_modes=${num_modes}
+
+opt(){
+    path=$1
+
+    # PDB name
 	system=$(basename ${path})
 
     # PDBbind directory
@@ -33,14 +40,17 @@ do
     echo "--autobox_add ${autobox_add}" | tee ${ddir}/logs/smina.log
     echo "--exaustiveness ${exhaustiveness}" | tee ${ddir}/logs/smina.log
     echo "--num_modes ${num_modes}" | tee ${ddir}/logs/smina.log
-    echo "--cpu ${cpu}" | tee ${ddir}/logs/smina.log
     echo "--out ${ddir}/dock.pdb" | tee ${ddir}/logs/smina.log
     echo "--out_flex ${ddir}/flex.pdb" | tee ${ddir}/logs/smina.log
 
     ${smina} -r ${receptor} -l ${ligand} \
         --flexdist_ligand ${ligand} --flexdist 3 \
         --autobox_ligand ${ligand} --autobox_add ${autobox_add} \
-	    --minimize --cpu ${cpu} \
+	    --minimize --cpu 2 \
         --out ${ddir}/dock.pdb --out_flex ${ddir}/flex.pdb \
         2>&1 | tee ${ddir}/logs/smina.log
-done
+}
+
+export -f opt
+
+parallel -j 6 opt ::: $(cat ${list})
