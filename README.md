@@ -25,6 +25,32 @@ This repository collects the different pipelines built in order to achieve the p
 
 The datasets built dusing this project will be released on [Zenodo](https://zenodo.org/) in due time.
 
+### Pipelines
+
+#### PDBbind18
+
+The folder `PDBbind18` contains the pipeline to get the dataset, pre-process it, compute SMILES sequences and list the systems withing a given molecular weight threshold. 
+
+See [`PDBbind18/README.md`](PDBbind18/README.md) for further information.
+
+#### Docking
+
+The folder `docking` contain the pipeline to dock the PDBbind18 dataset (both on a multi-core machine or on HPC clusters), analyse the results and cleaup the dataset (removing failures). 
+
+See [`docking/README.md`](docking/README.md) for further information.
+
+#### Datasets
+
+The folder `datasets/flexdock` contains the pipeline to build the training dataset from flexible docking results. The dataset is built by re-constructing the targets with the flexible side chain poses and computing the RMSD for all the poses. After building the dataset and before computing the RMSD of all the poses, the dataset might be augmented with optimized crystal poses (see [opt](####opt)).  Validation and analysis scripts are also present, in order to check the quality of the dataset. 
+
+See [`datasets/flexdock/README.md`](datasets/flexdock/README.md) for further information.
+
+#### Optimization
+
+#### ML Training
+
+#### ML Opt
+
 ## Contributions
 
 ### GNINA
