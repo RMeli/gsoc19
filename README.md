@@ -8,48 +8,25 @@
 
 This Google Summer of Code 2019 project aims to extend the capabilities of [gnina](https://github.com/gnina), the deep learning framework for molecular docking devloped in [David Koes](http://bits.csb.pitt.edu/)'s group, to build a CNN-based scoring function for docking with flexible side chains.
 
-The main goals of the project are the following:
+The main stages of the project are the following:
 
 * Build a high-quality training dataset of docking with flexible side chains
-  * Re-docking of [PDBbind18](http://www.pdbbind.org.cn/) using [smina](https://sourceforge.net/projects/smina/)
-  * Receptor reconstruction with docking side chain poses
+  * Get and pre-process [PDBbind18](http://www.pdbbind.org.cn/) (see [`PDBbind18/README.md`](PDBbind18/README.md))
+  * Re-docking with flexible side chains using [smina](https://sourceforge.net/projects/smina/) (see [`docking/README.md`](docking/README.md))
+  * Optimize crystal poses using [smina](https://sourceforge.net/projects/smina/) (see [`opt/README.md`](opt/README.md))
+  * Build training dataset (see [`datasets/flexdock/README.md`](datasets/flexdock/README.md))
 * Enable optimisation of flexible side chains (see [PR #73](https://github.com/gnina/gnina/pull/73))
   * Split ligand and receptor movable atoms in the correct channels
   * Combine ligand and receptor gradients for geometry optimisation
-* Train a new CNN-based scoring function for docking with flexible side chains
+* Train a new CNN-based scoring function for docking with flexible side chains (see [`mltraining/README.md`](mltraining/README.md))
   * Evaluate the performance of pose prediction
   * Evaluate the performance of pose optimisation
-* Iterate training on datasets augmented with CNN-optimised poses
+* Iterate training on datasets augmented with CNN-optimized poses
+  * Optimize docking poses with the CNN (see [`mlopt/README.md`](mlopt/README.md))) 
 
 This repository collects the different pipelines built in order to achieve the project goals. A list of constributions and fixes to [openbabel](https://github.com/openbabel/openbabel), [smina](https://sourceforge.net/projects/smina/) and [gnina](https://github.com/gnina/gnina) (and [MDAnalysis](https://github.com/MDAnalysis/mdanalysis)) is given below.
 
 The datasets built dusing this project will be released on [Zenodo](https://zenodo.org/) in due time.
-
-### Pipelines
-
-#### PDBbind18
-
-The folder `PDBbind18` contains the pipeline to get the dataset, pre-process it, compute SMILES sequences and list the systems withing a given molecular weight threshold. 
-
-See [`PDBbind18/README.md`](PDBbind18/README.md) for further information.
-
-#### Docking
-
-The folder `docking` contain the pipeline to dock the PDBbind18 dataset (both on a multi-core machine or on HPC clusters), analyse the results and cleaup the dataset (removing failures). 
-
-See [`docking/README.md`](docking/README.md) for further information.
-
-#### Datasets
-
-The folder `datasets/flexdock` contains the pipeline to build the training dataset from flexible docking results. The dataset is built by re-constructing the targets with the flexible side chain poses and computing the RMSD for all the poses. After building the dataset and before computing the RMSD of all the poses, the dataset might be augmented with optimized crystal poses (see [opt](####opt)).  Validation and analysis scripts are also present, in order to check the quality of the dataset. 
-
-See [`datasets/flexdock/README.md`](datasets/flexdock/README.md) for further information.
-
-#### Optimization
-
-#### ML Training
-
-#### ML Opt
 
 ## Contributions
 
