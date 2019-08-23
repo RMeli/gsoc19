@@ -11,11 +11,19 @@ This Google Summer of Code 2019 project aims to extend the capabilities of [gnin
 The main goals of the project are the following:
 
 * Build a high-quality training dataset of docking with flexible side chains
+  * Re-docking of [PDBbind18](http://www.pdbbind.org.cn/) using [smina](https://sourceforge.net/projects/smina/)
+  * Receptor reconstruction with docking side chain poses
 * Enable optimisation of flexible side chains (see [PR #73](https://github.com/gnina/gnina/pull/73))
   * Split ligand and receptor movable atoms in the correct channels
   * Combine ligand and receptor gradients for geometry optimisation
-* Evaluate the performance of a CNN-based scoring function for docking with flexible side chains
+* Train a new CNN-based scoring function for docking with flexible side chains
+  * Evaluate the performance of pose prediction
+  * Evaluate the performance of pose optimisation
 * Iterate training on datasets augmented with CNN-optimised poses
+
+This repository collects the different pipelines built in order to achieve the project goals. A list of constributions and fixes to [openbabel](https://github.com/openbabel/openbabel), [smina](https://sourceforge.net/projects/smina/) and [gnina](https://github.com/gnina/gnina) (and [MDAnalysis](https://github.com/MDAnalysis/mdanalysis)) is given below.
+
+The datasets built dusing this project will be released on [Zenodo](https://zenodo.org/) in due time.
 
 ## Contributions
 
