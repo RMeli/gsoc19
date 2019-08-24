@@ -105,7 +105,8 @@ if __name__ == "__main__":
         print(f"  datasets =", args.datasets)
         print(f"  lmin = {args.lmin:.2f}\tlmax = {args.lmax:.2f}")
         print(f"  fmin = {args.fmin:.2f}\tfmax = {args.fmax:.2f}")
-        print(f"  box_size = {args.box_size:.2f}")
+        if args.box_size is not None:
+            print(f"  box_size = {args.box_size:.2f}")
         if args.all:
             print("  WARNING: Including all systems in the typefile.")
 
