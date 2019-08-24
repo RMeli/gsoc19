@@ -17,8 +17,8 @@ docking/refined*
 docking/other*
 
 # optimisation
-opt/refined*
-opt/other*
+optimisation/refined*
+optimisation/other*
 
 # datasets
 datasets/flexdock/refined
