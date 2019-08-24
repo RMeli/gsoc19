@@ -13,7 +13,7 @@ The main stages of the project are the following:
 * Build a high-quality training dataset of docking with flexible side chains
   * Get and pre-process [PDBbind18](http://www.pdbbind.org.cn/) (see [`PDBbind18/README.md`](PDBbind18/README.md))
   * Re-docking with flexible side chains using [smina](https://sourceforge.net/projects/smina/) (see [`docking/README.md`](docking/README.md))
-  * Optimize crystal poses using [smina](https://sourceforge.net/projects/smina/) (see [`opt/README.md`](opt/README.md))
+  * Optimize crystal poses using [smina](https://sourceforge.net/projects/smina/) (see [`optimisation/README.md`](opt/README.md))
   * Build training dataset (see [`datasets/flexdock/README.md`](datasets/flexdock/README.md))
 * Enable optimisation of flexible side chains (see [PR #73](https://github.com/gnina/gnina/pull/73))
   * Split ligand and receptor movable atoms in the correct channels
