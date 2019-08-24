@@ -84,11 +84,7 @@ if __name__ == "__main__":
     ax1.set_xlabel("RMSD (Å)")
     ax1.set_xlim([0, 20])
     ax1.title.set_text("Ligand")
-<<<<<<< HEAD
-    ax1.axvline(x=2, color='k', linestyle="--", label="2 Å")
-=======
     ax1.axvline(x=2, color="k", linestyle="--", label="2 Å")
->>>>>>> 406c65f371146028188c8a2dd23a81205abca0b6
     ax1.legend()
 
     plot(df, "rmsd_flex", args.maxrank, args.bins, ax2)
@@ -102,11 +98,7 @@ if __name__ == "__main__":
     ax3.set_xlabel("RMSD (Å)")
     ax3.set_xlim([0, 2.5])
     ax3.title.set_text("MAX Flexible Residue")
-<<<<<<< HEAD
-    ax3.axvline(x=1, color='k', linestyle="--", label="1 Å")
-=======
     ax3.axvline(x=1, color="k", linestyle="--", label="1 Å")
->>>>>>> 406c65f371146028188c8a2dd23a81205abca0b6
     ax3.legend()
 
     plt.suptitle("RMSD Distributions")
