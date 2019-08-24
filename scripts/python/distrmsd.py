@@ -36,7 +36,7 @@ def parse(args: Optional[str] = None) -> ap.Namespace:
         "-mr", "--maxrank", type=int, default=5, help="Input file (.csv)"
     )
     parser.add_argument(
-        "-b", "--bins", type=int, default=None, help="Input file (.csv)"
+        "-b", "--bin_size", type=float, default=None, help="Histogram bins size"
     )
     parser.add_argument(
         "-opath", "--outputpath", type=str, default="", help="Output files path"
@@ -50,13 +50,17 @@ def get_rmsd_for_rank(rank: int, rmsd_name: str, df: pd.DataFrame) -> np.ndarray
     return df[rmsd_name].loc[df["rank"] == rank].values
 
 
-def plot(df: pd.DataFrame, rmsd_name: str, maxrank: int, bins: int, ax):
+def plot(df: pd.DataFrame, rmsd_name: str, maxrank: int, bin_size: int, ax):
 
-    for rank in range(1, maxrank + 1):
+    for rank in range(0, maxrank + 1):
 
         rmsd = get_rmsd_for_rank(rank, rmsd_name, df)
 
-        sns.distplot(rmsd, bins=bins, hist=True, kde=True, label=f"rank {rank}", ax=ax)
+        l = f"smina rank {rank}" if rank > 0 else "smina crystal"
+
+        bins = np.arange(rmsd.min(), rmsd.max(), bin_size)
+
+        sns.distplot(rmsd, bins=bins, hist=True, kde=True, label=l, ax=ax)
 
 
 if __name__ == "__main__":
@@ -80,32 +84,32 @@ if __name__ == "__main__":
 
     f, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(10, 5))
 
-    plot(df, "rmsd_lig", args.maxrank, args.bins, ax1)
+    plot(df, "rmsd_lig", args.maxrank, args.bin_size, ax1)
     ax1.set_xlabel("RMSD (Å)")
     ax1.set_xlim([0, 20])
     ax1.title.set_text("Ligand")
     ax1.axvline(x=2, color="k", linestyle="--", label="2 Å")
     ax1.legend()
 
-    plot(df, "rmsd_flex", args.maxrank, args.bins, ax2)
+    plot(df, "rmsd_flex", args.maxrank, args.bin_size, ax2)
     ax2.set_xlabel("RMSD (Å)")
     ax2.set_xlim([0, 3])
     ax2.title.set_text("Flexible Residues")
-    ax2.axvline(x=1, color="k", linestyle="--", label="1 Å")
+    handle = ax2.axvline(x=1, color="k", linestyle="--", label="1 Å")
     ax2.legend()
+    #ax2.legend(handles=[handle])
 
-    plot(df, "rmsd_fmax", args.maxrank, args.bins, ax3)
+    plot(df, "rmsd_fmax", args.maxrank, args.bin_size, ax3)
     ax3.set_xlabel("RMSD (Å)")
-    ax3.set_xlim([0, 2.5])
+    ax3.set_xlim([0, 4])
     ax3.title.set_text("MAX Flexible Residue")
-    ax3.axvline(x=1, color="k", linestyle="--", label="1 Å")
+    handle = ax3.axvline(x=1, color="k", linestyle="--", label="1 Å")
     ax3.legend()
+    #ax3.legend(handles=[handle])
 
     plt.suptitle("RMSD Distributions")
     plt.savefig(os.path.join(args.outputpath, f"distrmsd.pdf"))
     plt.savefig(os.path.join(args.outputpath, f"distrmsd.png"))
-
-    ###
 
     rmsd_lig = get_rmsd_for_rank(1, "rmsd_lig", df)
     N = len(rmsd_lig)
