@@ -23,8 +23,8 @@ optimisation/other*
 # datasets
 datasets/flexdock/refined
 datasets/flexdock/other
-datasets/flexdock/refined-0
-datasets/flexdock/other-0
+datasets/flexdock/refined-0-old
+datasets/flexdock/other-0-old
 refined-*.tar.gz
 other-*.tar.gz
 
