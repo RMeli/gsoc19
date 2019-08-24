@@ -3,6 +3,18 @@
 traindir=$1
 caffemodelnum=$2
 
+if [[ $traindir == "" ]]
+then
+  echo "TRAINDIR must be specified."
+  exit
+fi
+
+if [[ $caffemodelnum == "" ]]
+then
+  echo "CAFFEMODELNUM must be specified."
+  exit
+fi
+
 # This scrit is designed to run within a Singularity container
 # The correct Python interpreter depend on the container
 
