@@ -23,7 +23,7 @@ fi
 python ${pscripts}/buildtypefile.py \
     ${database} \
     ${typedir} \
-    --lmin ${min} --lmax ${max} --fmin ${fmin} --lmax ${fmax} \
+    --lmin ${min} --lmax ${max} --fmin ${fmin} --fmax ${fmax} \
     -L ${box_size} -d ${datasets} \
     --verbose -o ${traindir}/all.types \
     | tee ${traindir}/buildtypefile.log
