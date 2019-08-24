@@ -1,0 +1,7 @@
+BUILDTYPEFILE
+  datapath = ../datasets/flexdock
+  typespath = gninatypes
+  datasets = ['refined', 'other']
+  lmin = 2.00	lmax = 4.00
+  fmin = 1.00	fmax = 1.50
+  WARNING: Including all systems in the typefile.
