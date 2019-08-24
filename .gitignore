@@ -23,6 +23,8 @@ optimisation/other*
 # datasets
 datasets/flexdock/refined
 datasets/flexdock/other
+datasets/flexdock/refined-0
+datasets/flexdock/other-0
 refined-*.tar.gz
 other-*.tar.gz
 
@@ -53,7 +55,7 @@ mltraining/training-nobox-23.5
 mltraining/training-inbox-28.5
 
 # optimization datasets
-mlopt/opt-33.5-I/minimized
+mloptimisation/opt-33.5-I/minimized
 
 # python
 __pycache__

@@ -4,7 +4,7 @@ n_cpus=12
 
 source variables/paths
 
-datasets="test"
+datasets="other"
 
 # Export variables for GNU parallel
 export pdbbind=${pdbbind}
