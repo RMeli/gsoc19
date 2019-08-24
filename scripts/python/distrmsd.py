@@ -86,6 +86,7 @@ if __name__ == "__main__":
 
     plot(df, "rmsd_lig", args.maxrank, args.bin_size, ax1)
     ax1.set_xlabel("RMSD (Å)")
+    ax1.set_ylabel("Normalised density")
     ax1.set_xlim([0, 15])
     ax1.title.set_text("Ligand")
     ax1.axvline(x=2, color="k", linestyle="--", label="2 Å")
