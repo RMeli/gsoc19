@@ -1,6 +1,6 @@
 #!/bin/bash
 
-box_size=28.5
+box_size=33.5
 
 n_cpus=8
 fout="analysis/outbox.lst"
