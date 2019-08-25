@@ -48,6 +48,14 @@ The script `04_cleanup.sh` removes the problematic systems (listed in `analysis/
 
 The script `05_allscores.sh` combine all the scores for every system in a single file, suited for analysis.
 
-### 06 - Analysis
+### 06 - Flex Info
 
-The script `06_analysis.sh` plots the RMSD distributions for the ligand, the flexible residues and the maximum (MAX) RMSD among the flexible residues.
+The script `06_flexinfo.sh` extract information about the flexible residues from the result of `smina` docking. This information is useful to perform optimisation with the CNN scoring function (since it allows to treat exactly the same residues as flexible).
+
+### 07 - Analysis
+
+The script `07_analysis.sh` plots the RMSD distributions for the ligand, the flexible residues and the maximum (MAX) RMSD among the flexible residues.
+
+### 08 - Inbox
+
+The script `08_inbox.sh` checks that both the ligand and the flexible residues are within a given box, centered on the ligand. This is useful to pre-screen the systems that are too large for a given box size.
