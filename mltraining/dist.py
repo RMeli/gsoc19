@@ -55,40 +55,10 @@ for fold, fname in enumerate(args.fnames):
 
     df_RMSD = pd.concat([df_RMSD, df_rmsd])
 
-g = sns.catplot(x="Fold", y="RMSD", hue="method", col="type", data=df_RMSD, kind="boxen", legend=False, aspect=0.5)
+g = sns.catplot(x="Fold", y="RMSD", hue="method", col="type", data=df_RMSD, hue_order=["smina", "cnn", "best"], kind="boxen", legend=False, aspect=0.5)
 g.set_titles("{col_name}")
 plt.legend()
 plt.suptitle("Top Pose RMSD Distributions")
 plt.tight_layout()
-plt.savefig("dist.pdf")
-plt.show()
-
-#bin_size=0.1
-
-#plt.figure()
-#sns.distplot(df_lig["gnina"].to_numpy(), bins=np.arange(0, df_lig["gnina"].max() + bin_size, bin_size), label="CNN")
-#sns.distplot(df_lig["smina"].to_numpy(), bins=np.arange(0, df_lig["smina"].max() + bin_size, bin_size), label="smina")
-#sns.distplot(df_lig["best"].to_numpy(), bins=np.arange(0, df_lig["best"].max() + bin_size, bin_size), label="best")
-#plt.title("Top Pose RMSD Distributions for Ligand")
-#plt.xlabel("RMSD (A)")
-#plt.xlim([0,10])
-#plt.legend()
-#if args.output is None:
-#    plt.plot()
-""" else:
-    plt.savefig(args.output + "_lig.png")
-    plt.savefig(args.output + "_lig.pdf")
-
-plt.figure()
-sns.distplot(df_flex["gnina"].to_numpy(), bins=np.arange(0, df_flex["gnina"].max() + bin_size, bin_size), label="CNN")
-sns.distplot(df_flex["smina"].to_numpy(), bins=np.arange(0, df_flex["smina"].max() + bin_size, bin_size), label="smina")
-sns.distplot(df_flex["best"].to_numpy(), bins=np.arange(0, df_flex["best"].max() + bin_size, bin_size), label="best")
-plt.title("Top Pose RMSD Distributions for Flex")
-plt.xlabel("RMSD (A)")
-plt.xlim([0,6])
-plt.legend()
-if args.output is None:
-    plt.plot()
-else:
-    plt.savefig(args.output + "_flex.png")
-    plt.savefig(args.output + "_flex.pdf") """
+plt.savefig(args.output)
+#plt.show()

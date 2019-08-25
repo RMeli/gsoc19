@@ -35,7 +35,6 @@ do
     echo "cnn_score,smina_score,lig_rmsd,fmax_rmsd,system,smina_rank" > fulltest${fold}.csv
     head -n -1 fulltest${fold}.out  | awk '{print $1","$9","$7","$8","$4}' | 
         sed "s#/...._protein-#,#g" | sed 's#\.gninatypes##g' >> fulltest${fold}.csv
-
-    python ../dist.py fulltest${fold}.csv -o analysis/test${fold}
 done
 
+python ../dist.py fulltest[0-2].csv -o analysis/dist.pdf
