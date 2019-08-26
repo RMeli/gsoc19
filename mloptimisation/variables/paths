@@ -5,3 +5,12 @@ gcaffe=${groot}/caffe/python
 
 # dirs
 dataroot=../../datasets/flexdock
+pdbbind=../../PDBbind18
+
+# Scripts
+pscripts=../../scripts/python
+
+# Openbabel
+export LD_LIBRARY_PATH=$HOME/Documents/git/openbabel/install/lib/:$LD_LIBRARY_PATH
+obabel=$HOME/Documents/git/openbabel/install/bin/obabel
+obrms=$HOME/Documents/git/openbabel/install/bin/obrms
