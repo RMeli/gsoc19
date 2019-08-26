@@ -29,7 +29,7 @@ export PYTHONPATH=${gcaffe}:${PYTHONPATH}
 # Python 3.6 for Singularity container U18-C101
 python3.6 ${gscripts}/calctop.py \
     -m ../${modeldir}/${model} \
-    -p ${prefix} \
+    -p full \
     -c def2017-pose-33.5.${caffemodelnum} \
     -d ../${dataroot} \
     -t 10 \
