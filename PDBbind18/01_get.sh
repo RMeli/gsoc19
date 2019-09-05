@@ -6,7 +6,7 @@
 # Extract databases and rename folders
 # Create list of all the systems
 
-listall=pdbbind18-all # Complete list
+listall=lists/pdbbind18-all # Complete list
 
 echo "Downloading PDBbind PL (refined)..."
 wget http://www.pdbbind.org.cn/download/pdbbind_v2018_refined.tar.gz
@@ -24,6 +24,7 @@ tar -xzf pdbbind_v2018_other_PL.tar.gz
 mv v2018-other-PL other
 echo -n "done"
 
+mkdir -p lists
 rm -f ${listall}.lst
 
 for dataset in "refined" "other"
