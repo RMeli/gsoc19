@@ -2,6 +2,8 @@
 
 # Compute SMILES strings for all the ligands
 
+obabel=$HOME/Documents/git/openbabel/install/bin/obabel
+
 for dataset in "refined" "other"
 do
     for dir in $(ls -d ${dataset}/????) 
@@ -13,7 +15,7 @@ do
         sminame=${dir}/${system}_ligand.smi
 
         # Convert mol2 to smi and extract SMILES string only
-        smiles=$(obabel -imol2 -osmi ${ligname} | awk '{print $1}')
+        smiles=$(${obabel} -imol2 -osmi ${ligname} | awk '{print $1}')
 
         # Save SMILES to file
         echo ${smiles} > ${sminame}
