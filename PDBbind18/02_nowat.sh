@@ -3,7 +3,7 @@
 # Strip water molecules from PDB files
 
 # List of all PDBbind18 systems (dataset/id)
-list=pdbbind18-all.lst
+list=lists/pdbbind18-all.lst
 
 # Number of CPUs (for parallel job)
 n_cpus=12
