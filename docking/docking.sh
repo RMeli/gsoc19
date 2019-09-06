@@ -1,6 +1,6 @@
 #!/bin/bash
 
-list=analysis/icodes.dat
+list=../PDBbind18/lists/test.lst
 
 source variables/paths
 
