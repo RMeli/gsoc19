@@ -1,16 +1,15 @@
 #!/bin/bash
 
-# List all PDBbind18 systems
 # List all PDBbind18 systems with valid SMILES and molecular weight lower than 1000
 # Create PDBFILES file used by gnina clustering.py script (for cross-validation)
 
-list=pdbbind18 # Filtered list
-PDBFILES=pdbfiles # PDBFILES list
+list=lists/pdbbind18.lst # Filtered list
+PDBFILES=lists/pdbfiles.lst # PDBFILES list
 
 max_mass=1000 # Max allowed ligand mass
 
-rm -f ${list}.lst
-rm -f ${PDBFILES}.lst
+rm -f ${list}
+rm -f ${PDBFILES}
 
 for dataset in "refined" "other"
 do
@@ -26,7 +25,7 @@ do
     sminame=${path}/${dir}/${system}_ligand.smi
 
     # PDBFILES 
-    echo ${system} ${recname} ${sminame} >> ${PDBFILES}.lst
+    echo ${system} ${recname} ${sminame} >> ${PDBFILES}
 
     # Heavy atoms molecular weight
     hamw=$(python ../scripts/python/molweight.py ${sminame} | awk '{print $2}')
@@ -34,7 +33,7 @@ do
     # Append to filtered list
     if (( $(echo "${hamw} < ${max_mass}" | bc -l) )) 
     then
-        echo ${dataset}/${system} >> ${list}.lst
+        echo ${dataset}/${system} >> ${list}
     else
         echo "Discarding ${dataset}/${system} (mw = ${hamw})..."
     fi
