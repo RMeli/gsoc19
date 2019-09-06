@@ -41,7 +41,7 @@ if __name__ == "__main__":
     def parse(args: Optional[str] = None) -> ap.Namespace:
 
         parser = ap.ArgumentParser(
-            description="Compute RMSD distributions for docking poses."
+            description="Compute molecular weight given a SMILES file."
         )
 
         parser.add_argument("input", type=str, help="SMILES file (.smi)")
