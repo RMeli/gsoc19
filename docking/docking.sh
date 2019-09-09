@@ -41,7 +41,7 @@ do
         --flexdist_ligand ${ligand} --flexdist 3 \
         --autobox_ligand ${ligand} --autobox_add ${autobox_add} \
 	    --exhaustiveness ${exhaustiveness} --num_modes ${num_modes} --cpu ${cpu} \
-        --out ${ddir}/dock.pdb --out_flex ${ddir}/flex.pdb 
+        --out ${ddir}/dock.pdb --out_flex ${ddir}/flex.pdb \
         --seed ${seed} \
         2>&1 | tee ${ddir}/logs/smina.log
 done
