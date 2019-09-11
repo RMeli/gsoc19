@@ -3,25 +3,36 @@
 #SBATCH --job-name=<SPLITNAME>
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
-#SBATCH --cpus-per-task=12
+#SBATCH --cpus-per-task=32
 #SBATCH --gres=gpu:0
-#SBATCH -p gpu-biggin3,gpu-biggin4
+#SBATCH -p gpu-biggin2
 #SBATCH -o jobs/<SPLITNAME>.out
 #SBATCH -e jobs/<SPLITNAME>.err
-#SBATCH --time=48:00:00
 
 source /etc/profile.d/modules.sh
 module purge
 module load apps/singularity
+module load apps/gnu-parallel/2019
 
-source variables/paths
+source variables/paths-axon
 source variables/docking
 
 splitfile=<SPLITFILE>
 
-for path in $(cat ${splitfile})
-do
+# Export variables for parallel
+export pdbbind=${pdbbind}
+export autobox_add=${autobox_add}
+export exhaustiveness=${exhaustiveness}
+export num_modes=${num_modes}
+export cpu=8
+export seed=${seed}
+export container=${container}
+export smina=${smina}
 
+dock(){
+
+    path=$1
+	
     dir=${pdbbind}/${path}
     system=$(basename ${dir})
     dataset=$(basename $(dirname ${dir}))
@@ -63,4 +74,9 @@ do
         --seed ${seed} \
         2>&1 | tee ${ddir}/logs/smina.log
 
-done
+}
+
+export -f dock
+
+parallel -j 4 dock ::: $(cat ${splitfile})
+

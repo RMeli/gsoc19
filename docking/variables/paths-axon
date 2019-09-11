@@ -1,0 +1,8 @@
+# PDBbind database
+pdbbind=../PDBbind18
+
+# smina exec
+smina=$HOME/git/smina/build/linux/release/smina
+
+# containers
+container=${HOME}/containers/smina.s
