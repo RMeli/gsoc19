@@ -3,18 +3,27 @@
 #$ -V
 #$ -cwd
 #$ -q parallel-biggin
-#$ -pe parallel 16
-#$ -N <SPLITNAME>
-#$ -o jobs/<SPLITNAME>.out
-#$ -e jobs/<SPLITNAME>.err
-#$ -l h_rt=48:00:00
+#$ -pe parallel 8
+#$ -N docking
+#$ -o jobs/docking.out
+#$ -e jobs/docking.err
+#$ -t 1-158
+#$ -tc 12
+
+. /etc/profile.d/modules.sh
+
+module load compilers/gcc/6.2.0
 
 source variables/paths
 source variables/docking
 
-splitfile=<SPLITFILE>
+let index=$(( ${SGE_TASK_ID} - 1 ))
 
-for path in $(cat ${splitfile})
+printf -v splitfile "split%03d" ${index}
+
+echo $splitfile
+
+for path in $(cat splits/${splitfile})
 do
     
     dir=${pdbbind}/${path}
@@ -45,16 +54,15 @@ do
     echo "--autobox_add ${autobox_add}"
     echo "--exhaustiveness ${exhaustiveness}"
     echo "--num_modes ${num_modes}"
-    echo "--cpu ${cpu}"
+    echo "--cpu 8"
     echo "--seed ${seed}"
 	
     # Run docking
     ${smina} -r ${receptor} -l ${ligand} \
         --flexdist_ligand ${ligand} --flexdist 3 \
 	--autobox_ligand ${ligand} --autobox_add ${autobox_add} \
-	--exhaustiveness ${exhaustiveness} --num_modes ${num_modes} --cpu ${cpu} \
+	--exhaustiveness ${exhaustiveness} --num_modes ${num_modes} --cpu 8 \
         --out ${ddir}/dock.pdb --out_flex ${ddir}/flex.pdb \
-        --seed ${seed} \
         2>&1 | tee ${ddir}/logs/smina.log
 
 done
