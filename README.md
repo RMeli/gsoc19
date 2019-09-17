@@ -26,7 +26,9 @@ The main stages of the project are the following:
 
 This repository collects the different pipelines built in order to achieve the project goals. A list of constributions and fixes to [openbabel](https://github.com/openbabel/openbabel), [smina](https://sourceforge.net/projects/smina/) and [gnina](https://github.com/gnina/gnina) (and [MDAnalysis](https://github.com/MDAnalysis/mdanalysis)) is given below.
 
-The datasets built dusing this project will be released on [Zenodo](https://zenodo.org/) in due time.
+The datasets built using this project will be released on [Zenodo](https://zenodo.org/) in due time.
+
+[AIChem19](http://www.rsc.org/events/detail/38130/2nd-rsc-bmcs-rsc-cicag-artificial-intelligence-in-chemistry): [![Poster](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.3385972-blue)](https://doi.org/10.5281/zenodo.3385972)
 
 ## Contributions
 
