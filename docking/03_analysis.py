@@ -14,6 +14,10 @@ datasets = ["refined", "other"]
 # Dataset column names
 col_names = ["n_modes", "n_flex"]
 
+# Output directory
+outdir = os.path.abspath("analysis")
+plotdir = os.path.join(outdir, "plots")
+
 df = pd.DataFrame(columns=col_names, dtype=int)
 
 def load(fpath: str, print_warnings=False) -> mda.Universe:
@@ -78,23 +82,29 @@ for dataset in datasets:
         data = pd.DataFrame([[n_modes, n_flex]], index=[system], columns=col_names)
         df = df.append(data)
 
+if not os.path.exists(outdir):
+    os.makedirs(outdir)
+
+if not os.path.exists(plotdir):
+    os.makedirs(plotdir)
+
 print("Description:")
 print(df.astype(int).describe())
 
 num_no_conf = len(no_conf)
 if num_no_conf > 0:
     print(f"\nNo conformations found ({num_no_conf}):\n", *no_conf)
-    np.savetxt("analysis/noconf.dat", np.array(no_conf), "%s")
+    np.savetxt(os.path.join(outdir, "noconf.dat"), np.array(no_conf), "%s")
 
 num_no_flex = len(no_flex)
 if num_no_flex > 0:
     print(f"\nNo flexible residues found ({num_no_flex}):\n", *no_flex)
-    np.savetxt("analysis/noflex.dat", np.array(no_flex), "%s")
+    np.savetxt(os.path.join(outdir, "noflex.dat"), np.array(no_flex), "%s")
 
 num_failed = len(failed)
 if num_failed > 0:
     print(f"\nFailed({num_failed}):\n", *failed)
-    np.savetxt("analysis/failed.dat", np.array(failed), "%s")
+    np.savetxt(os.path.join(outdir, "failed.dat"), np.array(failed), "%s")
 
 # Plot histogram for number of modes
 plt.figure()
@@ -105,8 +115,8 @@ plt.xticks(range(n + 1))
 plt.xlim([-1,n + 1])
 plt.xlabel("Number of modes")
 plt.ylabel("Number of systems")
-plt.savefig("analysis/plots/n_modes.pdf")
-plt.savefig("analysis/plots/n_modes.png")
+plt.savefig(os.path.join(plotdir, "n_modes.pdf"))
+plt.savefig(os.path.join(plotdir, "n_modes.png"))
 
 # Plot histogram for number of flexible residues
 plt.figure(figsize=(20,10))
@@ -117,5 +127,5 @@ plt.xticks(range(n + 1))
 plt.xlim([-1,n + 1])
 plt.xlabel("Number of flexible residues")
 plt.ylabel("Number of systems")
-plt.savefig("analysis/plots/n_flexres.pdf")
-plt.savefig("analysis/plots/n_flexres.png")
+plt.savefig(os.path.join(plotdir, "n_flexres.pdf"))
+plt.savefig(os.path.join(plotdir, "n_flexres.png"))
