@@ -2,7 +2,7 @@
 
 source variables/paths
 
-list=${pdbbind}/test.lst
+list=${pdbbind}/lists/test.lst
 
 # Store working directory
 wd=$PWD
