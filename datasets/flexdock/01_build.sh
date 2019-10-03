@@ -3,11 +3,11 @@
 # Number of CPUs
 n_cpus=10
 
-# List
-list=lists/refined.lst
-
 # Paths
 source variables/paths
+
+# List
+list=${pdbbind}/lists/test.lst
 
 # Working directory
 wd=$PWD
@@ -19,8 +19,16 @@ export pscripts=${pscripts}
 
 # Build single system from docking
 makeflex(){
+
     # Get directory name from argument
     dir=$1
+
+    # Check if docking directory exists
+    if [ ! -d "${ddir}/${dir}" ]
+    then
+        echo "${dir} does not exist."
+        return
+    fi
 
     echo "makeflex ${dir}"
 
