@@ -9,7 +9,7 @@ Flexible docking is performed using automatic flexible residue (`--flexdist_liga
 | Option            | Value |
 | :----------------:|:-----:|
 | `--flexdist`      | 3     |
-| `--autobox_add`   | 10    |
+| `--autobox_add`   | 8     |
 | `--exhaustiveness`| 8     |
 | `--num_modes`     | 20    |
 
@@ -76,7 +76,7 @@ For the following `refined` systems, no flexible residues are found (6 systems):
 3nee 2z94 2g5u 4k7i 3mss 5lud
 ```
 
-For the following `other` systems, no flexible residues are found (16 systems):
+For the following `other` systems, no flexible residues are found (19 systems):
 
 ```text
 4his 4o7e 5swg 1h9z 3grj 4wh7 5ea7 4z90 4e5i 2r1w 3tct 5vdu 4bnz 4nni 4u5t 5wbp
@@ -143,6 +143,12 @@ An closer inspection of these systems revealed that OpenBabel and `smina` do not
 ```
 
 and an updated version of `smina` (Jun 12 2019) solves the problem.
+
+Only two configurations in the other set have no conformations with `--autobox_add` set to `8`:
+
+```text
+3sym 4b0j
+```
 
 ### Ring-Opening of Proline
 
