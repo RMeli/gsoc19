@@ -94,17 +94,17 @@ print(df.astype(int).describe())
 num_no_conf = len(no_conf)
 if num_no_conf > 0:
     print(f"\nNo conformations found ({num_no_conf}):\n", *no_conf)
-    np.savetxt(os.path.join(outdir, "noconf.dat"), np.array(no_conf), "%s")
+    np.savetxt(os.path.join(outdir, "noconf.lst"), np.array(no_conf), "%s")
 
 num_no_flex = len(no_flex)
 if num_no_flex > 0:
     print(f"\nNo flexible residues found ({num_no_flex}):\n", *no_flex)
-    np.savetxt(os.path.join(outdir, "noflex.dat"), np.array(no_flex), "%s")
+    np.savetxt(os.path.join(outdir, "noflex.lst"), np.array(no_flex), "%s")
 
 num_failed = len(failed)
 if num_failed > 0:
     print(f"\nFailed({num_failed}):\n", *failed)
-    np.savetxt(os.path.join(outdir, "failed.dat"), np.array(failed), "%s")
+    np.savetxt(os.path.join(outdir, "failed.lst"), np.array(failed), "%s")
 
 # Plot histogram for number of modes
 plt.figure()
