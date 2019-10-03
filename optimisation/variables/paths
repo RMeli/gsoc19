@@ -2,9 +2,6 @@
 pdbbind=../PDBbind18
 flexdock=../datasets/flexdock
 
-# PDBbind database
-pdbbind=../PDBbind18
-
 # smina exec
 smina=$HOME/Documents/git/smina-fork/build/linux/release/smina
 
