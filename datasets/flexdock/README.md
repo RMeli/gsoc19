@@ -10,6 +10,10 @@ The script `01_build.sh` uses the results of flexible docking with `smina` to bu
 
 In order to build the `flexdock` dataset, the different poses in `dock.pdb` and `flex.pdb` are split (using OpenBabel) and re-named. Finally, the flexible residue are re-inserted into the whole receptor crystal structure using the `makeflex.py` script (originally written by [@dkoes](https://github.com/dkoes) and enhanced during this project).
 
+### 01 - Augment (Optional)
+
+The `flexdock` dataset can be augmented with the optimised crystal pose (see [Optimisation](../../optimisation/README.md)). The script `01-opt_augment.sh` copy the optimised crystal poses from the `optimisation` folder to the `flexdock` dataset.
+
 ### 02 - Score
 
 The script `02_score.sh` produces a `score.csv` file for every system, containing the following fields for the different poses:
