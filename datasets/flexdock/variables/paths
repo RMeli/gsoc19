@@ -1,5 +1,6 @@
 # PDBbind database
 pdbbind=../../PDBbind18
+optimised=../../optimisation
 
 # Docking
 ddir=../../docking
