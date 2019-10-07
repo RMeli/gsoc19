@@ -22,7 +22,7 @@ The main stages of the project are the following:
   * Evaluate the performance of pose prediction
   * Evaluate the performance of pose optimisation
 * Iterate training on datasets augmented with CNN-optimized poses
-  * Optimize docking poses with the CNN (see [`mlopt/README.md`](mlopt/README.md))) 
+  * Optimize docking poses with the CNN (see [`mlopt/README.md`](mlopt/README.md))
 
 This repository collects the different pipelines built in order to achieve the project goals. A list of constributions and fixes to [openbabel](https://github.com/openbabel/openbabel), [smina](https://sourceforge.net/projects/smina/) and [gnina](https://github.com/gnina/gnina) (and [MDAnalysis](https://github.com/MDAnalysis/mdanalysis)) is given below.
 
