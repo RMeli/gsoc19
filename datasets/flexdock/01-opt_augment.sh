@@ -17,7 +17,7 @@ augment(){
     # Get directory name from argument
     dir=$1
     
-    cp ${optimised}/${dir}/*.pdb ${dir}
+    cp ${optimised}/${dir}/*-0.pdb ${dir}
 }
 
 # Export makeflex for GNU parallel
