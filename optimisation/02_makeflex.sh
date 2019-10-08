@@ -7,7 +7,7 @@ n_cpus=10
 source variables/paths
 
 # List
-list=${pdbbind}/lists/test.lst
+list=${pdbbind}/lists/pdbbind18.lst
 
 # Working directory
 wd=$PWD
