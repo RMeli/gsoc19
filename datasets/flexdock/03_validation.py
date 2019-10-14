@@ -7,7 +7,8 @@ import os
 import re
 import warnings
 
-datasets = ["refined", "other"]
+#datasets = ["refined", "other"]
+datasets = ["test"]
 
 pdbbindpath = "../../PDBbind18"
 
@@ -179,10 +180,15 @@ with open("analysis/invalid.lst", "w", buffering=1) as finvalid, open(
 
             try:
                 ranks = df_score["rank"].max()
+
+                # Take into account the possible presence of the crystal pose
+                if df_score["rank"].min() == 0:
+                    ranks += 1
+
                 assert ranks == len(lignames)
             except AssertionError:
                 print(
-                    f"{newline(ok)}    Number of scores mismatches number of poses ({ranks} vs {len(lignames)}!"
+                    f"{newline(ok)}    Number of scores mismatches number of poses ({ranks} vs {len(lignames)})!"
                 )
                 ok = False
 
