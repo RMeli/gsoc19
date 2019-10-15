@@ -1,0 +1,22 @@
+name: gsoc
+channels:
+  - conda-forge
+  - rdkit
+dependencies:
+  - python=3.6
+  - ipython
+  - pip
+  - biopython
+  - black
+  - cython
+  - matplotlib
+  - mdanalysis
+  - numpy
+  - pandas
+  - prody
+  - pytest
+  - rdkit
+  - scikit-learn
+  - sicpy
+  - seaborn
+  - tqdm
