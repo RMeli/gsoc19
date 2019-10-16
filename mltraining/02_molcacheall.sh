@@ -4,10 +4,13 @@ source variables/paths
 
 echo -n "Building typefile..."
 
+# Build type file without checking box size
+# This is useful to caching all systems (the cache can be a superset of the ones used)
+# See README.md for more infos
 python ${pscripts}/buildtypefile.py \
     ${database} \
     ${typedir} \
-    --lmin 2 --lmax 4 --fmin 1 --fmax 1.5 \
+    --lmin ${min} --lmax ${max} --fmin ${fmin} --fmax ${fmax} \
     -d refined other \
     --verbose --all \
     -o ${typedir}/all.types \
