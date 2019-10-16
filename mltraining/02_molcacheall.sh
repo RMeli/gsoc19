@@ -1,6 +1,7 @@
 #!/bin/bash
 
 source variables/paths
+source variables/annotation
 
 echo -n "Building typefile..."
 
