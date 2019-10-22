@@ -19,6 +19,8 @@ source ../variables/paths
 
 for fold in 0
 do
+# IFS='\n' is needed in order to loop over one line
+# A line contains the PDB code of the system and its rank
 IFS='
 '
   for line in $(cat *${fold}.lst)
