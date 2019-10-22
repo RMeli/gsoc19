@@ -23,8 +23,6 @@ optimisation/other*
 # datasets
 datasets/flexdock/refined
 datasets/flexdock/other
-datasets/flexdock/refined-0-old
-datasets/flexdock/other-0-old
 refined-*.tar.gz
 other-*.tar.gz
 
@@ -49,20 +47,11 @@ completerec
 *auc.train
 mltraining/*/*.?.out
 
-# training folders
-mltraining/training-random
-mltraining/training-nobox-23.5
-mltraining/training-inbox-28.5
-
 # optimization datasets
-mloptimisation/mlopt-33.5-nocrys/minimized
+mloptimisation/optdir/minimized
 
 # python
 __pycache__
-
-# untraked
-backup-*
-untracked
 
 # editors
 .vscode
