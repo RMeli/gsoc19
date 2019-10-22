@@ -18,6 +18,10 @@ fi
 mkdir -p ${optdir}
 
 cp ../mltraining/variables/completelig ../mltraining/variables/completerec ${optdir}
-cp ${traindir}/*.molcache2 ${optdir}
 cp ${traindir}/*.model ${optdir}
 cp ${traindir}/*.caffemodel ${optdir}
+
+# Remove molcache and gninatypes requirements
+sed -i "/root_folder/d" ${optdir}/*.model
+sed -i "/ligmolcache/d" ${optdir}/*.model
+sed -i "/recmolcache/d" ${optdir}/*.model
