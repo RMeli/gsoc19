@@ -1,0 +1,72 @@
+Bootstrap: docker
+From: nvidia/cuda:10.1-cudnn7-devel-ubuntu18.04
+
+%setup
+
+%files
+
+%environment
+
+    # OpenBabel
+    export PYTHONPATH=/usr/local/lib/python3.6/dist-packages/:$PYTHONPATH
+    export LIBRARY_PATH=/usr/local/lib/:$LIBRARY_PATH
+    export LD_LIBRARY_PATH=/usr/local/lib/:$LD_LIBRARY_PATH
+
+%post
+    # Update
+    apt-get -y update
+
+    # Essentials
+    apt-get -y install vim git wget curl parallel build-essential
+
+    # Install CMake
+    apt purge --auto-remove cmake
+    cmake_version=3.14
+    cmake_build=4
+    mkdir /cmake && cd /cmake
+    wget https://cmake.org/files/v${cmake_version}/cmake-${cmake_version}.${cmake_build}.tar.gz
+    tar -xzvf cmake-${cmake_version}.${cmake_build}.tar.gz
+    cd cmake-${cmake_version}.${cmake_build}/
+    ./bootstrap
+    make -j 8
+    make install
+    cmake --version
+
+    # C++
+    apt-get -y install libboost-all-dev libeigen3-dev valgrind
+
+    # Python
+    apt-get -y install python3-dev python3-pip
+
+    python3 -m pip install -U pip
+    python3 -m pip install ipython pytest
+    python3 -m pip install numpy
+    python3 -m pip install scipy pandas scikit-learn
+    python3 -m pip install matplotlib seaborn scikit-image
+    python3 -m pip install torch torchvision
+    python3 -m pip install biopython pyquaternion
+    python3 -m pip install protobuf psutil
+    
+    # OpenBabel
+    apt-get purge --auto-remove libopenbabel-dev
+    apt-get -y install libxml2-dev libcairo2-dev rapidjson-dev swig 
+    mkdir /openbabel && cd /openbabel
+    git clone https://github.com/RMeli/openbabel.git
+    mkdir obuild && cd obuild
+    cmake ../openbabel \
+        -DWITH_MAEPARSER=OFF \
+        -DPYTHON_BINDINGS=ON -DRUN_SWIG=ON -DPYTHON_EXECUTABLE=/usr/bin/python3
+    make -j 8
+    make test
+    make install
+
+    apt-get -y install \
+        librdkit-dev \
+        libgoogle-glog-dev libprotobuf-dev protobuf-compiler \
+        libhdf5-serial-dev libatlas-base-dev
+
+%runscript
+
+    export SINGULARITYENV_CUDA_VISIBLE_DEVICES=$CUDA_VISIBLE_DEVICES
+
+%test
