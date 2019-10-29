@@ -69,7 +69,7 @@ if args.graph == "boxen":
 elif args.graph == "distplot":
     plt.figure()
     bins = np.linspace(0, max(df_RMSD["RMSD"]), 150)
-    g = sns.FacetGrid(df_RMSD.drop("name", axis=1), col="Fold", row="type", hue="method")
+    g = sns.FacetGrid(df_RMSD.drop("name", axis=1), col="Fold", row="type", hue="method", hue_order=["smina", "cnn", "best"])
     g.map(sns.distplot, "RMSD", bins=bins)
     plt.legend()
     plt.xlim([0,6])
