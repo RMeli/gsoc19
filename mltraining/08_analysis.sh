@@ -37,4 +37,5 @@ do
         sed "s#/...._protein-#,#g" | sed 's#\.gninatypes##g' >> fulltest${fold}.csv
 done
 
-python ../dist.py fulltest[0-2].csv -o analysis/dist.pdf
+python ../dist.py fulltest[0-2].csv -o analysis/dist_b.pdf -g boxen
+python ../dist.py fulltest[0-2].csv -o analysis/dist_d.pdf -g distplot
