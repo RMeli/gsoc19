@@ -2,21 +2,33 @@ name: gsoc
 channels:
   - conda-forge
   - rdkit
+  - ambermd
 dependencies:
+  # Base
   - python=3.6
   - ipython
   - pip
+
+  # Science
+  - numpy
+  - sicpy
+  - pandas
+  - scikit-learn
+  
   - biopython
+  - mdanalysis
+  - prody
+  - rdkit
+
+  # Plotting
+  - matplotlib
+  - seaborn
+
+  # Misc
+  - tqdm
+
+  # Devtools
   - black
   - cython
-  - matplotlib
-  - mdanalysis
-  - numpy
-  - pandas
-  - prody
   - pytest
-  - rdkit
-  - scikit-learn
-  - sicpy
-  - seaborn
-  - tqdm
+  
