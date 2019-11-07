@@ -20,7 +20,6 @@ def receptorsdict(rfname: str):
 
     return receptors
 
-
 def ligandsdict(lfname: str):
 
     ligands = defaultdict(list)
@@ -39,14 +38,14 @@ def ligandpath(lig, pocket, root):
     ligprefix = f"{lig.pdbid}_{lig.name}"
 
     ligpath = ""
-    try:
-        ligname = ligprefix + "_uff2.sdf"
+    
+    for suffix in ["_uff2.sdf", "_uff.sdf", "_lig_prody.sdf"]:
+
+        ligname = ligprefix + suffix
         ligpath = os.path.join(root, pocket, ligname)
 
-        open(ligpath, "r")
-    except FileNotFoundError:
-        ligname = ligprefix + "_uff.sdf"
-        ligpath = os.path.join(root, pocket, ligname)
+        if os.path.isfile(ligpath):
+            break
 
     return ligpath
 
@@ -69,6 +68,7 @@ def redundant_ligands(ligands: List[Ligand], pocket: str, root: str) -> np.ndarr
             ligpathj = ligandpath(ligands[j], pocket, root)
 
             rmsd = obrms(ligpathi, ligpathj)
+            print(ligpathi, ligpathj, rmsd)
 
             if rmsd < 0.5:
                 if i in redundant:
@@ -85,12 +85,11 @@ def crossdocking(ligdict, recdict, outfile: str = "crossdocking.dat", root: str 
         for pocket, reclist in recdict.items():
             for rec in reclist:
 
-                ligands = ligdict[pocket]
+                ligands = set(ligdict[pocket]) # Ignore duplicate ligands
 
                 redundant = redundant_ligands(ligands, pocket, root)
-                # print(redundant)
 
-                for idx, lig in enumerate(ligdict[pocket]):
+                for lig in ligands:
 
                     recname = f"{rec.pdbid}_{rec.chain}_rec.pdb"
                     recpath = os.path.join(root, pocket, recname)
@@ -98,8 +97,10 @@ def crossdocking(ligdict, recdict, outfile: str = "crossdocking.dat", root: str 
                     ligpath = ligandpath(lig, pocket, root)
 
                     if idx in redundant:
-                        print("Skipping")
+                        #print("Skipping")
                         continue
+
+                    #print(ligpath, recpath)
 
                     fout.write(f"{ligpath} {recpath}\n")
 
