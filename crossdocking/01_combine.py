@@ -50,44 +50,13 @@ def ligandpath(lig, pocket, root):
     return ligpath
 
 
-def obrms(ligpath1, ligpath2):
-    line = os.popen(f"obrms {ligpath1} {ligpath2}").read()
-
-    return float(line.split()[-1])
-
-
-def redundant_ligands(ligands: List[Ligand], pocket: str, root: str) -> np.ndarray:
-
-    n = len(ligands)
-
-    redundant = set()
-
-    for i in range(n):
-        ligpathi = ligandpath(ligands[i], pocket, root)
-        for j in range(i):
-            ligpathj = ligandpath(ligands[j], pocket, root)
-
-            rmsd = obrms(ligpathi, ligpathj)
-            print(ligpathi, ligpathj, rmsd)
-
-            if rmsd < 0.5:
-                if i in redundant:
-                    redundant.add(j)
-                else:
-                    redundant.add(i)
-
-    return redundant
-
-
 def crossdocking(ligdict, recdict, outfile: str = "crossdocking.dat", root: str = ""):
 
     with open(outfile, "w") as fout:
         for pocket, reclist in recdict.items():
             for rec in reclist:
 
-                ligands = set(ligdict[pocket]) # Ignore duplicate ligands
-
-                redundant = redundant_ligands(ligands, pocket, root)
+                ligands = ligdict[pocket]
 
                 for lig in ligands:
 
@@ -95,12 +64,6 @@ def crossdocking(ligdict, recdict, outfile: str = "crossdocking.dat", root: str 
                     recpath = os.path.join(root, pocket, recname)
 
                     ligpath = ligandpath(lig, pocket, root)
-
-                    if idx in redundant:
-                        #print("Skipping")
-                        continue
-
-                    #print(ligpath, recpath)
 
                     fout.write(f"{ligpath} {recpath}\n")
 
