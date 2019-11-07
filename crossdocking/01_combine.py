@@ -28,7 +28,14 @@ def ligandsdict(lfname: str):
         for line in fin:
             pocket, pdbid, name, _ = line.strip().split(":")
 
-            ligands[pocket].append(Ligand(pdbid=pdbid, name=name))
+            unique = True
+            for lig in ligands[pocket]:
+                if lig.name == name:
+                    unique = False
+                    break
+
+            if unique:
+                ligands[pocket].append(Ligand(pdbid=pdbid, name=name))
 
     return ligands
 
