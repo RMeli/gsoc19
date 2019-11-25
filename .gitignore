@@ -16,6 +16,9 @@ PDBbind18/other
 docking/refined*
 docking/other*
 
+# crossdocking
+crossdocking/flexcd
+
 # optimisation
 optimisation/refined*
 optimisation/other*
