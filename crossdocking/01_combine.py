@@ -1,3 +1,8 @@
+"""
+Combine every ligand associated to a pocket with the cognate receptor and a given
+number of random receptors with the same pocket.
+"""
+
 import numpy as np
 import os
 
@@ -8,6 +13,11 @@ Receptor = namedtuple("Receptor", ["pdbid", "chain"])
 Ligand = namedtuple("Ligand", ["pdbid", "name"])
 
 def receptorsdict(rfname: str):
+    """
+    Get all receptors from file.
+
+    Receptors are stored in a dictionary of lists, keyed by pocket.
+    """
 
     receptors = defaultdict(list)
 
@@ -21,6 +31,11 @@ def receptorsdict(rfname: str):
 
 
 def ligandsdict(lfname: str):
+    """
+    Get all ligands from file.
+
+    Ligands are stored in a dictionary of lists, keyed by pocket.
+    """
 
     ligands = defaultdict(list)
 
@@ -38,17 +53,16 @@ def ligandpath(lig, pocket, root):
     ligprefix = f"{lig.pdbid}_{lig.name}"
 
     ligpath = ""
-    try:
-        ligname = ligprefix + "_uff2.sdf"
+
+    ligfound = False
+    for ext in ["uff2", "uff"]:
+        ligname = ligprefix + f"_{ext}.sdf"
         ligpath = os.path.join(root, pocket, ligname)
 
-        open(ligpath, "r")
-    except FileNotFoundError:
-        ligname = ligprefix + "_uff.sdf"
-        ligpath = os.path.join(root, pocket, ligname)
+        if os.path.isfile(ligpath):
+            break
 
     return ligpath
-
 
 
 def crossdocking(ligdict, recdict, outfile: str = "crossdocking.dat", root: str = "", nmax: int = 2):
@@ -87,8 +101,10 @@ def crossdocking(ligdict, recdict, outfile: str = "crossdocking.dat", root: str 
 
                         break
 
+                print(idxs)
                 # Delete cognate receptor index from indices to be sampled
                 idxs = np.delete(idxs, idx_cognate)
+                print(idxs)
 
                 # Sample nmax-1 random receptors
                 samples = np.random.choice(
