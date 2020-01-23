@@ -59,19 +59,12 @@ def crossdocking(ligdict, recdict, outfile: str = "crossdocking.dat", root: str 
 
                 ligands = ligdict[pocket]
 
-                redundant = redundant_ligands(ligands, pocket, root)
-                # print(redundant)
-
                 for idx, lig in enumerate(ligdict[pocket]):
 
                     recname = f"{rec.pdbid}_{rec.chain}_rec.pdb"
                     recpath = os.path.join(root, pocket, recname)
 
                     ligpath = ligandpath(lig, pocket, root)
-
-                    if idx in redundant:
-                        print("Skipping")
-                        continue
 
                     fout.write(f"{ligpath} {recpath}\n")
 
