@@ -52,15 +52,17 @@ def ligandpath(lig, pocket, root):
 
     ligprefix = f"{lig.pdbid}_{lig.name}"
 
-    ligpath = ""
-
     ligfound = False
     for ext in ["uff2", "uff"]:
         ligname = ligprefix + f"_{ext}.sdf"
-        ligpath = os.path.join(root, pocket, ligname)
+        ligpath = os.path.join(pocket, ligname)
 
-        if os.path.isfile(ligpath):
+        if os.path.isfile(os.path.join(root, ligpath)):
+            ligfound=True
             break
+
+    if not ligfound:
+        raise FileNotFoundError
 
     return ligpath
 
@@ -96,7 +98,7 @@ def crossdocking(ligdict, recdict, outfile: str = "crossdocking.dat", root: str 
                         # Write ligand and cognate receptor
                         # This corresponds to re-docking
                         recname = f"{rec.pdbid}_{rec.chain}_rec.pdb"
-                        recpath = os.path.join(root, pocket, recname)
+                        recpath = os.path.join(pocket, recname)
                         fout.write(f"{ligpath} {recpath}\n")
 
                         break
@@ -118,7 +120,7 @@ def crossdocking(ligdict, recdict, outfile: str = "crossdocking.dat", root: str 
                     rec = reclist[idx]
 
                     recname = f"{rec.pdbid}_{rec.chain}_rec.pdb"
-                    recpath = os.path.join(root, pocket, recname)
+                    recpath = os.path.join(pocket, recname)
                     
                     fout.write(f"{ligpath} {recpath}\n")
 
