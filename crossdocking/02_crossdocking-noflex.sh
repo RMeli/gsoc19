@@ -1,13 +1,15 @@
 #!/bin/bash
 
 root=${PWD}
-datadir=flexcd
+datadir=NOflexcd
 cddat=cd.dat
 
 source bash/paths
 source bash/docking
 
 datapath=${root}/${datadir}
+
+mkdir -p ${datapath}
 
 cat ${cddat} | while read line
 do
@@ -40,7 +42,6 @@ do
     outname="${recpdb}_${recchain}_rec_${ligpdb}_${ligid}"
 
     ${smina} -r ${receptor} -l ${ligand} \
-        --flexdist_ligand ${ligand} --flexdist 3 \
         --autobox_ligand ${ligand} --autobox_add ${autobox_add} \
 	    --exhaustiveness ${exhaustiveness} --num_modes ${num_modes} --cpu ${cpu} \
         --out ${ddir}/${outname}_lig.pdb --out_flex ${ddir}/${outname}_flex.pdb \
