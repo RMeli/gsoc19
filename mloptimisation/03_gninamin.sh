@@ -17,7 +17,7 @@ cd ${optdir}
 
 source ../variables/paths
 
-for fold in 0
+for fold in 1 2
 do
 # IFS='\n' is needed in order to loop over one line
 # A line contains the PDB code of the system and its rank

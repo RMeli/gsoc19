@@ -9,7 +9,6 @@ def loadcd(
     ligid,
     ligname,
     pocket,
-    idx="1",
     flexdist="3",
     crossdock="~/Documents/datasets/crossdocking/CrossDocked",
     cdpath="",
@@ -18,14 +17,11 @@ def loadcd(
     # Clear everything
     cmd.reinitialize("everything")
 
-    # Convert string of indices to numbers
-    idx = int(idx)
-
     # Convert flexdist to float
     flexdist = float(flexdist)
 
     # Print informations
-    print(f"Loading {recid}_{chain}:{ligid}_{ligname} (rank {idx})")
+    print(f"Loading {recid}_{chain}:{ligid}_{ligname}")
     print(f"flexdist = {flexdist}")
 
     # Build paths

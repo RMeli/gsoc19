@@ -3,9 +3,3 @@ pdbbind=../PDBbind18
 
 # smina exec
 smina=$HOME/Documents/git/smina-fork/build/linux/release/smina
-
-# Openbabel
-obabelroot=$HOME/Documents/git/openbabel/install/
-export LD_LIBRARY_PATH=${obabelroot}/lib/:$LD_LIBRARY_PATH
-obabel=${obabelroot}/bin/obabel
-obrms=${obabelroot}/bin/obrms
