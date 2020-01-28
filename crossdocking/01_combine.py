@@ -53,7 +53,7 @@ def ligandpath(lig, pocket, root):
     ligprefix = f"{lig.pdbid}_{lig.name}"
 
     ligfound = False
-    for ext in ["uff2", "uff"]:
+    for ext in ["uff2", "uff", "lig_prody", "lig_babel"]:
         ligname = ligprefix + f"_{ext}.sdf"
         ligpath = os.path.join(pocket, ligname)
 
@@ -62,7 +62,9 @@ def ligandpath(lig, pocket, root):
             break
 
     if not ligfound:
-        raise FileNotFoundError
+        raise FileNotFoundError(
+            f"\n\tpocket: {pocket} | pdbid : {lig.pdbid} | name: {lig.name}"
+        )
 
     return ligpath
 
@@ -103,10 +105,8 @@ def crossdocking(ligdict, recdict, outfile: str = "crossdocking.dat", root: str 
 
                         break
 
-                print(idxs)
                 # Delete cognate receptor index from indices to be sampled
                 idxs = np.delete(idxs, idx_cognate)
-                print(idxs)
 
                 # Sample nmax-1 random receptors
                 samples = np.random.choice(
