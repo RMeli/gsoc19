@@ -16,14 +16,14 @@ import gzip
 import re
 
 # Root folder for analysis
-#root = sys.argv[1]
+# root = sys.argv[1]
 
 TIMINGS = {}
 N_POSES = {}
 N_ROTATABLE_BONDS = {}
 N_FLEXIBLE_RESIDUES = {}
 
-#for root in ["docking-d3.0", "docking-d3.5", "docking-d4.0"]:
+# for root in ["docking-d3.0", "docking-d3.5", "docking-d4.0"]:
 for root in ["docking-d3.0", "docking-d3.5"]:
     pockets = os.listdir(os.path.join(root, "docking"))
 
@@ -36,7 +36,9 @@ for root in ["docking-d3.0", "docking-d3.5"]:
         # Path to pocket
         ppath = os.path.join(root, "docking", pocket)
 
-        runs = [f.replace("-gnina.log", "") for f in os.listdir(ppath) if f.endswith(".log")]
+        runs = [
+            f.replace("-gnina.log", "") for f in os.listdir(ppath) if f.endswith(".log")
+        ]
 
         for run in runs:
             log = f"{run}-gnina.log"
@@ -45,11 +47,21 @@ for root in ["docking-d3.0", "docking-d3.5"]:
 
             with open(os.path.join(ppath, log), "r") as flog:
                 content = flog.read()
-                if re.search("WARNING: Could not find any conformations completely within the search space.", content):
+                if re.search(
+                    "WARNING: Could not find any conformations completely within the search space.",
+                    content,
+                ):
                     continue
                 else:
                     target = "Loop time"
-                    timings.append(int(re.search(f"{target} \d+", content).group(0).replace(target, "").strip()))
+                    timings.append(
+                        int(
+                            re.search(f"{target} \d+", content)
+                            .group(0)
+                            .replace(target, "")
+                            .strip()
+                        )
+                    )
 
             sdf = Chem.ForwardSDMolSupplier(gzip.open(os.path.join(ppath, lig), "r"))
 
@@ -59,8 +71,10 @@ for root in ["docking-d3.0", "docking-d3.5"]:
                     # Some molecules can't be correctly parsed
                     continue
 
-                if poses == 0: # Count same molecule only once
-                    n_rotatable_bonds.append(rdMolDescriptors.CalcNumRotatableBonds(mol))
+                if poses == 0:  # Count same molecule only once
+                    n_rotatable_bonds.append(
+                        rdMolDescriptors.CalcNumRotatableBonds(mol)
+                    )
                 poses += 1
 
             n_poses.append(poses)
@@ -98,13 +112,14 @@ def distplot(data, name, xlabel, bins=True):
     plt.legend()
     plt.savefig(f"{name}.pdf")
 
+
 def timeplot(timings, n_flexible_residues):
     plt.figure()
 
     for key, times in timings.items():
         n_flex_res = n_flexible_residues[key]
 
-        sns.scatterplot(x=n_flex_res, y=np.array(times) / 60., label=key)
+        sns.scatterplot(x=n_flex_res, y=np.array(times) / 60.0, label=key)
 
     plt.xlabel("n_flexible_residues")
     plt.ylabel("time (min)")
@@ -113,6 +128,7 @@ def timeplot(timings, n_flexible_residues):
     plt.legend()
 
     plt.savefig(f"timings.pdf")
+
 
 timeplot(TIMINGS, N_ROTATABLE_BONDS)
 distplot(N_POSES, "n_poses", "Poses")
