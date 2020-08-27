@@ -18,15 +18,13 @@ import re
 # Root folder for analysis
 #root = sys.argv[1]
 
-
-
 TIMINGS = {}
 N_POSES = {}
 N_ROTATABLE_BONDS = {}
 N_FLEXIBLE_RESIDUES = {}
 
 #for root in ["docking-d3.0", "docking-d3.5", "docking-d4.0"]:
-for root in ["docking-d3.0"]:
+for root in ["docking-d3.0", "docking-d3.5"]:
     pockets = os.listdir(os.path.join(root, "docking"))
 
     timings = []
@@ -79,7 +77,7 @@ for root in ["docking-d3.0"]:
     N_FLEXIBLE_RESIDUES[root] = n_flexible_residues
 
 
-def distplot(data, name, xlabel, bins=False, mult=1.0):
+def distplot(data, name, xlabel, bins=True):
     plt.figure()
 
     m, M = np.Inf, -np.Inf
@@ -89,25 +87,36 @@ def distplot(data, name, xlabel, bins=False, mult=1.0):
         if max(value) > M:
             M = max(value)
 
-    if bins:
-        b = np.arange(m * mult - 0.5, M * mult + 1, 1)
-    else:
-        b = np.arange(m * mult - 0.5, M * mult + 1, 20)
+    b = np.arange(m - 0.5, M + 1, 1)
 
     for key, value in data.items():
-        sns.distplot(np.array(value) * mult, kde=False, bins=b, label=key)
+        sns.distplot(np.array(value), kde=False, bins=b, label=key)
 
-    if b is not None:
-        plt.xticks(b[::2] + 0.5)
+    plt.xticks(b[::2] + 0.5)
 
     plt.xlabel(xlabel)
     plt.legend()
     plt.savefig(f"{name}.pdf")
 
+def timeplot(timings, n_flexible_residues):
+    plt.figure()
 
-distplot(TIMINGS, "timings", "Time (min)", mult=1./60.)
-distplot(N_POSES, "n_poses", "Poses", True)
-distplot(N_ROTATABLE_BONDS, "n_rotatable_bonds", "Rotatable bonds", True)
-distplot(N_FLEXIBLE_RESIDUES, "n_flexible_residues", "Flexible residues", True)
+    for key, times in timings.items():
+        n_flex_res = n_flexible_residues[key]
+
+        sns.scatterplot(x=n_flex_res, y=np.array(times) / 60., label=key)
+
+    plt.xlabel("n_flexible_residues")
+    plt.ylabel("time (min)")
+
+    plt.yscale("log")
+    plt.legend()
+
+    plt.savefig(f"timings.pdf")
+
+timeplot(TIMINGS, N_ROTATABLE_BONDS)
+distplot(N_POSES, "n_poses", "Poses")
+distplot(N_ROTATABLE_BONDS, "n_rotatable_bonds", "Rotatable bonds")
+distplot(N_FLEXIBLE_RESIDUES, "n_flexible_residues", "Flexible residues")
 
 print(min(n_poses))
