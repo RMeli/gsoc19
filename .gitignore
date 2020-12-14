@@ -17,8 +17,8 @@ docking/refined*
 docking/other*
 
 # crossdocking
-crossdocking/flexcd
-crossdocking/tests/docking-*
+crossdocking/crossdocked/flexcd
+crossdocking/crossdocked/tests/docking-*
 
 # optimisation
 optimisation/refined*
