@@ -1,5 +1,6 @@
 import prody
 
+import rdkit
 from rdkit import Chem
 from rdkit.Chem import rdMolDescriptors
 
@@ -15,6 +16,10 @@ import sys
 import gzip
 import re
 
+# Turn of logging
+prody.confProDy(verbosity="none")
+rdkit.RDLogger.DisableLog('rdApp.error')
+
 # Root folder for analysis
 # root = sys.argv[1]
 
@@ -23,7 +28,6 @@ N_POSES = {}
 N_ROTATABLE_BONDS = {}
 N_FLEXIBLE_RESIDUES = {}
 
-# for root in ["docking-d3.0", "docking-d3.5", "docking-d4.0"]:
 for root in ["docking-d3.0", "docking-d3.5"]:
     pockets = os.listdir(os.path.join(root, "docking"))
 
@@ -47,43 +51,52 @@ for root in ["docking-d3.0", "docking-d3.5"]:
 
             with open(os.path.join(ppath, log), "r") as flog:
                 content = flog.read()
+
                 if re.search(
-                    "WARNING: Could not find any conformations completely within the search space.",
+                    "WARNING: Could not find any conformations" +
+                    "completely within the search space.",
                     content,
                 ):
                     continue
                 else:
                     target = "Loop time"
-                    timings.append(
-                        int(
-                            re.search(f"{target} \d+", content)
-                            .group(0)
-                            .replace(target, "")
-                            .strip()
-                        )
-                    )
 
-            sdf = Chem.ForwardSDMolSupplier(gzip.open(os.path.join(ppath, lig), "r"))
+                    try:
+                        time = int(
+                                re.search(f"{target} \d+", content)
+                                .group(0)
+                                .replace(target, "")
+                                .strip()
+                            )
+                    except AttributeError: # Problem loading the system
+                        continue
+                    else:
+                        sdf = Chem.ForwardSDMolSupplier(gzip.open(os.path.join(ppath, lig), "r"))
 
-            poses = 0
-            for mol in sdf:
-                if mol is None:
-                    # Some molecules can't be correctly parsed
-                    continue
+                        poses = 0
+                        for mol in sdf:
+                            if mol is None:
+                                # Some molecules can't be correctly parsed
+                                continue
 
-                if poses == 0:  # Count same molecule only once
-                    n_rotatable_bonds.append(
-                        rdMolDescriptors.CalcNumRotatableBonds(mol)
-                    )
-                poses += 1
+                            if poses == 0:  # Count same molecule only once
+                                n_rotatable_bonds.append(
+                                    rdMolDescriptors.CalcNumRotatableBonds(mol)
+                                )
 
-            n_poses.append(poses)
+                                timings.append(time)
 
-            model = prody.parsePDB(os.path.join(ppath, flx), model=1)
-            try:
-                n_flexible_residues.append(model.numResidues())
-            except AttributeError:
-                n_flexible_residues.append(0)
+                                model = prody.parsePDB(os.path.join(ppath, flx), model=1)
+                                try:
+                                    n_flexible_residues.append(model.numResidues())
+                                except AttributeError:
+                                    n_flexible_residues.append(0)
+
+                            poses += 1
+
+                        n_poses.append(poses)
+
+                        
 
     TIMINGS[root] = timings
     N_POSES[root] = n_poses
@@ -111,28 +124,27 @@ def distplot(data, name, xlabel, bins=True):
     plt.xlabel(xlabel)
     plt.legend()
     plt.savefig(f"{name}.pdf")
+    plt.savefig(f"{name}.png")
 
 
-def timeplot(timings, n_flexible_residues):
+def timeplot(timings, xvalues, xlabel):
     plt.figure()
 
     for key, times in timings.items():
-        n_flex_res = n_flexible_residues[key]
+        sns.scatterplot(x=xvalues[key], y=np.array(times) / 60.0, label=key)
 
-        sns.scatterplot(x=n_flex_res, y=np.array(times) / 60.0, label=key)
-
-    plt.xlabel("n_flexible_residues")
+    plt.xlabel(xlabel)
     plt.ylabel("time (min)")
 
     plt.yscale("log")
     plt.legend()
 
-    plt.savefig(f"timings.pdf")
+    plt.savefig(f"timings-{xlabel}.pdf")
+    plt.savefig(f"timings-{xlabel}.png")
 
 
-timeplot(TIMINGS, N_ROTATABLE_BONDS)
+timeplot(TIMINGS, N_ROTATABLE_BONDS, "n_flex_residues")
+timeplot(TIMINGS, N_FLEXIBLE_RESIDUES, "n_rot_bonds")
 distplot(N_POSES, "n_poses", "Poses")
 distplot(N_ROTATABLE_BONDS, "n_rotatable_bonds", "Rotatable bonds")
 distplot(N_FLEXIBLE_RESIDUES, "n_flexible_residues", "Flexible residues")
-
-print(min(n_poses))
