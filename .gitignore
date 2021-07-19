@@ -19,6 +19,7 @@ docking/other*
 # crossdocking
 crossdocking/crossdocked/flexcd
 crossdocking/crossdocked/tests/docking-*
+crossdocking/cd-downsampled/carlos_cd
 
 # optimisation
 optimisation/refined*
