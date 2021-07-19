@@ -3,12 +3,7 @@ from pymol import cmd, stored
 import os
 
 
-def loadpocket(
-    pocket,
-    idx,
-    dataset,
-    cdpath="~/Desktop/CrossDocked",
-):
+def loadpocket(pocket, idx, dataset, cdpath="~/Desktop/CrossDocked"):
     # Get flexible distance from folder name
     flexdist = float(dataset.split("-")[-1][1:])
 
@@ -29,7 +24,7 @@ def loadpocket(
     print(files)
 
     # Select ligand and receptor files
-    ligname = files[idx] # Load only system IDX
+    ligname = files[idx]  # Load only system IDX
     flexname = ligname.replace("flexlig", "flexrec").replace(".sdf", ".pdb")
     cligname = ligname.split("-")[1] + ".sdf"
     crecname = flexname.split("-")[2].split(".")[0] + ".pdb"
@@ -94,5 +89,6 @@ def loadpocket(
     # Show metal atoms
     cmd.show("spheres", "metals")
     cmd.set("sphere_scale", 0.5, "metals")
-    
+
+
 cmd.extend("loadpocket", loadpocket)

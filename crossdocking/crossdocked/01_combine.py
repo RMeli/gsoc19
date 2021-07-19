@@ -12,6 +12,7 @@ from typing import List
 Receptor = namedtuple("Receptor", ["pdbid", "chain"])
 Ligand = namedtuple("Ligand", ["pdbid", "name"])
 
+
 def receptorsdict(rfname: str):
     """
     Get all receptors from file.
@@ -58,7 +59,7 @@ def ligandpath(lig, pocket, root):
         ligpath = os.path.join(pocket, ligname)
 
         if os.path.isfile(os.path.join(root, ligpath)):
-            ligfound=True
+            ligfound = True
             break
 
     if not ligfound:
@@ -69,18 +70,20 @@ def ligandpath(lig, pocket, root):
     return ligpath
 
 
-def crossdocking(ligdict, recdict, outfile: str = "crossdocking.dat", root: str = "", nmax: int = 2):
+def crossdocking(
+    ligdict, recdict, outfile: str = "crossdocking.dat", root: str = "", nmax: int = 2
+):
 
     with open(outfile, "w") as fout:
 
         # Loop over all pockets
         for pocket, liglist in ligdict.items():
-            
+
             # Loop over all ligands within a pocket
             for lig in liglist:
 
                 ligpath = ligandpath(lig, pocket, root)
-                
+
                 # Get all receptors
                 reclist = recdict[pocket]
 
@@ -110,19 +113,18 @@ def crossdocking(ligdict, recdict, outfile: str = "crossdocking.dat", root: str 
 
                 # Sample nmax-1 random receptors
                 samples = np.random.choice(
-                    idxs, 
-                    size=nmax - 1 if nmax - 1 < n - 1 else n - 1,
-                    replace=False
+                    idxs, size=nmax - 1 if nmax - 1 < n - 1 else n - 1, replace=False
                 )
-                
+
                 for idx in samples:
-                
+
                     rec = reclist[idx]
 
                     recname = f"{rec.pdbid}_{rec.chain}_rec.pdb"
                     recpath = os.path.join(pocket, recname)
-                    
+
                     fout.write(f"{ligpath} {recpath}\n")
+
 
 if __name__ == "__main__":
 
@@ -149,7 +151,11 @@ if __name__ == "__main__":
         )
 
         parser.add_argument(
-            "-m", "--max", type=int, default=2, help="Maximum number of ligand-receptor pairs"
+            "-m",
+            "--max",
+            type=int,
+            default=2,
+            help="Maximum number of ligand-receptor pairs",
         )
 
         return parser.parse_args(args)

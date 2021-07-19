@@ -18,7 +18,7 @@ import re
 
 # Turn of logging
 prody.confProDy(verbosity="none")
-rdkit.RDLogger.DisableLog('rdApp.error')
+rdkit.RDLogger.DisableLog("rdApp.error")
 
 # Root folder for analysis
 # root = sys.argv[1]
@@ -53,8 +53,8 @@ for root in ["docking-d3.0", "docking-d3.5"]:
                 content = flog.read()
 
                 if re.search(
-                    "WARNING: Could not find any conformations" +
-                    "completely within the search space.",
+                    "WARNING: Could not find any conformations"
+                    + "completely within the search space.",
                     content,
                 ):
                     continue
@@ -63,15 +63,17 @@ for root in ["docking-d3.0", "docking-d3.5"]:
 
                     try:
                         time = int(
-                                re.search(f"{target} \d+", content)
-                                .group(0)
-                                .replace(target, "")
-                                .strip()
-                            )
-                    except AttributeError: # Problem loading the system
+                            re.search(f"{target} \d+", content)
+                            .group(0)
+                            .replace(target, "")
+                            .strip()
+                        )
+                    except AttributeError:  # Problem loading the system
                         continue
                     else:
-                        sdf = Chem.ForwardSDMolSupplier(gzip.open(os.path.join(ppath, lig), "r"))
+                        sdf = Chem.ForwardSDMolSupplier(
+                            gzip.open(os.path.join(ppath, lig), "r")
+                        )
 
                         poses = 0
                         for mol in sdf:
@@ -86,7 +88,9 @@ for root in ["docking-d3.0", "docking-d3.5"]:
 
                                 timings.append(time)
 
-                                model = prody.parsePDB(os.path.join(ppath, flx), model=1)
+                                model = prody.parsePDB(
+                                    os.path.join(ppath, flx), model=1
+                                )
                                 try:
                                     n_flexible_residues.append(model.numResidues())
                                 except AttributeError:
@@ -95,8 +99,6 @@ for root in ["docking-d3.0", "docking-d3.5"]:
                             poses += 1
 
                         n_poses.append(poses)
-
-                        
 
     TIMINGS[root] = timings
     N_POSES[root] = n_poses
