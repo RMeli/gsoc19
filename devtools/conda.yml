@@ -11,14 +11,14 @@ dependencies:
 
   # Science
   - numpy
-  - sicpy
+  - scipy
   - pandas
   - scikit-learn
   
   - biopython
-  - mdanalysis
   - prody
   - rdkit
+  - openbabel
 
   # Plotting
   - matplotlib
@@ -32,3 +32,5 @@ dependencies:
   - cython
   - pytest
   
+  - pip:
+    - MDAnalysis==2.0.0b0
