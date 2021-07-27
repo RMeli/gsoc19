@@ -5,11 +5,12 @@
 #SBATCH --cpus-per-task=1
 #SBATCH --partition=short
 #SBATCH --clusters=arc
-#SBATCH --array=1-7970
+##SBATCH --array=1-4999
+#SBATCH --array=1-2971
 #SBATCH --output=slurm/%x.%A_%a.out
 #SBATCH --time=12:00:00
 
-cmds="gnina_cmds.txt"
+cmds="gnina_cmds_5000-7970.txt"
 container="${DATA}/gsoc19/devtools/containers/gnina.sif"
 
 echo ${SLURM_ARRAY_JOB_ID} ${SLURM_ARRAY_TASK_ID}
