@@ -3,7 +3,7 @@ from pymol import cmd, stored
 import os
 
 
-def loadflexdock(
+def crossdocking(
     ligand,
     protein,
     pocket,
@@ -28,7 +28,7 @@ def loadflexdock(
     # Build paths
     ppath = os.path.join(path, pocket, "PDB_Structures")
 
-    ligname = f"{protein}_PRO_{ligand}_LIG_aligned_v2_default_ensemble_none_flexdist3.5_p{idx}.sdf"
+    ligname = f"{protein}_PRO_{ligand}_LIG_aligned_v2_default_ensemble_none_flexdist3.5_p{idx}.sdf.gz"
     ligandpath = os.path.join(ppath, ligname)  # Docked ligand
     flexname = f"{protein}_PRO_{ligand}_LIG_aligned_v2_default_ensemble_none_flexdist3.5_flex_p{idx}.pdb.gz"
     flexpath = os.path.join(ppath, flexname)  # Flexible residues
@@ -101,4 +101,4 @@ def loadflexdock(
     cmd.set("sphere_scale", 0.5, "metals")
 
 
-cmd.extend("loadflexdock", loadflexdock)
+cmd.extend("crossdocking", crossdocking)
