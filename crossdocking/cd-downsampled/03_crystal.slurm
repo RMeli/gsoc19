@@ -10,6 +10,13 @@
 #SBATCH --output=slurm/%x.%A_%a.out
 #SBATCH --time=01:00:00
 
+# --------------------------------------------------
+# Extract residues treated as flexible from crystal
+# (for RMSD calculation) and oprimise crysytal
+# structure (with flexible residues) to provide the
+# best possible pose.
+# --------------------------------------------------
+
 # Get flexible residues position from crystal
 # Optimise crystal structure with GNINA
 

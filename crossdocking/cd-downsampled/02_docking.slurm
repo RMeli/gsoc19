@@ -10,6 +10,10 @@
 #SBATCH --output=slurm/%x.%A_%a.out
 #SBATCH --time=12:00:00
 
+# --------------------------------------------------
+# Perform docking with flexible residues using GNINA
+# --------------------------------------------------
+
 #cmds="gnina_cmds_1-4999.txt"
 cmds="gnina_cmds_5000-7970.txt"
 
