@@ -3,12 +3,13 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=1
-#SBATCH --partition=short
+#SBATCH --partition=devel
 #SBATCH --clusters=arc
 ##SBATCH --array=1-4999
-#SBATCH --array=1-2971
-#SBATCH --output=slurm/%x.%A_%a.out
-#SBATCH --time=01:00:00
+##SBATCH --array=1-2971
+#SBATCH --array=1-2
+##SBATCH --output=slurm/%x.%A_%a.out
+#SBATCH --time=00:10:00
 
 # --------------------------------------------------
 # Extract residues treated as flexible from crystal
@@ -20,8 +21,8 @@
 # Get flexible residues position from crystal
 # Optimise crystal structure with GNINA
 
-#cmds="gnina_cmds_1-4999.txt"
-cmds="gnina_cmds_5000-7970.txt"
+cmds="gnina_cmds_1-4999.txt"
+#cmds="gnina_cmds_5000-7970.txt"
 
 container="${DATA}/gsoc19/devtools/containers/gnina.sif"
 

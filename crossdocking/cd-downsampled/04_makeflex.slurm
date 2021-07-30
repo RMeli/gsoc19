@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -l
 #SBATCH --job-name=makeflex
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
@@ -6,17 +6,24 @@
 #SBATCH --partition=devel
 #SBATCH --clusters=arc
 #SBATCH --array=1-2
+##SBATCH --array=1-4999
+##SBATCH --array=1-2971
 ##SBATCH --output=slurm/%x.%A_%a.out
-#SBATCH --time=00:05:00
-##SBATCH --time=12:00:00
+#SBATCH --time=00:10:00
+
+# --------------------------------------------------
+# Build whole protein from original structure and
+# flexible residues.
+# --------------------------------------------------
 
 # Python
-#conda activate gsoc
+conda activate gsoc
 which python
 
 pscripts="../../scripts/python"
 
 files="gnina_cmds_1-4999.txt"
+#files="gnina_cmds_5000-4999.txt"
 
 echo ${SLURM_ARRAY_JOB_ID} ${SLURM_ARRAY_TASK_ID}
 
@@ -32,13 +39,19 @@ echo "Ligand output: ${ligand}"
 echo "Flexible output: ${flexible}"
 
 ligname=$(echo ${ligand} | sed "s/\.sdf\.gz//")
-flexname=$(echo ${flexible} | sed "s/\.sdf\.gz//")
+flexname=$(echo ${flexible} | sed "s/\.pdb\.gz//")
 
-# Split ligand docking
+# Split ligand docking and compress them
 obabel -m -isdf ${ligand} -osdf -O "${ligname}_p.sdf"
+gzip -f ${ligname}_p*.sdf
+
 
 # Split flexible side chains docking
-obabel -m -isdf ${flexible} -opdb -O "${flexname}_p.pdb"
+# Compression happens after makeflex
+# _p0 (minimised crtystal) needs to be decompressed (re-compressed after makeflex)
+obabel -m -ipdb ${flexible} -opdb -O "${flexname}_p.pdb"
+gunzip -f ${flexname}_p0.pdb
+
 
 # Combine flexible and rigid part of the receptor
 prot=$(basename ${protein} .pdb)
