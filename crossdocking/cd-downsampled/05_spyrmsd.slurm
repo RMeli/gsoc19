@@ -3,12 +3,13 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=1
-#SBATCH --partition=devel
+#SBATCH --partition=short
 #SBATCH --clusters=arc
 ##SBATCH --array=1-4999
-#SBATCH --array=1-2
-##SBATCH --output=slurm/%x.%A_%a.out
-#SBATCH --time=00:10:00
+#SBATCH --array=1-2971
+##SBATCH --array=1-2
+#SBATCH --output=slurm/%x.%A_%a.out
+#SBATCH --time=12:00:00
 
 # Python
 conda activate gsoc
@@ -16,8 +17,8 @@ which python
 
 pscripts="../../scripts/python"
 
-file="gnina_cmds_1-4999.txt"
-#file="gnina_cmds_5000-7970.txt"
+#file="gnina_cmds_1-4999.txt"
+file="gnina_cmds_5000-7970.txt"
 
 echo ${SLURM_ARRAY_JOB_ID} ${SLURM_ARRAY_TASK_ID}
 
@@ -44,6 +45,10 @@ refflex=$(echo ${flexible} | sed "s#_flex.pdb.gz#_flex_crys.pdb.gz#")
 gunzip ${refflex}
 
 pocket=$(basename $(dirname ${dir}))
+
+outfname="${dir}/${prot}_${rlig}.rmsds"
+rm -f $outfname
+
 for flex in $(ls -d ${dir}/${prot}*flex_p*.pdb.gz)
 do
     idx=$(basename ${flex} .pdb.gz | sed 's#.*flex_p##')
@@ -66,7 +71,7 @@ do
     # grep score from (compressed) SDF file
     score=$(zgrep -A 1 "minimizedAffinity" ${lig} | tail -n 1)
 
-    echo ${pocket},${prot:0:4},${rlig:0:4},${idx},${rmsd},${obrmsd},${flexrmsd},${flexobrmsd},${score}
+    echo ${pocket},${prot:0:4},${rlig:0:4},${idx},${rmsd},${obrmsd},${flexrmsd},${flexobrmsd},${score} >> ${outfname}
 done
 
 gzip $(echo ${refflex} | sed 's#.gz##')
