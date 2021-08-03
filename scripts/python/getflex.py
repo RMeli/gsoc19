@@ -4,7 +4,6 @@ of the crystal structure.
 """
 
 import MDAnalysis as mda
-import MDAnalysis.analysis.rms as RMS
 
 import argparse as ap
 import warnings
@@ -28,7 +27,7 @@ def parse(args: Optional[str] = None) -> ap.Namespace:
         If ``args is None``, parse from ``sys.argv``
     """
 
-    parser = ap.ArgumentParser(description="Compute center of geometry of a molecule.")
+    parser = ap.ArgumentParser(description="Get flexible residues.")
 
     parser.add_argument("flex", type=str, help="Flexible residues (PDB)")
     parser.add_argument("protein", type=str, help="Protein structure (PDB)")
@@ -67,8 +66,6 @@ def save_systems(
         return s
 
     flexres = flex.select_atoms("protein").residues
-
-    max_rmsd = -1
 
     residues = []
     for res in flexres:
