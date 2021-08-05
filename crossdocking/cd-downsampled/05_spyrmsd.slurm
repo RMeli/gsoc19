@@ -6,11 +6,10 @@
 #SBATCH --partition=short
 #SBATCH --clusters=arc
 ##SBATCH --array=1-4999
-##SBATCH --array=1-2971
-#SBATCH --array=33-34
-##SBATCH --output=slurm/%x.%A_%a.out
+#SBATCH --array=1-2971
+##SBATCH --array=1-20
+#SBATCH --output=slurm/%x.%A_%a.out
 #SBATCH --time=12:00:00
-##SBATCH --time=00:10:00
 
 # Python
 conda activate gsoc
@@ -18,8 +17,8 @@ which python
 
 pscripts="../../scripts/python"
 
-file="gnina_cmds_1-4999.txt"
-#file="gnina_cmds_5000-7970.txt"
+#file="gnina_cmds_1-4999.txt"
+file="gnina_cmds_5000-7970.txt"
 
 echo ${SLURM_ARRAY_JOB_ID} ${SLURM_ARRAY_TASK_ID}
 
