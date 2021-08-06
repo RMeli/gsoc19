@@ -61,6 +61,7 @@ def get_rmsd_for_rank(rank: int, rmsd_name: str, df: pd.DataFrame) -> np.ndarray
 
 
 def plot(df: pd.DataFrame, rmsd_name: str, maxrank: int, bin_size: int, ax):
+    colors = ["tab:blue", "tab:orange", "tab:green", "tab:red", "tab:purple"]
 
     for rank in range(0, maxrank + 1):
 
@@ -70,7 +71,7 @@ def plot(df: pd.DataFrame, rmsd_name: str, maxrank: int, bin_size: int, ax):
 
         bins = np.arange(rmsd.min(), rmsd.max(), bin_size)
 
-        sns.histplot(rmsd, bins=bins, kde=True, label=l, ax=ax)
+        sns.histplot(rmsd, bins=bins, kde=True, label=l, color=colors[rank], ax=ax)
 
 
 if __name__ == "__main__":
