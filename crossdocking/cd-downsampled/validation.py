@@ -9,6 +9,7 @@ import pandas as pd
 import os
 import re
 import warnings
+import sys
 
 import itertools
 import gzip
@@ -245,3 +246,6 @@ with open("analysis/invalid.lst", "w", buffering=1) as finvalid, open(
             fvalid.write(f"{pocket}\t{recid}\t{ligid}\n")
         else:
             finvalid.write(f"{pocket}\t{recid}\t{ligid}\n")
+
+        # Flush output (useful for SLURM)
+        sys.stdout.flush()
