@@ -7,7 +7,6 @@
 #SBATCH --clusters=arc
 ##SBATCH --array=1-4999
 #SBATCH --array=1-2971
-##SBATCH --array=1-20
 #SBATCH --output=slurm/spyrmsd/%x.%A_%a.out
 #SBATCH --time=12:00:00
 
