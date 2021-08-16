@@ -82,13 +82,27 @@ if __name__ == "__main__":
 
     df = pd.read_csv(args.input)
 
+    # Remove swap flexrmsd with flexobrmsd column, if present
+    # For some systems, spyrmsd is too slow for flexible residues
+    try:
+        df = df.drop(columns=["flexrmsd"])
+        df = df.rename(columns={"flexobrmsd": "flexrmsd"})
+    except KeyError:
+        # No flexobrmsd value
+        # In the original GSoC project there was no spyrmsd value
+        pass
+
     bad_values = [np.nan, np.inf, -np.inf]
     if df.isin(bad_values).sum(axis=0).max() > 0:
-        print(df.isin(bad_values).sum(axis=0).max())
-        idx = df.index[df[args.ligrmsd].isin(bad_values)]  # Get row indices of bad values
-
         print(f"WARNING: {args.input} contains NaN or Inf:")
-        print(df.iloc[idx])
+        print(df.isin(bad_values).sum(axis=0).max())
+        bidx_lig = df.index[df[args.ligrmsd].isin(bad_values)]  # Get row indices of bad values
+        
+        # Check there are no bad values for the ligand
+        assert len(df.iloc[bidx_lig]) == 0
+
+        bidx_flex = df.index[df[args.flexrmsd].isin(bad_values)]  # Get row indices of bad values
+        print(df.iloc[bidx_flex])
 
         # Replace infinite values with NaNs and drop them
         df = df.replace([np.inf, -np.inf], np.nan)  # Change Inf with NaN
