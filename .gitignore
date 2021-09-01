@@ -58,6 +58,12 @@ mloptimisation/optdir/minimized
 # python
 __pycache__
 
+# containers
+*.sif
+
+# HPC
+slurm/
+
 # editors
 .vscode
 

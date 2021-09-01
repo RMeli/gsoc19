@@ -67,7 +67,7 @@ with open(args.output, "w") as outfile:
             out_prefix
             + "default_ensemble_"
             + args.cnn_scoring
-            + f"_flexdist{args.flexdist}_flex.sdf.gz"
+            + f"_flexdist{args.flexdist}_flex.pdb.gz"
         )
 
         cmd += f" --out_flex {flex_out}"
