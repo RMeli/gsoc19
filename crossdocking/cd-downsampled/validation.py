@@ -1,4 +1,4 @@
-import MDAnalysis as mda # Need version 2.0.0-beta or higher
+import MDAnalysis as mda  # Need version 2.0.0-beta or higher
 
 from rdkit import Chem
 from rdkit.Chem import Descriptors
@@ -55,7 +55,7 @@ with open("analysis/invalid.lst", "w", buffering=1) as finvalid, open(
         lig = os.path.basename(ligpath)
 
         pocket = recpath.split("/")[1]
-        
+
         ppath = os.path.join(cdpath, pocket, "PDB_Structures")
 
         ligid = lig[:4]
@@ -81,8 +81,8 @@ with open("analysis/invalid.lst", "w", buffering=1) as finvalid, open(
             continue
 
         assert len(crec.atoms) > 0
-        #n_residues = len(crec.residues)
-        #assert n_residues != 0
+        # n_residues = len(crec.residues)
+        # assert n_residues != 0
 
         n_hvy_atoms_rec = len(crec.select_atoms(residue_selection))
         assert n_hvy_atoms_rec > 0
@@ -117,14 +117,14 @@ with open("analysis/invalid.lst", "w", buffering=1) as finvalid, open(
                     # This does not really work when PDB files contain segment IDS
                     # For example: AKT1|3CQW_PRO_4EKK_LIG, AKT1|3CQW_PRO_4EKL_LIG, ...
                     # See: https://github.com/MDAnalysis/mdanalysis/issues/2874
-                    #assert len(rec.residues) == n_residues
+                    # assert len(rec.residues) == n_residues
 
                     # Apply selection to crystal structure as well
                     # There might be a mistmatch on the number of hydrogens if the
                     # crystal structure had hidrogen on flexible residues, because
                     # GNINA only outputs polar hydrogens
                     csel = crec.select_atoms(residue_selection)
-                    
+
                     # Compare selections (protein atoms but no hydrogens)
                     assert len(sel.atoms) == len(csel.atoms)
                     assert all(sel.atoms.resnums == csel.atoms.resnums)
@@ -185,7 +185,9 @@ with open("analysis/invalid.lst", "w", buffering=1) as finvalid, open(
         flexnames = [
             flex
             for flex in os.listdir(ppath)
-            if re.match(f"{recid}_PRO_{ligid}" + "_LIG_.*_flex_p[0-9]{0,2}\.pdb\.gz", flex)
+            if re.match(
+                f"{recid}_PRO_{ligid}" + "_LIG_.*_flex_p[0-9]{0,2}\.pdb\.gz", flex
+            )
         ]
         for flexname in flexnames:
             flexpath = os.path.join(ppath, flexname)
@@ -193,7 +195,9 @@ with open("analysis/invalid.lst", "w", buffering=1) as finvalid, open(
             try:
                 flex = load(flexpath)
             except:
-                print(f"{newline(ok)}    Failed loading {flexpath}!\n\tNo flexible residues?")
+                print(
+                    f"{newline(ok)}    Failed loading {flexpath}!\n\tNo flexible residues?"
+                )
                 ok = False
 
             # Check there are no PRO residues within the flexible residues
