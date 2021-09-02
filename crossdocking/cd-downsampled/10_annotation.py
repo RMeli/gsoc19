@@ -1,20 +1,43 @@
+"""
+
+Notes
+-----
+df.rank is a method of pd.DataFrame; the "rank" column need to be accessed with df["rank"]
+"""
+
 import pandas as pd
 
 from sklearn.model_selection import GroupShuffleSplit
 from sklearn.preprocessing import OrdinalEncoder
 
-def annotation(row):
-    return 1 if row.rmsd <= 2.0 else 0
 
 def ligname(row):
-    pocket=row["pocket"]
-    lig=row["lig"]
-    rannk=row["rank"]
-    
-    return
+    fprefix = f"{row.protein}_PRO_{row.ligand}_aligned"
+    fsuffix = f"_default_ensemble_none_flexdist3.5_p{row['rank']}.sdf.gz"
+
+    for v in ["", "_v2"]:
+        fname = os.path.join(root, row.pocket, "PDB_Structures", fprefix + v + fsuffix)
+        if os.path.isfile(fname):
+            break
+
+    return fname
 
 def recname(row):
-    return
+    fprefix = f"{row.protein}_PRO_{row.ligand}_aligned"
+    fsuffix = f"_default_ensemble_none_flexdist3.5_full_p{row['rank']}.pdb.gz"
+
+    for v in ["", "_v2"]:
+        fname = os.path.join(root, row.pocket, "PDB_Structures", fprefix + v + fsuffix)
+        if os.path.isfile(fname):
+            break
+
+    return fname
+
+def ligrmsd(row):
+    if row.rmsd < 2.0:
+        return 1 # Good pose
+    else:
+        return 0 # Bad pose
 
 
 df = pd.read_csv("analysis/rmsd_clean.csv", index_col=False)
