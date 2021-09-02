@@ -5,11 +5,14 @@ Notes
 df.rank is a method of pd.DataFrame; the "rank" column need to be accessed with df["rank"]
 """
 
+import os
+
 import pandas as pd
 
 from sklearn.model_selection import GroupShuffleSplit
 from sklearn.preprocessing import OrdinalEncoder
 
+root="carlos-cd"
 
 def ligname(row):
     fprefix = f"{row.protein}_PRO_{row.ligand}_aligned"
@@ -58,10 +61,18 @@ for fold, (train_idx, test_idx) in enumerate(
     cv.split(df.drop(columns=["group"]).to_numpy(), groups=df["group"].to_numpy())
 ):
     with open(f"files/train_{fold}.types", "w") as trout:
-    for tr in train_idx:
-        row =  df.iloc[tr]
+        for tr in train_idx:
+            row =  df.iloc[tr]
 
-        a = annotation(row)
+            a = ligrmsd(row)
+            line=f"{a} {recname(row)} {ligname(row)} # {row.rmsd:.4f} {row.score:.4f}\n"
+            trout.write(line)
 
-        
+    with open(f"files/test_{fold}.types", "w") as teout:
+        for te in test_idx:
+            row =  df.iloc[te]
+
+            a = ligrmsd(row)
+            line=f"{a} {recname(row)} {ligname(row)} # {row.rmsd:.4f} {row.score:.4f}\n"
+            teout.write(line)
 
