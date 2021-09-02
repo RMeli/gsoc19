@@ -12,7 +12,8 @@ import pandas as pd
 from sklearn.model_selection import GroupShuffleSplit
 from sklearn.preprocessing import OrdinalEncoder
 
-root="carlos-cd"
+root = "carlos-cd"
+
 
 def ligname(row):
     fprefix = f"{row.protein}_PRO_{row.ligand}_aligned"
@@ -25,6 +26,7 @@ def ligname(row):
 
     return fname
 
+
 def recname(row):
     fprefix = f"{row.protein}_PRO_{row.ligand}_aligned"
     fsuffix = f"_default_ensemble_none_flexdist3.5_full_p{row['rank']}.pdb.gz"
@@ -36,11 +38,12 @@ def recname(row):
 
     return fname
 
+
 def ligrmsd(row):
     if row.rmsd < 2.0:
-        return 1 # Good pose
+        return 1  # Good pose
     else:
-        return 0 # Bad pose
+        return 0  # Bad pose
 
 
 df = pd.read_csv("analysis/rmsd_clean.csv", index_col=False)
@@ -62,17 +65,20 @@ for fold, (train_idx, test_idx) in enumerate(
 ):
     with open(f"files/train_{fold}.types", "w") as trout:
         for tr in train_idx:
-            row =  df.iloc[tr]
+            row = df.iloc[tr]
 
             a = ligrmsd(row)
-            line=f"{a} {recname(row)} {ligname(row)} # {row.rmsd:.4f} {row.score:.4f}\n"
+            line = (
+                f"{a} {recname(row)} {ligname(row)} # {row.rmsd:.4f} {row.score:.4f}\n"
+            )
             trout.write(line)
 
     with open(f"files/test_{fold}.types", "w") as teout:
         for te in test_idx:
-            row =  df.iloc[te]
+            row = df.iloc[te]
 
             a = ligrmsd(row)
-            line=f"{a} {recname(row)} {ligname(row)} # {row.rmsd:.4f} {row.score:.4f}\n"
+            line = (
+                f"{a} {recname(row)} {ligname(row)} # {row.rmsd:.4f} {row.score:.4f}\n"
+            )
             teout.write(line)
-
