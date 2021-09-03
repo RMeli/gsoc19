@@ -18,7 +18,7 @@ root = "carlos_cd"
 
 def ligname(row):
     fprefix = f"{row.protein}_PRO_{row.ligand}_LIG_aligned"
-    fsuffix = f"_default_ensemble_none_flexdist3.5_p{row['rank']}.sdf.gz"
+    fsuffix = f"_default_ensemble_none_flexdist3.5_p{row['rank']}.gninatypes"
 
     for v in ["", "_v2"]:
         fname = os.path.join(root, row.pocket, "PDB_Structures", fprefix + v + fsuffix)
@@ -30,7 +30,7 @@ def ligname(row):
 
 def recname(row):
     fprefix = f"{row.protein}_PRO_{row.ligand}_LIG_aligned"
-    fsuffix = f"_default_ensemble_none_flexdist3.5_full_p{row['rank']}.pdb.gz"
+    fsuffix = f"_default_ensemble_none_flexdist3.5_full_p{row['rank']}.gninatypes"
 
     for v in ["", "_v2"]:
         fname = os.path.join(root, row.pocket, "PDB_Structures", fprefix + v + fsuffix)
