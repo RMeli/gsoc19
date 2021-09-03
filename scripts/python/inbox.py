@@ -1,14 +1,26 @@
-import MDAnalysis as mda
+import MDAnalysis as mda # MDA 2.0 or higher
+
+from rdkit import Chem
 
 import argparse as ap
 import numpy as np
 import os
 import warnings
+import gzip
 
 from typing import Optional, Tuple
 
+def loadsdf(fname: str, gzipped=False) -> mda.Universe:
+    if not gzipped:
+            rdmol = next(Chem.SDMolSupplier(fname, removeHs=False))
+    else:
+        with gzip.open(fname, "r") as fgz:
+            rdmol = next(Chem.ForwardSDMolSupplier(fgz, removeHs=False))
 
-def load(fname: str) -> mda.Universe:
+    # Convert RDKit molecule to MDA universe
+    return mda.Universe(rdmol)
+
+def loadpdb(fname: str) -> mda.Universe:
 
     if not os.path.isfile(fname):
         raise IOError(f"{fname} does not exsist.")
@@ -51,8 +63,21 @@ def in_box(c, mmin, mmax, L) -> bool:
 
 def inbox(ligname: str, flexname: str, box_size: float) -> Tuple[bool, bool]:
 
-    ligand = load(ligname)
-    flex = load(flexname)
+    lignoext, ligext = os.path.splitext(ligname)
+    if ligext == ".gz":
+        gzipped=True
+        _, ligext = os.path.splitext(lignoext)
+    else:
+        gzipped=False
+
+    if ligext == ".pdb":
+        ligand = loadpdb(ligname)
+    elif ligext == ".sdf":
+        ligand = loadsdf(ligname, gzipped)
+    else:
+        raise Exception(f"Extension {ligext} not supported.")
+
+    flex = loadpdb(flexname)
 
     # Ligand center (box center)
     c = center(ligand)
