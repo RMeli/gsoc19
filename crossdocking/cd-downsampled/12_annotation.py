@@ -8,15 +8,16 @@ df.rank is a method of pd.DataFrame; the "rank" column need to be accessed with 
 import os
 
 import pandas as pd
+import tqdm
 
 from sklearn.model_selection import GroupShuffleSplit
 from sklearn.preprocessing import OrdinalEncoder
 
-root = "carlos-cd"
+root = "carlos_cd"
 
 
 def ligname(row):
-    fprefix = f"{row.protein}_PRO_{row.ligand}_aligned"
+    fprefix = f"{row.protein}_PRO_{row.ligand}_LIG_aligned"
     fsuffix = f"_default_ensemble_none_flexdist3.5_p{row['rank']}.sdf.gz"
 
     for v in ["", "_v2"]:
@@ -28,7 +29,7 @@ def ligname(row):
 
 
 def recname(row):
-    fprefix = f"{row.protein}_PRO_{row.ligand}_aligned"
+    fprefix = f"{row.protein}_PRO_{row.ligand}_LIG_aligned"
     fsuffix = f"_default_ensemble_none_flexdist3.5_full_p{row['rank']}.pdb.gz"
 
     for v in ["", "_v2"]:
@@ -64,7 +65,7 @@ for fold, (train_idx, test_idx) in enumerate(
     cv.split(df.drop(columns=["group"]).to_numpy(), groups=df["group"].to_numpy())
 ):
     with open(f"files/train_{fold}.types", "w") as trout:
-        for tr in train_idx:
+        for tr in tqdm.tqdm(train_idx, leave=False, desc=f"Train {fold}"):
             row = df.iloc[tr]
 
             a = ligrmsd(row)
@@ -74,7 +75,7 @@ for fold, (train_idx, test_idx) in enumerate(
             trout.write(line)
 
     with open(f"files/test_{fold}.types", "w") as teout:
-        for te in test_idx:
+        for te in tqdm.tqdm(test_idx, leave=False, desc=f"Test {fold}"):
             row = df.iloc[te]
 
             a = ligrmsd(row)
