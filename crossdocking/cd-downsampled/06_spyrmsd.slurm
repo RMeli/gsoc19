@@ -10,6 +10,14 @@
 #SBATCH --output=slurm/spyrmsd/%x.%A_%a.out
 #SBATCH --time=12:00:00
 
+# --------------------------------------------------
+# Compute RMSDs:
+#   - Ligand RMSDs
+#   - Flexible residues RMSDs (combined)
+#   - Flexible residues RMSDs (disaggregated)
+#   - Maximum flexible residues RMSDs
+# --------------------------------------------------
+
 # Python
 conda activate gsoc
 which python

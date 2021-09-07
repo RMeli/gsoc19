@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# --------------------------------------------------
+# Collect all RMSDs and scores into a singl CSV file
+# --------------------------------------------------
+
 allscores="carlos_cd/rmsds.csv"
 
 # CSV Header

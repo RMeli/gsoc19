@@ -8,6 +8,11 @@
 #SBATCH --output=slurm/validation.out
 #SBATCH --time=12:00:00
 
+# --------------------------------------------------
+# Run validation script to make sure that structures
+# have been reconstructed correctly.
+# --------------------------------------------------
+
 # Python
 conda activate gsoc
 which python

@@ -1,4 +1,5 @@
 """
+Create training and test files with annotations.
 
 Notes
 -----
@@ -60,7 +61,7 @@ assert len(df["pocket"].unique()) == df["group"].max() + 1
 
 # Split dataset in three folds (cross-validation)
 # Randomly shuffle the data and keep the same pocket in the same fold
-cv = GroupKFold(n_splits=3, random_state=42)
+cv = GroupKFold(n_splits=3)
 for fold, (train_idx, test_idx) in enumerate(
     cv.split(df.drop(columns=["group"]).to_numpy(), groups=df["group"].to_numpy())
 ):

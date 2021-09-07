@@ -1,5 +1,10 @@
 #!/bin/bash
 
+# --------------------------------------------------
+# Perform analysis:
+#   - RMSD distributions
+# --------------------------------------------------
+
 outdir=analysis/plots
 mkdir -p ${outdir}
 
