@@ -6,8 +6,7 @@
 #SBATCH --partition=short
 #SBATCH --clusters=arc
 ##SBATCH --array=1-4999
-##SBATCH --array=1-2971
-#SBATCH --array=2552-2556
+#SBATCH --array=1-2971
 #SBATCH --output=slurm/makeflex/%x.%A_%a.out
 #SBATCH --time=12:00:00
 
@@ -22,12 +21,12 @@ which python
 
 pscripts="../../scripts/python"
 
-files="gnina_cmds_1-4999.txt"
-#cmds="gnina_cmds_5000-7970.txt"
+#cmds="gnina_cmds_1-4999.txt"
+cmds="gnina_cmds_5000-7970.txt"
 
 echo ${SLURM_ARRAY_JOB_ID} ${SLURM_ARRAY_TASK_ID}
 
-line=$(sed -n "${SLURM_ARRAY_TASK_ID}p" ${files})
+line=$(sed -n "${SLURM_ARRAY_TASK_ID}p" ${cmds})
 
 a=( ${line} )
 protein=${a[2]}
