@@ -6,7 +6,8 @@
 #SBATCH --partition=short
 #SBATCH --clusters=arc
 ##SBATCH --array=1-4999
-#SBATCH --array=1-2971
+##SBATCH --array=1-2971
+#SBATCH --array=4502,4495,3880,3858
 #SBATCH --output=slurm/makeflex/%x.%A_%a.out
 #SBATCH --time=12:00:00
 
@@ -21,8 +22,8 @@ which python
 
 pscripts="../../scripts/python"
 
-#cmds="gnina_cmds_1-4999.txt"
-cmds="gnina_cmds_5000-7970.txt"
+cmds="gnina_cmds_1-4999.txt"
+#cmds="gnina_cmds_5000-7970.txt"
 
 echo ${SLURM_ARRAY_JOB_ID} ${SLURM_ARRAY_TASK_ID}
 
