@@ -99,6 +99,12 @@ with open("analysis/invalid.lst", "w", buffering=1) as finvalid, open(
             if re.match(f"{recid}_PRO_{ligid}" + "_LIG_.*_full_p[0-9]{0,2}\.pdb\.gz", r)
         ]
 
+        # Check that there is at least the minimised crystal structure and one docking pose
+        if len(recnames) < 2:
+            print(f"{newline(ok)}    Less than two files for receptor:\n\t{recnames}")
+            ok = False
+
+
         for recname in recnames:
             recpath = os.path.join(ppath, recname)
 
@@ -161,6 +167,12 @@ with open("analysis/invalid.lst", "w", buffering=1) as finvalid, open(
             for lig in os.listdir(ppath)
             if re.match(f"{recid}_PRO_{ligid}" + "_LIG_.*_p[0-9]{0,2}\.sdf\.gz", lig)
         ]
+
+        # Check that there is at least the minimised crystal structure and one docking pose
+        if len(lignames) < 2:
+            print(f"{newline(ok)}    Less than two files for receptor:\n\t{lignames}")
+            ok = False
+
         for ligname in lignames:
             ligpath = os.path.join(ppath, ligname)
 
