@@ -223,40 +223,6 @@ with open("analysis/invalid.lst", "w", buffering=1) as finvalid, open(
             if not ok:
                 break
 
-        """         
-        # Load score
-        scorepath = os.path.join(dataset, system, f"{system}_score.csv")
-        try:
-            df_score = pd.read_csv(scorepath)
-        except:
-            print(f"{newline(ok)}    Scores file not found ({scorepath})!")
-            ok = False
-
-        try:
-            ranks = df_score["rank"].max()
-
-            # Take into account the possible presence of the crystal pose
-            if df_score["rank"].min() == 0:
-                ranks += 1
-
-            assert ranks == len(lignames)
-        except AssertionError:
-            print(
-                f"{newline(ok)}    Number of scores mismatches number of poses ({ranks} vs {len(lignames)})!"
-            )
-            ok = False
-
-        rmsd = ["rmsd_lig", "rmsd_flex", "rmsd_tot"]
-        for r in rmsd:
-            if np.isnan(df_score[r].to_numpy()).any():
-                print(f"{newline(ok)}    {r.upper()} contains NaN!")
-                ok = False
-
-            if np.isinf(df_score[r].to_numpy()).any():
-                print(f"{newline(ok)}    {r.upper()} contains Inf!")
-                ok = False
-        """
-
         if ok:
             print("ok")
             fvalid.write(f"{pocket}\t{recid}\t{ligid}\n")
