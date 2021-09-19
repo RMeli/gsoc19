@@ -5,9 +5,8 @@
 #SBATCH --cpus-per-task=1
 #SBATCH --partition=short
 #SBATCH --clusters=arc
-##SBATCH --array=1-4999
+#SBATCH --array=1-4999
 ##SBATCH --array=1-2971
-#SBATCH --array=2552-2556
 #SBATCH --output=slurm/crystal/%x.%A_%a.out
 #SBATCH --time=12:00:00
 
