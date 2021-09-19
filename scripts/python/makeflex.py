@@ -40,6 +40,10 @@ rigidname = args.rigid
 flexname = args.flex
 outfile = args.out
 
+rigid = prody.parsePDB(rigidname)
+if rigid.numCoordsets() != 1:
+    raise ValueError(f"More than one model (MODEL/ENDMDL) for {rigidname} is not allowed.")
+
 out = open(outfile, "w")
 
 flex = prody.parsePDB(flexname)
@@ -101,10 +105,9 @@ for ci in range(flex.numCoordsets()):  # Loop over different MODELs (MODEL/ENDMD
 
             if (chain, resnum, icode) in flexres and aname not in backbone:
                 if atype != "H":
-                    resatoms = flex[chain].select("resnum %d and not name H" % resnum)
-                    w = which[(chain, resnum)]
-                    which[(chain, resnum)] += 1  # update to next index
-                    # print(resnum, aname, chain, [atom for atom in resatoms])
+                    resatoms = flex[chain].select(f"resnum {resnum} and icode {icode if icode else '_'} and not name H")
+                    w = which[(chain, resnum, icode)]
+                    which[(chain, resnum, icode)] += 1  # update to next index
                     atom = resatoms[w]  # this is the atom to replace this line with
                     c = atom.getCoordsets(ci)
                     line = PDBLINE % (
