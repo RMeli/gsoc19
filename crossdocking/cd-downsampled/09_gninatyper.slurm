@@ -15,7 +15,7 @@
 # --------------------------------------------------
 
 #files="gnina_cmds_1-4999.txt"
-cmds="gnina_cmds_5000-7970.txt"
+files="gnina_cmds_5000-7970.txt"
 
 container="${DATA}/gsoc19/devtools/containers/gnina.sif"
 
