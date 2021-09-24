@@ -1,0 +1,68 @@
+Bootstrap: docker
+From: nvidia/cuda:10.2-cudnn7-devel-ubuntu18.04
+
+%environment
+    export LC_ALL=C.UTF-8
+    export LD_LIBRARY_PATH="/lib:/lib64:/usr/lib:/usr/local/lib:${LD_LIBRARY_PATH}"
+    export PYTHONPATH="/usr/local/python"
+    export RDBASE="/opt/rdkit"
+%post
+    export ROOTDIR=/opt
+    export DEBIAN_FRONTEND=noninteractive
+    export RDKIT_VERSION="2021_03_4"
+
+    export LC_ALL=C.UTF-8
+    export LD_LIBRARY_PATH="/lib:/lib64:/usr/lib:/usr/local/lib:${LD_LIBRARY_PATH}"
+    export PYTHONPATH="/usr/local/python"
+    export RDBASE="${ROOTDIR}/rdkit"
+
+    apt update -y
+    apt upgrade -y
+
+    ln -sf /usr/share/zoneinfo/Europe/Paris /etc/localtime
+    apt install -y wget gnupg software-properties-common tzdata git \
+        libboost-all-dev libeigen3-dev libatlas-base-dev \
+        libgoogle-glog-dev libprotobuf-dev protobuf-compiler libhdf5-dev \
+        libsqlite3-dev sqlite3 python3-dev python3-pip \
+        libfreetype6-dev swig apt-transport-https ca-certificates
+
+    # Install latest CMake
+    wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | gpg --dearmor - | tee /etc/apt/trusted.gpg.d/kitware.gpg >/dev/null
+    apt-add-repository 'deb https://apt.kitware.com/ubuntu/ bionic main'
+    apt update
+    apt install -y cmake build-essential
+
+    update-alternatives --install /usr/bin/python python /usr/bin/python3 1
+    update-alternatives --install /usr/bin/pip pip /usr/bin/pip3 1
+
+    pip install numpy pandas pytest scipy
+    pip install seaborn scikit-image parse protobuf
+
+    # RDKit
+    git clone -b Release_${RDKIT_VERSION} --depth=1 https://github.com/rdkit/rdkit.git "${ROOTDIR}/rdkit"
+    cd "${ROOTDIR}/rdkit"
+    mkdir build
+    cd build
+    cmake -DRDK_BUILD_MAEPARSER_SUPPORT=OFF -DRDK_BUILD_COORDGEN_SUPPORT=OFF ..
+    make -j $(nproc)
+    make install
+    cp $RDBASE/lib/libRDKit* /usr/local/lib/
+    cp -r $RDBASE/lib/cmake/* /usr/local/lib/cmake/
+    cp -r $RDBASE/rdkit /usr/local/lib/python3.6/dist-packages/
+
+    # OpenBabel
+    git clone --depth=1 -b openbabel-3-1-1 https://github.com/openbabel/openbabel.git "${ROOTDIR}/openbabel"
+    cd "${ROOTDIR}/openbabel"
+    mkdir build
+    cd build
+    cmake -DWITH_MAEPARSER=OFF -DWITH_COORDGEN=OFF -DPYTHON_BINDINGS=ON -DRUN_SWIG=ON ..
+    make -j $(nproc)
+    make install
+
+    # Clean up
+    rm -rf /opt/*
+
+%help
+    Container for GNINA development.
+
+    Based on definition file originally written by Sebastien Buchoux (@seb-buch).
