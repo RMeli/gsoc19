@@ -65,7 +65,7 @@ cv = GroupKFold(n_splits=3)
 for fold, (train_idx, test_idx) in enumerate(
     cv.split(df.drop(columns=["group"]).to_numpy(), groups=df["group"].to_numpy())
 ):
-    with open(f"files/train_{fold}.types", "w") as trout:
+    with open(f"files/train{fold}.types", "w") as trout:
         for tr in tqdm.tqdm(train_idx, leave=False, desc=f"Train {fold}"):
             row = df.iloc[tr]
 
@@ -75,7 +75,7 @@ for fold, (train_idx, test_idx) in enumerate(
             )
             trout.write(line)
 
-    with open(f"files/test_{fold}.types", "w") as teout:
+    with open(f"files/test{fold}.types", "w") as teout:
         for te in tqdm.tqdm(test_idx, leave=False, desc=f"Test {fold}"):
             row = df.iloc[te]
 
