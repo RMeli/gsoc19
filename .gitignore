@@ -69,3 +69,6 @@ slurm/
 
 # macOS
 .DS_Store
+
+# Software
+probis
