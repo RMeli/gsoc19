@@ -208,6 +208,7 @@ def load_mols(
 
     return systems
 
+
 def probis_sim_core(systems, i):
     """
     Compare pocket i with all other pockets.
@@ -216,7 +217,7 @@ def probis_sim_core(systems, i):
 
     dist = 7.0
 
-    similarity  = -1 * np.ones(n)
+    similarity = -1 * np.ones(n)
 
     pocket1, pdbid1 = systems[i]
 
@@ -227,11 +228,7 @@ def probis_sim_core(systems, i):
     l1 = p1.select("resname LIG")
 
     lc1 = list(set(l1.getChids()))[0]
-    rc1 = set(
-        p1.select(
-            f"within {dist} of (resname LIG and chain {lc1})"
-        ).getChids()
-    )
+    rc1 = set(p1.select(f"within {dist} of (resname LIG and chain {lc1})").getChids())
     ln1 = list(set(l1.getResnums()))
 
     for j in range(n):
@@ -243,14 +240,12 @@ def probis_sim_core(systems, i):
 
         l2 = p2.select("resname LIG")
         lc2 = list(set(l2.getChids()))[0]
-        rc2  = set(
-            p2.select(
-                f"within {dist} of (resname LIG and chain {lc2})"
-            ).getChids()
+        rc2 = set(
+            p2.select(f"within {dist} of (resname LIG and chain {lc2})").getChids()
         )
         ln2 = list(set(l2.getResnums()))
 
-            # Start the string for the ProBIS command
+        # Start the string for the ProBIS command
         probis = f"./probis -compare -super -dist {dist} -f1 {recname1} -c1 "
         for c in rc1:
             probis += c
@@ -287,10 +282,13 @@ def probis_sim_core(systems, i):
             else:
                 similarity[j] = 0
                 print(f"Pockets {pocket1} and {pocket2} are not similar.")
-                print(f"    Pocket representatives: {recname1} and {recname2} are not similar.")
+                print(
+                    f"    Pocket representatives: {recname1} and {recname2} are not similar."
+                )
                 print(f"    Zscore: {Zscore}.")
 
     return similarity
+
 
 def probis_sim(systems, n_jobs=8):
     """
@@ -298,13 +296,17 @@ def probis_sim(systems, n_jobs=8):
     """
     n = len(systems)
 
-    similarity_mtx  = -1 * np.ones((n,n))
+    similarity_mtx = -1 * np.ones((n, n))
 
-    #for i in range(n):
+    # for i in range(n):
     #    similarity_mtx[i,:] = probis_sim_core(systems, i)
 
     with WorkerPool(n_jobs=n_jobs) as pool:
-        results = pool.map(lambda i: probis_sim_core(systems, i), range(n), concatenate_numpy_output=False)
+        results = pool.map(
+            lambda i: probis_sim_core(systems, i),
+            range(n),
+            concatenate_numpy_output=False,
+        )
 
     return np.array(results)
 
@@ -343,7 +345,10 @@ if __name__ == "__main__":
                 system = load_mols(
                     ligname,
                     recname,
-                    datapaths=[datapath, os.path.join("disco", pocket, "PDB_Structures")],
+                    datapaths=[
+                        datapath,
+                        os.path.join("disco", pocket, "PDB_Structures"),
+                    ],
                 )
 
                 assert len(system) == 1
@@ -351,8 +356,8 @@ if __name__ == "__main__":
                 system[0].select_atoms("all").write()
 
     # For testing
-    #systems = systems[:3]
-    #pockets = pockets[:3]
+    # systems = systems[:3]
+    # pockets = pockets[:3]
 
     sim = probis_sim(systems)
 
