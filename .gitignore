@@ -37,6 +37,9 @@ mltraining/clustering/rows
 mltraining/clustering/rows-wat
 mltraining/gninatypes/????
 
+# probis
+*.rota.pdb
+
 # training
 *reduced*.types
 completelig
