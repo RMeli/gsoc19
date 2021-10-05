@@ -15,8 +15,6 @@ Some functions are extracted from the code associated to the following paper:
 """
 
 from mpire import WorkerPool
-from multiprocessing import Pool
-
 
 from typing import Union, List
 import warnings
@@ -295,8 +293,6 @@ def probis_sim(systems, n_jobs=8):
     Compute similarity matrix between pockets using ProBiS.
     """
     n = len(systems)
-
-    similarity_mtx = -1 * np.ones((n, n))
 
     # for i in range(n):
     #    similarity_mtx[i,:] = probis_sim_core(systems, i)
