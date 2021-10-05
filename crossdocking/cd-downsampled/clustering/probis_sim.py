@@ -14,6 +14,10 @@ Some functions are extracted from the code associated to the following paper:
 
 """
 
+from mpire import WorkerPool
+from multiprocessing import Pool
+
+
 from typing import Union, List
 import warnings
 import os
@@ -22,6 +26,7 @@ import glob
 
 import numpy as np
 import qcelemental as qcel
+import pandas as pd
 
 import MDAnalysis as mda
 from openbabel import pybel
@@ -203,94 +208,105 @@ def load_mols(
 
     return systems
 
-def probis_sim(systems):
+def probis_sim_core(systems, i):
+    """
+    Compare pocket i with all other pockets.
+    """
+    n = len(systems)
+
+    dist = 7.0
+
+    similarity  = -1 * np.ones(n)
+
+    pocket1, pdbid1 = systems[i]
+
+    # Load previously created file
+    recname1 = f"pdbs/{pocket1}_{pdbid1}.pdb"
+
+    p1 = prody.parsePDB(recname1)
+    l1 = p1.select("resname LIG")
+
+    lc1 = list(set(l1.getChids()))[0]
+    rc1 = set(
+        p1.select(
+            f"within {dist} of (resname LIG and chain {lc1})"
+        ).getChids()
+    )
+    ln1 = list(set(l1.getResnums()))
+
+    for j in range(n):
+        pocket2, pdbid2 = systems[j]
+
+        recname2 = f"pdbs/{pocket2}_{pdbid2}.pdb"
+
+        p2 = prody.parsePDB(recname2)
+
+        l2 = p2.select("resname LIG")
+        lc2 = list(set(l2.getChids()))[0]
+        rc2  = set(
+            p2.select(
+                f"within {dist} of (resname LIG and chain {lc2})"
+            ).getChids()
+        )
+        ln2 = list(set(l2.getResnums()))
+
+            # Start the string for the ProBIS command
+        probis = f"./probis -compare -super -dist {dist} -f1 {recname1} -c1 "
+        for c in rc1:
+            probis += c
+        probis += f" -bsite1 LIG.{ln1[0]}.{lc1} -f2 {recname2} -bsite2 LIG.{ln2[0]}.{lc2} -c2 "
+
+        # Checking chains needed for probis for the second protein
+        for c in rc2:
+            probis += c
+
+        # Make sure probis only runs on 1 CPU
+        probis += " -ncpu 1"
+
+        subprocess.call(probis, shell=True)
+
+        # After running probis, assume proteins are not similar
+        # Check output of probis & determine if they are similar
+        # Similar if Z_SCORE > 2. *Asked developers if this will work
+        if not glob.glob(f"{pocket1}*_{pocket2}*.0.rota.pdb"):
+            similarity[j] = 0
+            print(f"Pockets {pocket1} and {pocket2} are not similar.")
+            print(f"Pocket representatives: {recname1} and {recname2} are not similar.")
+        else:
+            esent = subprocess.check_output(
+                f"grep Z_SCORE {pocket1}*_{pocket2}*.0.rota.pdb",
+                shell=True,
+            )
+            esent = esent.split()
+
+            Zscore = float(esent[3])
+            if Zscore > 2:
+                similarity[j] = 1
+                print(f"Pockets {pocket1} and {pocket2} are similar.")
+                print(f"    Zscore: {Zscore}.")
+            else:
+                similarity[j] = 0
+                print(f"Pockets {pocket1} and {pocket2} are not similar.")
+                print(f"    Pocket representatives: {recname1} and {recname2} are not similar.")
+                print(f"    Zscore: {Zscore}.")
+
+    return similarity
+
+def probis_sim(systems, n_jobs=8):
     """
     Compute similarity matrix between pockets using ProBiS.
     """
     n = len(systems)
-    
+
     similarity_mtx  = -1 * np.ones((n,n))
 
-    dist = 7.0
+    #for i in range(n):
+    #    similarity_mtx[i,:] = probis_sim_core(systems, i)
 
-    for i in range(n):
-        pocket1, pdbid1 = systems[i]
+    with WorkerPool(n_jobs=n_jobs) as pool:
+        results = pool.map(lambda i: probis_sim_core(systems, i), range(n), concatenate_numpy_output=False)
 
-        # Load previously created file
-        recname1 = f"pdbs/{pocket1}_{pdbid1}.pdb"
-
-        p1 = prody.parsePDB(recname1)
-        l1 = p1.select("resname LIG")
-
-        lc1 = list(set(l1.getChids()))[0]
-        rc1 = set(
-            p1.select(
-                f"within {dist} of (resname LIG and chain {lc1})"
-            ).getChids()
-        )
-        ln1 = list(set(l1.getResnums()))
-
-        for j in range(i, n):
-            pocket2, pdbid2 = systems[j]
-
-            recname2 = f"pdbs/{pocket2}_{pdbid2}.pdb"
-
-            p2 = prody.parsePDB(recname2)
-
-            l2 = p2.select("resname LIG")
-            lc2 = list(set(l2.getChids()))[0]
-            rc2  = set(
-                p2.select(
-                    f"within {dist} of (resname LIG and chain {lc2})"
-                ).getChids()
-            )
-            ln2 = list(set(l2.getResnums()))
-
-             # Start the string for the ProBIS command
-            probis = f"./probis -compare -super -dist {dist} -f1 {recname1} -c1 "
-            for c in rc1:
-                probis += c
-            probis += f" -bsite1 LIG.{ln1[0]}.{lc1} -f2 {recname2} -bsite2 LIG.{ln2[0]}.{lc2} -c2 "
-
-            # Checking chains needed for probis for the second protein
-            for c in rc2:
-                probis += c
-
-            # Make sure probis only runs on 1 CPU
-            probis += " -ncpu 1"
-
-            subprocess.call(probis, shell=True)
-
-            # After running probis, assume proteins are not similar
-            # Check output of probis & determine if they are similar
-            # Similar if Z_SCORE > 2. *Asked developers if this will work
-            if not glob.glob(f"{pocket1}*_{pocket2}*.0.rota.pdb"):
-                similarity_mtx[i, j] = 0
-                similarity_mtx[j, i] = 0
-                print(f"Pockets {pocket1} and {pocket2} are not similar.")
-                print(f"Pocket representatives: {recname1} and {recname2} are not similar.")
-            else:
-                esent = subprocess.check_output(
-                    f"grep Z_SCORE {pocket1}*_{pocket2}*.0.rota.pdb",
-                    shell=True,
-                )
-                esent = esent.split()
-
-                Zscore = float(esent[3])
-                if Zscore > 2:
-                    similarity_mtx[i, j] = 1
-                    similarity_mtx[j, i] = 1
-                    print(f"Pockets {pocket1} and {pocket2} are similar.")
-                    print(f"    Zscore: {Zscore}.")
-                else:
-                    similarity_mtx[i, j] = 0
-                    similarity_mtx[j, i] = 0
-                    print(f"Pockets {pocket1} and {pocket2} are not similar.")
-                    print(f"    Pocket representatives: {recname1} and {recname2} are not similar.")
-                    print(f"    Zscore: {Zscore}.")
-
-
-    return similarity_mtx
+    return np.array(results)
 
 
 if __name__ == "__main__":
@@ -300,12 +316,15 @@ if __name__ == "__main__":
     # Loop over systems and create correct protein-ligand PDB file
     # This file will be loaded in with  ProDy in order to re-use most of Paul's code
     systems = []
+    pockets = []
     with open("representatives.list", "r") as fin:
         for line in fin:
             splitted_line = line.strip().split()
             pocket = splitted_line[0]
             pdbid = splitted_line[1]
+
             systems.append((pocket, pdbid))
+            pockets.append(pocket)
 
             datapath = os.path.join(root, pocket, "PDB_Structures")
             ligname = f"{pdbid}_LIG_aligned.sdf"
@@ -321,16 +340,24 @@ if __name__ == "__main__":
                 # Some receptors have not been included in the GNINA1.0 paper because
                 # of subsampling.
                 # First look at the subsampled dataset, then look at the original dataset
-                systems = load_mols(
+                system = load_mols(
                     ligname,
                     recname,
                     datapaths=[datapath, os.path.join("disco", pocket, "PDB_Structures")],
                 )
 
-                assert len(systems) == 1
+                assert len(system) == 1
 
-                systems[0].select_atoms("all").write()
+                system[0].select_atoms("all").write()
+
+    # For testing
+    #systems = systems[:3]
+    #pockets = pockets[:3]
 
     sim = probis_sim(systems)
 
-    print(sim)
+    assert np.allclose(np.diag(sim), 1.0)
+    assert np.allclose(sim, sim.T)
+
+    df = pd.DataFrame(sim, columns=pockets, index=pockets)
+    df.to_csv("similarity.csv")
