@@ -207,7 +207,7 @@ def load_mols(
     return systems
 
 
-def probis_sim_core(systems, i):
+def probis_sim_core(systems, i, zscore_threshold):
     """
     Compare pocket i with all other pockets.
     """
@@ -220,11 +220,12 @@ def probis_sim_core(systems, i):
     pocket1, pdbid1 = systems[i]
 
     # Load previously created file
-    recname1 = f"pdbs/{pocket1}_{pdbid1}.pdb"
+    #recname1 = f"pdbs/{pocket1}_{pdbid1}.pdb"
+    recname1 = f"pdbs/{pdbid1}_{pocket1}.pdb"
 
     p1 = prody.parsePDB(recname1)
-    l1 = p1.select("resname LIG")
 
+    l1 = p1.select("resname LIG")
     lc1 = list(set(l1.getChids()))[0]
     rc1 = set(p1.select(f"within {dist} of (resname LIG and chain {lc1})").getChids())
     ln1 = list(set(l1.getResnums()))
@@ -232,7 +233,8 @@ def probis_sim_core(systems, i):
     for j in range(n):
         pocket2, pdbid2 = systems[j]
 
-        recname2 = f"pdbs/{pocket2}_{pdbid2}.pdb"
+        #recname2 = f"pdbs/{pocket2}_{pdbid2}.pdb"
+        recname2 = f"pdbs/{pdbid2}_{pocket2}.pdb"
 
         p2 = prody.parsePDB(recname2)
 
@@ -261,19 +263,20 @@ def probis_sim_core(systems, i):
         # After running probis, assume proteins are not similar
         # Check output of probis & determine if they are similar
         # Similar if Z_SCORE > 2. *Asked developers if this will work
-        if not glob.glob(f"{pocket1}*_{pocket2}*.0.rota.pdb"):
+        if not glob.glob(f"{pdbid1}*_{pdbid2}*.0.rota.pdb"):
             similarity[j] = 0
             print(f"Pockets {pocket1} and {pocket2} are not similar.")
             print(f"Pocket representatives: {recname1} and {recname2} are not similar.")
         else:
             esent = subprocess.check_output(
-                f"grep Z_SCORE {pocket1}*_{pocket2}*.0.rota.pdb",
+                f"grep Z_SCORE {pdbid1}*_{pdbid2}*.0.rota.pdb",
                 shell=True,
             )
             esent = esent.split()
 
             Zscore = float(esent[3])
-            if Zscore > 2:
+            print(">>>>> ZScore:", Zscore)
+            if Zscore >= zscore_threshold:
                 similarity[j] = 1
                 print(f"Pockets {pocket1} and {pocket2} are similar.")
                 print(f"    Zscore: {Zscore}.")
@@ -288,7 +291,7 @@ def probis_sim_core(systems, i):
     return similarity
 
 
-def probis_sim(systems, n_jobs=8):
+def probis_sim(systems, n_jobs=8, zscore_threshold=2):
     """
     Compute similarity matrix between pockets using ProBiS.
     """
@@ -299,7 +302,7 @@ def probis_sim(systems, n_jobs=8):
 
     with WorkerPool(n_jobs=n_jobs) as pool:
         results = pool.map(
-            lambda i: probis_sim_core(systems, i),
+            lambda i: probis_sim_core(systems, i, zscore_threshold),
             range(n),
             concatenate_numpy_output=False,
         )
@@ -329,7 +332,8 @@ if __name__ == "__main__":
             recname = f"{pdbid}_PRO.pdb"
 
             # Name of the output file
-            outfile = f"pdbs/{pocket}_{pdbid}.pdb"
+            # probis seems to assume that the file name starts with the PDB code
+            outfile = f"pdbs/{pdbid}_{pocket}.pdb"
 
             # Create file if it does not exist
             if not os.path.exists(outfile):
@@ -349,13 +353,13 @@ if __name__ == "__main__":
 
                 assert len(system) == 1
 
-                system[0].select_atoms("all").write()
+                system[0].select_atoms("all").write(outfile)
 
     # For testing
-    # systems = systems[:3]
-    # pockets = pockets[:3]
+    #systems = systems[7:8]
+    #pockets = pockets[7:8]
 
-    sim = probis_sim(systems, n_jobs=24)
+    sim = probis_sim(systems, n_jobs=24, zscore_threshold=3.5)
 
     #assert np.allclose(np.diag(sim), 1.0)
     #assert np.allclose(sim, sim.T)
