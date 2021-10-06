@@ -31,6 +31,7 @@ datasets/flexdock/other
 refined-*.tar.gz
 other-*.tar.gz
 disco/
+**/clustering/pdbs/
 
 # gnina
 mltraining/clustering/rows
