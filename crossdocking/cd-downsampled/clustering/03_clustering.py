@@ -6,8 +6,23 @@ from matplotlib import pyplot as plt
 
 sim = pd.read_csv("similarity.csv", index_col=0)
 
-assert sim.to_numpy().shape == (92, 92)
-#assert np.allclose(np.diag(sim.to_numpy()), 1)
+sim_mtx = sim.to_numpy()
+assert sim_mtx.shape == (92, 92)
+assert np.allclose(np.diag(sim_mtx), 1)
+# assert np.allclose(sim_mtx, sim_mtx.T)
+
+diff = sim.subtract(sim.transpose())
+
+
+def nonzerocols(x):
+    l = list(cols[x.values])
+    return l if l else np.nan
+
+
+cols = diff.columns
+bt = diff.apply(lambda x: x > 0)  # Mask nonzero values
+nosymm = bt.apply(nonzerocols, axis=1).dropna()  # Get column names for nonzero values
+print(nosymm)
 
 plt.figure()
 sns.heatmap(sim)

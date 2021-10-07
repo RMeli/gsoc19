@@ -207,7 +207,7 @@ def load_mols(
     return systems
 
 
-def probis_sim_core(systems, i, zscore_threshold):
+def probis_sim_core(systems, i):
     """
     Compare pocket i with all other pockets.
     """
@@ -220,7 +220,7 @@ def probis_sim_core(systems, i, zscore_threshold):
     pocket1, pdbid1 = systems[i]
 
     # Load previously created file
-    #recname1 = f"pdbs/{pocket1}_{pdbid1}.pdb"
+    # recname1 = f"pdbs/{pocket1}_{pdbid1}.pdb"
     recname1 = f"pdbs/{pdbid1}_{pocket1}.pdb"
 
     p1 = prody.parsePDB(recname1)
@@ -233,7 +233,7 @@ def probis_sim_core(systems, i, zscore_threshold):
     for j in range(n):
         pocket2, pdbid2 = systems[j]
 
-        #recname2 = f"pdbs/{pocket2}_{pdbid2}.pdb"
+        # recname2 = f"pdbs/{pocket2}_{pdbid2}.pdb"
         recname2 = f"pdbs/{pdbid2}_{pocket2}.pdb"
 
         p2 = prody.parsePDB(recname2)
@@ -275,23 +275,12 @@ def probis_sim_core(systems, i, zscore_threshold):
             esent = esent.split()
 
             Zscore = float(esent[3])
-            print(">>>>> ZScore:", Zscore)
-            if Zscore >= zscore_threshold:
-                similarity[j] = 1
-                print(f"Pockets {pocket1} and {pocket2} are similar.")
-                print(f"    Zscore: {Zscore}.")
-            else:
-                similarity[j] = 0
-                print(f"Pockets {pocket1} and {pocket2} are not similar.")
-                print(
-                    f"    Pocket representatives: {recname1} and {recname2} are not similar."
-                )
-                print(f"    Zscore: {Zscore}.")
+            similarity[j] = Zscore
 
     return similarity
 
 
-def probis_sim(systems, n_jobs=8, zscore_threshold=2):
+def probis_sim(systems, n_jobs=8):
     """
     Compute similarity matrix between pockets using ProBiS.
     """
@@ -302,7 +291,7 @@ def probis_sim(systems, n_jobs=8, zscore_threshold=2):
 
     with WorkerPool(n_jobs=n_jobs) as pool:
         results = pool.map(
-            lambda i: probis_sim_core(systems, i, zscore_threshold),
+            lambda i: probis_sim_core(systems, i),
             range(n),
             concatenate_numpy_output=False,
         )
@@ -356,13 +345,15 @@ if __name__ == "__main__":
                 system[0].select_atoms("all").write(outfile)
 
     # For testing
-    #systems = systems[7:8]
-    #pockets = pockets[7:8]
+    # systems = [systems[12], systems[67]]
+    # pockets = [pockets[12], pockets[67]]
 
-    sim = probis_sim(systems, n_jobs=24, zscore_threshold=3.5)
+    sim = probis_sim(systems, n_jobs=24)
 
-    #assert np.allclose(np.diag(sim), 1.0)
-    #assert np.allclose(sim, sim.T)
+    print(sim)
+
+    # assert np.allclose(np.diag(sim), 1.0)
+    # assert np.allclose(sim, sim.T)
 
     df = pd.DataFrame(sim, columns=pockets, index=pockets)
-    df.to_csv("similarity.csv")
+    df.to_csv("zscore.csv")

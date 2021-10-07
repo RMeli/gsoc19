@@ -6,7 +6,6 @@ largest ligand. The largest ligand is selected by molecular weight.
 """
 import os
 import re
-import pickle
 
 from rdkit import Chem
 from rdkit.Chem import Descriptors
