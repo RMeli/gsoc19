@@ -104,7 +104,6 @@ with open("analysis/invalid.lst", "w", buffering=1) as finvalid, open(
             print(f"{newline(ok)}    Less than two files for receptor:\n\t{recnames}")
             ok = False
 
-
         for recname in recnames:
             recpath = os.path.join(ppath, recname)
 
