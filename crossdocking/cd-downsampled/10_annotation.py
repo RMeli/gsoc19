@@ -52,12 +52,19 @@ df = pd.read_csv("analysis/rmsd_clean.csv", index_col=False)
 
 # Assign different group to different pockets
 # TODO: Assesss pocket similarity?
-encoder = OrdinalEncoder()
-df["group"] = encoder.fit_transform(df["pocket"].to_numpy().reshape(-1, 1))
-df["group"] = df["group"].astype(int)
-
+# encoder = OrdinalEncoder()
+# df["group"] = encoder.fit_transform(df["pocket"].to_numpy().reshape(-1, 1))
+# df["group"] = df["group"].astype(int)
 # Check that the number of unique pockets matches the number of groups
-assert len(df["pocket"].unique()) == df["group"].max() + 1
+# assert len(df["pocket"].unique()) == df["group"].max() + 1
+
+# Create CV clusters based on ProBiS
+clusters = pd.read_csv("clustering/clusters.csv", index_col=0)
+#print(clusters)
+def pocket_to_cluster(row):
+    return clusters.loc[row.pocket]
+df["group"] = df.apply(pocket_to_cluster, axis=1)
+# print(df)
 
 # Split dataset in three folds (cross-validation)
 # Randomly shuffle the data and keep the same pocket in the same fold
@@ -71,7 +78,7 @@ for fold, (train_idx, test_idx) in enumerate(
 
             a = ligrmsd(row)
             line = (
-                f"{a} {recname(row)} {ligname(row)} # {row.rmsd:.4f} {row.score:.4f}\n"
+                f"{a} {row.group} {recname(row)} {ligname(row)} # {row.rmsd:.4f} {row.score:.4f}\n"
             )
             trout.write(line)
 
@@ -81,6 +88,6 @@ for fold, (train_idx, test_idx) in enumerate(
 
             a = ligrmsd(row)
             line = (
-                f"{a} {recname(row)} {ligname(row)} # {row.rmsd:.4f} {row.score:.4f}\n"
+                f"{a} {row.group} {recname(row)} {ligname(row)} # {row.rmsd:.4f} {row.score:.4f}\n"
             )
             teout.write(line)
