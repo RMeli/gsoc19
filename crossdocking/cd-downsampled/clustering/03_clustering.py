@@ -110,3 +110,6 @@ cm = sns.heatmap(
     < 0.5,
 )
 plt.savefig("sim-cluster-clustered.png")
+
+df_clusters = pd.DataFrame({"pocket": sim.index, "cluster": clusters.astype(int)})
+df_clusters.to_csv("clusters.csv", index=False)
