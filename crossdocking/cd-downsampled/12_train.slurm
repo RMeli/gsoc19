@@ -8,9 +8,15 @@
 #SBATCH --clusters=htc
 #SBATCH --array=0-2
 #SBATCH --output=slurm/train/%x.%A_%a.out
-#SBATCH --time=48:00:00
+#SBATCH --time=24:00:00
+##SBATCH --account=stat-ecr
 
-modelname="default2018-noaffinity"
+#---------------------------------------------------------------------------------------
+#---------------------------------------------------------------------------------------
+modelname="default2017-noaffinity"
+prefix="cluster"
+#---------------------------------------------------------------------------------------
+#---------------------------------------------------------------------------------------
 
 subdir=${PWD}
 gscripts=${HOME}/git/gninascripts # Script on local filesystem
@@ -24,7 +30,7 @@ trainfolder=training/${modelname}
 mkdir -p ${trainfolder}
 
 
-cp files/train* files/test* ${trainfolder}
+cp files/${prefix}train* files/${prefix}test* ${trainfolder}
 cp models/${modelname}.model ${trainfolder}
 cp models/completerec models/completelig ${trainfolder}
 cd ${trainfolder}
@@ -33,7 +39,7 @@ singularity exec --nv -B ${subdir}:${subdir} --env PYTHONPATH=${gcaffe}:/usr/loc
     ${container} \
     python ${gscripts}/train.py \
     --model ${modelname}.model \
-    --prefix "" \
+    --prefix ${prefix} \
     --data_root ${subdir} \
     --iterations 100000 \
     --test_interval 1000 \
