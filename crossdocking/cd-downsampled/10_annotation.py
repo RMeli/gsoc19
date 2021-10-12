@@ -11,10 +11,19 @@ import os
 import pandas as pd
 import tqdm
 
+import argparse
+
 from sklearn.model_selection import GroupKFold
 from sklearn.preprocessing import OrdinalEncoder
 
 root = "carlos_cd"
+
+parser = argparse.ArgumentParser(description='Cross-validation folds.')
+parser.add_argument("-c", "--cluster", action="store_true",
+                    help='Output cluster index in affinity column.')
+args = parser.parse_args()
+
+prefix = "cluster" if args.cluster else ""
 
 
 def ligname(row):
@@ -72,22 +81,36 @@ cv = GroupKFold(n_splits=3)
 for fold, (train_idx, test_idx) in enumerate(
     cv.split(df.drop(columns=["group"]).to_numpy(), groups=df["group"].to_numpy())
 ):
-    with open(f"files/train{fold}.types", "w") as trout:
+    with open(f"files/{prefix}train{fold}.types", "w") as trout:
         for tr in tqdm.tqdm(train_idx, leave=False, desc=f"Train {fold}"):
             row = df.iloc[tr]
 
             a = ligrmsd(row)
-            line = (
-                f"{a} {row.group} {recname(row)} {ligname(row)} # {row.rmsd:.4f} {row.score:.4f}\n"
-            )
+
+            if args.cluster:
+                line = (
+                    f"{a} {row.group} {recname(row)} {ligname(row)} # {row.rmsd:.4f} {row.score:.4f}\n"
+                )
+            else:
+                line = (
+                    f"{a} {recname(row)} {ligname(row)} # {row.rmsd:.4f} {row.score:.4f}\n"
+                )
+            
             trout.write(line)
 
-    with open(f"files/test{fold}.types", "w") as teout:
+    with open(f"files/{prefix}test{fold}.types", "w") as teout:
         for te in tqdm.tqdm(test_idx, leave=False, desc=f"Test {fold}"):
             row = df.iloc[te]
 
             a = ligrmsd(row)
-            line = (
-                f"{a} {row.group} {recname(row)} {ligname(row)} # {row.rmsd:.4f} {row.score:.4f}\n"
-            )
+
+            if args.cluster:
+                line = (
+                    f"{a} {row.group} {recname(row)} {ligname(row)} # {row.rmsd:.4f} {row.score:.4f}\n"
+                )
+            else:
+                line = (
+                    f"{a} {recname(row)} {ligname(row)} # {row.rmsd:.4f} {row.score:.4f}\n"
+                )
+
             teout.write(line)
