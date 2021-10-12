@@ -3,6 +3,7 @@ layer {
   type: "MolGridData"
   top: "data"
   top: "label"
+  top: "affinity"
   include {
     phase: TEST
   }
@@ -15,7 +16,7 @@ layer {
         ligmap: "completelig"
         recmap: "completerec"
         balanced: false
-        has_affinity: false
+        has_affinity: true
         root_folder: "DATA_ROOT"
         ligmolcache: "lig.molcache2"
         recmolcache: "rec.molcache2"
@@ -26,6 +27,7 @@ layer {
   type: "MolGridData"
   top: "data"
   top: "label"
+  top: "affinity"
   include {
     phase: TRAIN
   }
@@ -40,7 +42,10 @@ layer {
         ligmap: "completelig"
         recmap: "completerec"
         stratify_receptor: false
-        has_affinity: false
+        has_affinity: true
+        stratify_affinity_min: 0
+        stratify_affinity_max: 64
+        stratify_affinity_step: 1
         random_rotation: true
         random_translate: 6
         root_folder: "DATA_ROOT"

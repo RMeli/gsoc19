@@ -46,7 +46,7 @@ layer {
         stratify_receptor: false
         has_affinity: true
         stratify_affinity_min: 0
-        stratify_affinity_max: 62
+        stratify_affinity_max: 64
         stratify_affinity_step: 1
         random_rotation: true
         random_translate: 6
