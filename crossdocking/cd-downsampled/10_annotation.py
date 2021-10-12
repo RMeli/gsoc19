@@ -18,12 +18,16 @@ from sklearn.preprocessing import OrdinalEncoder
 
 root = "carlos_cd"
 
-parser = argparse.ArgumentParser(description='Cross-validation folds.')
-parser.add_argument("-c", "--cluster", action="store_true",
-                    help='Output cluster index in affinity column.')
+parser = argparse.ArgumentParser(description="Cross-validation folds.")
+parser.add_argument(
+    "-c",
+    "--cluster",
+    action="store_true",
+    help="Output cluster index in affinity column.",
+)
 args = parser.parse_args()
 
-prefix = "cluster" if args.cluster else ""
+prefix = "cluster" if args.cluster else "nc"
 
 
 def ligname(row):
@@ -69,11 +73,30 @@ df = pd.read_csv("analysis/rmsd_clean.csv", index_col=False)
 
 # Create CV clusters based on ProBiS
 clusters = pd.read_csv("clustering/clusters.csv", index_col=0)
-#print(clusters)
+# print(clusters)
 def pocket_to_cluster(row):
     return clusters.loc[row.pocket]
+
+
 df["group"] = df.apply(pocket_to_cluster, axis=1)
 # print(df)
+
+# Annotate DataFrame
+df["annotation"] = df.apply(ligrmsd, axis=1)
+
+# Detect empty groups (only decoys after annotation)
+empty = []
+for group, dfgroup in df.groupby(by="group"):
+    if all(dfgroup["annotation"] == 0):
+        print(f"Group {group} only contains decoys. Removing...")
+        empty.append(group)
+
+# Remove empty groups
+for e in empty:
+    df = df[df["group"] != e]
+
+# print(df)
+# print(df["group"].unique())
 
 # Split dataset in three folds (cross-validation)
 # Randomly shuffle the data and keep the same pocket in the same fold
@@ -85,32 +108,20 @@ for fold, (train_idx, test_idx) in enumerate(
         for tr in tqdm.tqdm(train_idx, leave=False, desc=f"Train {fold}"):
             row = df.iloc[tr]
 
-            a = ligrmsd(row)
-
             if args.cluster:
-                line = (
-                    f"{a} {row.group} {recname(row)} {ligname(row)} # {row.rmsd:.4f} {row.score:.4f}\n"
-                )
+                line = f"{row.annotation} {row.group} {recname(row)} {ligname(row)} # {row.rmsd:.4f} {row.score:.4f}\n"
             else:
-                line = (
-                    f"{a} {recname(row)} {ligname(row)} # {row.rmsd:.4f} {row.score:.4f}\n"
-                )
-            
+                line = f"{row.annotation} {recname(row)} {ligname(row)} # {row.rmsd:.4f} {row.score:.4f}\n"
+
             trout.write(line)
 
     with open(f"files/{prefix}test{fold}.types", "w") as teout:
         for te in tqdm.tqdm(test_idx, leave=False, desc=f"Test {fold}"):
             row = df.iloc[te]
 
-            a = ligrmsd(row)
-
             if args.cluster:
-                line = (
-                    f"{a} {row.group} {recname(row)} {ligname(row)} # {row.rmsd:.4f} {row.score:.4f}\n"
-                )
+                line = f"{row.annotation} {row.group} {recname(row)} {ligname(row)} # {row.rmsd:.4f} {row.score:.4f}\n"
             else:
-                line = (
-                    f"{a} {recname(row)} {ligname(row)} # {row.rmsd:.4f} {row.score:.4f}\n"
-                )
+                line = f"{row.annotation} {recname(row)} {ligname(row)} # {row.rmsd:.4f} {row.score:.4f}\n"
 
             teout.write(line)
