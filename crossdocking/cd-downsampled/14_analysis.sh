@@ -2,7 +2,9 @@
 
 wdir=$PWD
 
-for model in "default2017-noaffinity" "default2018-noaffinity"
+for model in \
+    "default2017-noaffinity-nostratified" "default2018-noaffinity-nostratified" "dense-noaffinity-nostratified" \
+    "default2017-noaffinity" "default2018-noaffinity" "dense-noaffinity"
 do
     traindir="${wdir}/training/${model}"
 
