@@ -95,6 +95,8 @@ for group, dfgroup in df.groupby(by="group"):
 for e in empty:
     df = df[df["group"] != e]
 
+df.to_csv("analysis/annotated.csv", index=False, float_format="%.5f")
+
 # print(df)
 # print(df["group"].unique())
 
