@@ -1,0 +1,1 @@
+../cd-downsampled/make_gnina_cmds.py

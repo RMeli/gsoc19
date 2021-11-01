@@ -1,0 +1,1 @@
+../cd-downsampled/02_docking.slurm

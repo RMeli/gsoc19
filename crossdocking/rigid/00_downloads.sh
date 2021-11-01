@@ -1,0 +1,1 @@
+../cd-downsampled/00_downloads.sh
