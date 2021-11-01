@@ -7,8 +7,9 @@
 #SBATCH --clusters=arc
 ##SBATCH --array=1-4999
 #SBATCH --array=1-2971
-#SBATCH --output=slurm/%x.%A_%a.out
-#SBATCH --time=12:00:00
+#SBATCH --output=slurm/docking/%x.%A_%a.out
+#SBATCH --time=06:00:00
+#SBATCH --account=stat-ecr
 
 # --------------------------------------------------
 # Perform docking with flexible residues using GNINA

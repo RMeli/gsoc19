@@ -31,7 +31,7 @@ parser.add_argument("--num_modes", default=20, type=int, help="Number of poses")
 parser.add_argument("--seed", default=42, type=int, help="RNG seed")
 parser.add_argument(
     "--flexdist",
-    default=3.5,
+    default=None,
     type=float,
     help="Flexible residues distance. Uses <autobox_ligand> file as <flexdist_ligand>",
 )
@@ -49,10 +49,13 @@ with open(args.output, "w") as outfile:
     for r, l, box, out_prefix in todock:
         cmd = (
             f"gnina -r {r} -l {l}"
-            + f" --autobox_ligand {box} --flexdist_ligand {box} --flexdist {args.flexdist}"
+            + f" --autobox_ligand {box}"
             + f" --cnn_scoring {args.cnn_scoring} --cpu {args.n_cpus} --seed {args.seed}"
             + f" --num_modes {args.num_modes} --exhaustiveness {args.exhaustiveness}"
         )
+
+        if args.flexdist is not None:
+            cmd += f" --flexdist_ligand {box} --flexdist {args.flexdist}"
 
         lig_out = (
             out_prefix
@@ -63,13 +66,14 @@ with open(args.output, "w") as outfile:
 
         cmd += f" --out {lig_out}"
 
-        flex_out = (
-            out_prefix
-            + "default_ensemble_"
-            + args.cnn_scoring
-            + f"_flexdist{args.flexdist}_flex.pdb.gz"
-        )
+        if args.flexdist is not None:
+            flex_out = (
+                out_prefix
+                + "default_ensemble_"
+                + args.cnn_scoring
+                + f"_flexdist{args.flexdist}_flex.pdb.gz"
+            )
 
-        cmd += f" --out_flex {flex_out}"
+            cmd += f" --out_flex {flex_out}"
 
         outfile.write(cmd + "\n")
