@@ -18,6 +18,26 @@ from sklearn.preprocessing import OrdinalEncoder
 
 root = "carlos_cd"
 
+def ligrmsd(row):
+    if row.rmsd < 2.0:
+        return 1  # Good pose
+    else:
+        return 0  # Bad pose
+
+def ligrecrmsd(row, col, t):
+    if row.rmsd < 2.0 and row[col] < t:
+        return 1  # Good pose
+    else:
+        return 0  # Bad pose
+
+# Define all possible annotations
+annotations = {
+    None: ligrmsd,
+    "flex": lambda r: ligrecrmsd(r, "flexobrmsd", 1.0),
+    "max1": lambda r: ligrecrmsd(r, "fmaxrmsd", 1.0),
+    "max2": lambda r: ligrecrmsd(r, "fmaxrmsd", 2.0),
+}
+
 parser = argparse.ArgumentParser(description="Cross-validation folds.")
 parser.add_argument(
     "-c",
@@ -25,10 +45,15 @@ parser.add_argument(
     action="store_true",
     help="Output cluster index in affinity column.",
 )
+parser.add_argument(
+    "--receptor",
+    default=None,
+    help="Receptor annotation (flex, max1 or max2)",
+    choices=annotations.keys()
+)
 args = parser.parse_args()
 
 prefix = "cluster" if args.cluster else "nc"
-
 
 def ligname(row):
     fprefix = f"{row.protein}_PRO_{row.ligand}_LIG_aligned"
@@ -53,14 +78,6 @@ def recname(row):
 
     return fname
 
-
-def ligrmsd(row):
-    if row.rmsd < 2.0:
-        return 1  # Good pose
-    else:
-        return 0  # Bad pose
-
-
 df = pd.read_csv("analysis/rmsd_clean.csv", index_col=False)
 
 # Assign different group to different pockets
@@ -82,7 +99,9 @@ df["group"] = df.apply(pocket_to_cluster, axis=1)
 # print(df)
 
 # Annotate DataFrame
-df["annotation"] = df.apply(ligrmsd, axis=1)
+df["annotation"] = df.apply(annotations[args.receptor], axis=1)
+if args.receptor is not None:
+    prefix = args.receptor + prefix
 
 # Detect empty groups (only decoys after annotation)
 empty = []
@@ -95,7 +114,7 @@ for group, dfgroup in df.groupby(by="group"):
 for e in empty:
     df = df[df["group"] != e]
 
-df.to_csv("analysis/annotated.csv", index=False, float_format="%.5f")
+df.to_csv("analysis/{prefix}_annotated.csv", index=False, float_format="%.5f")
 
 # print(df)
 # print(df["group"].unique())
