@@ -8,38 +8,49 @@
 #SBATCH --clusters=htc
 #SBATCH --array=0-2
 #SBATCH --output=slurm/train/%x.%A_%a.out
-#SBATCH --time=24:00:00
-##SBATCH --account=stat-ecr
+#SBATCH --time=72:00:00
+#SBATCH --account=stat-ecr
 
 #---------------------------------------------------------------------------------------
 #---------------------------------------------------------------------------------------
-modelname="default2017-noaffinity"
-prefix="cluster"
+modelname="default2018"
+prefix="nc"
+annotation="max2"
 #---------------------------------------------------------------------------------------
 #---------------------------------------------------------------------------------------
+modelname="${modelname}-noaffinity"
+if [ ${prefix} = "nc" ]
+then
+    modelname="${modelname}-nostratified"
+fi
+
 
 subdir=${PWD}
-gscripts=${HOME}/git/gninascripts # Script on local filesystem
+gscripts=${HOME}/git/gninascripts/ # Script on local filesystem
 
 # GNINA within Singulartiy contianer
 container=/data/biggin/lina3015/gsoc19/crossdocking/cd-downsampled/singularity/obabel.sif
 groot=${HOME}/git/gnina/
 gcaffe=${groot}/caffe/python
 
-trainfolder=training/${modelname}
+trainfolder=training/${annotation}/${modelname}
 mkdir -p ${trainfolder}
 
 
-cp files/${prefix}train* files/${prefix}test* ${trainfolder}
+cp files/${annotation}${prefix}train* files/${annotation}${prefix}test* ${trainfolder}
 cp models/${modelname}.model ${trainfolder}
 cp models/completerec models/completelig ${trainfolder}
 cd ${trainfolder}
+
+echo ${trainfolder}
+echo ${subdir}
+echo ${annotation}${prefix}
 
 singularity exec --nv -B ${subdir}:${subdir} --env PYTHONPATH=${gcaffe}:/usr/local/python \
     ${container} \
     python ${gscripts}/train.py \
     --model ${modelname}.model \
-    --prefix ${prefix} \
+    --prefix ${annotation}${prefix} \
     --data_root ${subdir} \
     --iterations 100000 \
     --test_interval 1000 \
