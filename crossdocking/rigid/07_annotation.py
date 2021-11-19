@@ -36,7 +36,7 @@ prefix = "cluster" if args.cluster else "nc"
 
 def ligname(row):
     fprefix = f"{row.protein}_PRO_{row.ligand}_LIG_aligned"
-    fsuffix = f"_default_ensemble_none_flexdist3.5_p{row['rank']}.gninatypes"
+    fsuffix = f"_default_ensemble_none_flexdistNone_p{row['rank']}.gninatypes"
 
     for v in ["", "_v2"]:
         fname = os.path.join(root, row.pocket, fprefix + v + fsuffix)
@@ -47,7 +47,7 @@ def ligname(row):
 
 
 def recname(row):
-    return os.path.join(root, row.pocket, f"{row.protein}_PRO.pdb")
+    return os.path.join(root, row.pocket, f"{row.protein}_PRO.gninatypes")
 
 df = pd.read_csv("wierbowski_cd/rmsds.csv", index_col=False)
 
