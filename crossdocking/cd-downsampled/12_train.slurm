@@ -3,7 +3,7 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=1
-#SBATCH --gres=gpu:1
+#SBATCH --gres=gpu:v100:1
 #SBATCH --partition=medium
 #SBATCH --clusters=htc
 #SBATCH --array=0-2
@@ -11,9 +11,12 @@
 #SBATCH --time=72:00:00
 #SBATCH --account=stat-ecr
 
+hostname
+nvidia-smi
+
 #---------------------------------------------------------------------------------------
 #---------------------------------------------------------------------------------------
-modelname="default2018"
+modelname="default2017"
 prefix="nc"
 annotation="max2"
 #---------------------------------------------------------------------------------------
@@ -23,7 +26,6 @@ if [ ${prefix} = "nc" ]
 then
     modelname="${modelname}-nostratified"
 fi
-
 
 subdir=${PWD}
 gscripts=${HOME}/git/gninascripts/ # Script on local filesystem
@@ -35,7 +37,6 @@ gcaffe=${groot}/caffe/python
 
 trainfolder=training/${annotation}/${modelname}
 mkdir -p ${trainfolder}
-
 
 cp files/${annotation}${prefix}train* files/${annotation}${prefix}test* ${trainfolder}
 cp models/${modelname}.model ${trainfolder}

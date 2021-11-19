@@ -16,8 +16,8 @@ nvidia-smi
 
 #---------------------------------------------------------------------------------------
 #---------------------------------------------------------------------------------------
-modelname="dense"
-prefix="cluster"
+modelname="default2018"
+prefix="nc"
 #---------------------------------------------------------------------------------------
 #---------------------------------------------------------------------------------------
 modelname="${modelname}-noaffinity"
@@ -38,8 +38,8 @@ trainfolder=training/${modelname}
 mkdir -p ${trainfolder}
 
 cp files/${prefix}train* files/${prefix}test* ${trainfolder}
-cp models/${modelname}.model ${trainfolder}
-cp models/completerec models/completelig ${trainfolder}
+cp ../cd-downsampled/models/${modelname}.model ${trainfolder}
+cp ../cd-downsampled/models/completerec ../cd-downsampled/models/completelig ${trainfolder}
 cd ${trainfolder}
 
 echo ${trainfolder}
