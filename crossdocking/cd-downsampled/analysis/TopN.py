@@ -60,8 +60,6 @@ def load_scores(df, model:str, annotation: str, prefix: str, prediction_prefix="
     # CNNscore is float since the last row contained # in the column (comment)
     score["CNNscore"] = score["CNNscore"].astype(float)
 
-    print(score)
-
     # Exrtract information from ligand name (pocket, protein, ligand, rank)
     try:
         # Flexible docking is based on the carlos_cd dataset of the following form
