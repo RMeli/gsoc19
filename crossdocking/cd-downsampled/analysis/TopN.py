@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 
-def load_scores(df, model:str, annotation: str, prefix: str):
+def load_scores(df, model:str, annotation: str, prefix: str, prediction_prefix=""):
     """
     Load CNN score from prediction files and create a clean dataframe together with
     RMSD data.
@@ -16,11 +16,19 @@ def load_scores(df, model:str, annotation: str, prefix: str):
         Annotation used to train the CNN
     prefix: str
         Prefix to distinguish between clustered and not clustered
+    pprediction_predix:
+        Optional prediction prefix for rigid docking CNN applied to flexible dataset
 
     Returns
     -------
     pd.DataFrame
         Dataframe with full information, ready for analysis
+
+    Notes
+    -----
+    The CNN scoring function trained with systems from rigid docking can be used to
+    to score poses obtained with flexible docking. When this is done, the FLEX prefix
+    is appended to the output prediction files.
     """
 
     tfname = annotation if annotation else "ligand"
@@ -30,7 +38,7 @@ def load_scores(df, model:str, annotation: str, prefix: str):
     # Load predicted scores
     dfs = []
     for i in range(3):
-        dfs.append(pd.read_csv(f"../training/{tfname}/{model}/{annotation}{prefix}test{i}.out", sep=" ", header=None))
+        dfs.append(pd.read_csv(f"../training/{tfname}/{model}/{prediction_prefix}{annotation}{prefix}test{i}.out", sep=" ", header=None))
 
     score = pd.concat(dfs)
 
@@ -52,9 +60,21 @@ def load_scores(df, model:str, annotation: str, prefix: str):
     # CNNscore is float since the last row contained # in the column (comment)
     score["CNNscore"] = score["CNNscore"].astype(float)
 
+    print(score)
+
     # Exrtract information from ligand name (pocket, protein, ligand, rank)
-    # DATA_FOLDER/POCKET/PDB_Structures/XXXX_PRO_YYYY_LIG_*_pRANK.gninatypes
-    score[["pocket", "ligname"]] = score["ligname"].str.split("/", expand=True)[[1, 3]]
+    try:
+        # Flexible docking is based on the carlos_cd dataset of the following form
+        # DATA_FOLDER/POCKET/PDB_Structures/XXXX_PRO_YYYY_LIG_*_pRANK.gninatypes
+        score[["pocket", "ligname"]] = score["ligname"].str.split("/", expand=True)[[1, 3]]
+    except KeyError:
+        # Rigid docking is based on the wierbowski dataset
+        # The dataset is the same as carlos_cd, but renamed and without the PDB_Structures
+        # DATA_FOLDER/POCKET/XXXX_PRO_YYYY_LIG_*_pRANK.gninatypes
+        # This means that splitting the file path results in one less element
+        # which corresponded to the PDB_Structures folder, now gone
+        score[["pocket", "ligname"]] = score["ligname"].str.split("/", expand=True)[[1, 2]]
+
     score[["protein", "ligand", "rank"]] = score["ligname"].str.split("_", expand=True)[[0, 2, 10]]
     score["rank"] = score["rank"].str.replace("p", "").str.replace(".gninatyes", "").astype(int)
     score.drop(columns="ligname", inplace=True)
@@ -66,8 +86,6 @@ def load_scores(df, model:str, annotation: str, prefix: str):
     df_score["model"] = model.split("-")[0]
     df_score["annotation"] = tfname
     df_score["prefix"] = prefix
-
-    print(df_score)
 
     return df_score
 
@@ -99,8 +117,6 @@ def topN(df, nmax:int):
     top_smina = [0] * nmax
     top_gnina = [0] * nmax
     top_best = [0] * nmax
-
-    print(df)
 
     # Loop over pockets
     for _, group in df.groupby(by=["pocket"]):
@@ -136,8 +152,7 @@ def topN(df, nmax:int):
 
         n_pockets += 1
 
-    # One pocket has been removed from the training set
-    # for lack of actives
+    # One pocket has been removed for lack of actives
     assert n_pockets == 91
 
     # Return TopN of targets, averaged per pocket
@@ -149,7 +164,7 @@ def topN(df, nmax:int):
 
     return pd.DataFrame(t, columns=["N", "smina", "gnina", "best"])
 
-def process(model, annotation, prefix, nmax=10):
+def process(model, annotation, prefix, nmax=10, prediction_prefix=""):
     if prefix == "nc":
         modelname = f"{model}-noaffinity-nostratified"
     elif prefix == "cluster":
@@ -164,9 +179,7 @@ def process(model, annotation, prefix, nmax=10):
     df.rename(columns={"annotation": "label"}, inplace=True)
     # !!!!!!!!!!
 
-    df_score = load_scores(df, modelname, annotation, prefix)
-
-    print(df_score)
+    df_score = load_scores(df, modelname, annotation, prefix, prediction_prefix)
 
     df_top_list = []
 
@@ -195,7 +208,7 @@ def process(model, annotation, prefix, nmax=10):
 
 if __name__ == "__main__":
     models = ["default2017", "default2018", "dense"]
-    #models = ["default2017"]
+    #models = ["default2017", "default2018"]
     prefixes = ["cluster", "nc"]
     #prefixes = ["nc"]
     annotations = ["", "flex", "max1", "max2"]
