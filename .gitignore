@@ -12,6 +12,9 @@ nohup*.out
 PDBbind18/refined
 PDBbind18/other
 
+# large files
+crossdocking/cd-downsampled/analysis/allscores.csv
+
 # docking
 docking/refined*
 docking/other*
