@@ -151,7 +151,7 @@ def topN(df, nmax:int):
         n_pockets += 1
 
     # One pocket has been removed for lack of actives
-    assert n_pockets == 91
+    assert n_pockets == 91 or n_pockets == 92
 
     # Return TopN of targets, averaged per pocket
     top_smina_avg = np.array(top_smina) / n_pockets
