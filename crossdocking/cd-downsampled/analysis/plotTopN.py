@@ -17,5 +17,7 @@ df_melted.rename(columns={"variable": "method", "value": "TopN (%)"}, inplace=Tr
 
 print(df_melted)
 
-sns.relplot(data=df_melted, x="N", y="TopN (%)", hue="method", style="crystal", col="prefix", row="annotation", kind="line", markers=True)
+g = sns.relplot(data=df_melted, x="N", y="TopN (%)", hue="method", style="crystal", col="prefix", row="annotation", kind="line", markers=True)
+g.tight_layout() # Excludes legend; plt.tight_layout() includes legend
+plt.ylim([0,100])
 plt.savefig("TopN.png")
