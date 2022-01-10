@@ -3,7 +3,9 @@ import pandas as pd
 
 from matplotlib import pyplot as plt
 
-df = pd.read_csv("allTopN.csv")
+pp=""
+
+df = pd.read_csv(f"{pp}allTopN.csv")
 
 df_melted = df.melt(value_vars=["best", "smina", "gnina"], id_vars=["N", "annotation","prefix","model","crystal"])
 
@@ -17,5 +19,5 @@ df_melted.rename(columns={"variable": "method", "value": "TopN (%)"}, inplace=Tr
 
 print(df_melted)
 
-sns.relplot(data=df_melted, x="N", y="TopN (%)", hue="method", style="crystal", col="prefix", kind="line")
-plt.savefig("TopN.png")
+sns.relplot(data=df_melted, x="N", y="TopN (%)", hue="method", style="crystal", col="prefix", kind="line", markers=True)
+plt.savefig(f"{pp}TopN.png")
