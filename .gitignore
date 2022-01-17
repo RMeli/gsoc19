@@ -67,6 +67,7 @@ mloptimisation/optdir/minimized
 
 # python
 __pycache__
+.ipynb_checkpoints
 
 # containers
 *.sif
