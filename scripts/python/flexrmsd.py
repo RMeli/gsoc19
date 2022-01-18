@@ -1,10 +1,8 @@
-from asyncore import file_dispatcher
-from multiprocessing.sharedctypes import Value
 import prody
 import numpy as np
 import os
 
-from openbabel import pybel
+from collections import defaultdict
 
 def calc_pocket_rmsd(pose, cognate, flex, root="", verbose=False):
     """
@@ -51,10 +49,15 @@ def calc_pocket_rmsd(pose, cognate, flex, root="", verbose=False):
     flexIcodes = flex.getIcodes()
     flexChids = flex.getChids()
 
-    MATCHrmsd = np.inf
+    atoms_per_residue = {}
+
+    MATCHrmsd = np.inf # RMSD for all residues
     for Pmap, Cmap, _, _ in matches:
         Patoms = []
         Catoms = []
+        Patoms_per_res = defaultdict(list)
+        Catoms_per_res = defaultdict(list)
+
         for i, idx in enumerate(Pmap.getIndices()):
             atom = Pmap[i]
             
@@ -65,12 +68,19 @@ def calc_pocket_rmsd(pose, cognate, flex, root="", verbose=False):
 
             #print(residx, flexIcodes[residx], atom.getIcode(), flexChids[residx], atom.getChid())
 
-            if (flexIcodes[residx] == atom.getIcode()).all() and (flexChids[residx] == atom.getChid()).all():
+            if (atom.getResnum() in flexResnums) and (atom.getIcode() in flexIcodes) and (atom.getChid() in flexChids):
                 # Store index of current atom
                 # This atom is in a flexible residue
                 # The flexible residue is in the matched PMap
                 Patoms.append(idx)
-                Catoms.append(Cmap.getIndices()[i])
+
+                #print(atom.getResnum(), atom.getIcode(), atom.getChid())
+
+                Cidx = Cmap.getIndices()[i]
+                Catoms.append(Cidx)
+
+                Patoms_per_res[(atom.getResnum(), atom.getIcode(), atom.getChid())].append(idx)
+                Catoms_per_res[(atom.getResnum(), atom.getIcode(), atom.getChid())].append(Cidx)
 
         if len(Catoms) == 0:
             continue
@@ -80,7 +90,18 @@ def calc_pocket_rmsd(pose, cognate, flex, root="", verbose=False):
         if rmsd < MATCHrmsd:
             MATCHrmsd = rmsd
 
-    return MATCHrmsd
+            # Compute maximum per-redisude RMSD
+            # Only when the RMSD is the lowest
+            MATCHrmsd_mflex = -1 # Maximum RMSD between all residues
+            for Pres, PatomsR in Patoms_per_res.items():
+                CatomsR = Catoms_per_res[Pres]
+
+                maxrmsd = prody.calcRMSD(pose[PatomsR], cognate[CatomsR])
+
+                if maxrmsd > MATCHrmsd_mflex:
+                    MATCHrmsd_mflex = maxrmsd
+
+    return MATCHrmsd, MATCHrmsd_mflex
 
 if __name__ == "__main__":
     import sys
@@ -89,6 +110,6 @@ if __name__ == "__main__":
     cognate = sys.argv[2]
     flex = sys.argv[3]
 
-    rmsd = calc_pocket_rmsd(pose, cognate, flex, "")
+    rmsd, maxresrmsd = calc_pocket_rmsd(pose, cognate, flex, "", verbose=True)
 
-    print(rmsd)
+    print(rmsd, maxresrmsd)
