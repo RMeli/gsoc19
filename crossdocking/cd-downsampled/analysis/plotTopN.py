@@ -21,3 +21,4 @@ g = sns.relplot(data=df_melted, x="N", y="TopN (%)", hue="method", style="crysta
 g.tight_layout() # Excludes legend; plt.tight_layout() includes legend
 plt.ylim([0,100])
 plt.savefig("TopN.png")
+plt.savefig("TopN.pdf")
