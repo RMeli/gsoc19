@@ -110,6 +110,6 @@ if __name__ == "__main__":
     cognate = sys.argv[2]
     flex = sys.argv[3]
 
-    rmsd, maxresrmsd = calc_pocket_rmsd(pose, cognate, flex, "", verbose=True)
+    rmsd, maxresrmsd = calc_pocket_rmsd(pose, cognate, flex, "", verbose=False)
 
-    print(rmsd, maxresrmsd)
+    print(f"{rmsd:.5f} {maxresrmsd:.5f}")
