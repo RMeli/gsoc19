@@ -2,9 +2,25 @@ import prody
 import numpy as np
 import os
 
+from spyrmsd.rmsd import symmrmsd
+
 from collections import defaultdict
 
-def calc_pocket_rmsd(pose, cognate, flex, root="", verbose=False):
+
+def _build_adjacency_matrix(selection):
+    N = len(selection)
+    A = np.zeros((N, N))
+    for i, a1 in enumerate(selection.iterAtoms()):
+        for j, a2 in enumerate(selection.iterAtoms()):
+            for b1 in a1.iterBonded():
+                if b1 == a2:
+                    A[i, j] = 1
+                    break
+
+    return A
+
+
+def calc_pocket_rmsd(pose, cognate, flex, root="", verbose=False, symm=True):
     """
     Calculate difference between the ligand reference receptor and
     the receptor it is being docked into.
@@ -23,6 +39,11 @@ def calc_pocket_rmsd(pose, cognate, flex, root="", verbose=False):
     # Cognate receptor (full receptor, crystal structure)
     cognate = prody.parsePDB(os.path.join(root, cognate))
 
+    # Automatically infer bonds for symmetry correction
+    # Bonds are needed to build the adjacency matrix
+    pose.inferBonds()
+    cognate.inferBonds()
+
     flex = prody.parsePDB(os.path.join(root, flex))
 
     # Match POSE and COGNATE based on sequence identity
@@ -35,7 +56,7 @@ def calc_pocket_rmsd(pose, cognate, flex, root="", verbose=False):
         )
         if m:
             matches += m
-    
+
     # Print matches
     if verbose:
         for m in matches:
@@ -51,7 +72,7 @@ def calc_pocket_rmsd(pose, cognate, flex, root="", verbose=False):
 
     atoms_per_residue = {}
 
-    MATCHrmsd = np.inf # RMSD for all residues
+    MATCHrmsd = np.inf  # RMSD for all residues
     for Pmap, Cmap, _, _ in matches:
         Patoms = []
         Catoms = []
@@ -60,48 +81,84 @@ def calc_pocket_rmsd(pose, cognate, flex, root="", verbose=False):
 
         for i, idx in enumerate(Pmap.getIndices()):
             atom = Pmap[i]
-            
+
             # Get index of residue number in flerx corresponding to current atom
             # Raises value error is no such atom is found
-            #residx = flexResnums.index(atom.getResnum())
+            # residx = flexResnums.index(atom.getResnum())
             residx = np.where(flexResnums == atom.getResnum())
 
-            #print(residx, flexIcodes[residx], atom.getIcode(), flexChids[residx], atom.getChid())
+            # print(residx, flexIcodes[residx], atom.getIcode(), flexChids[residx], atom.getChid())
 
-            if (atom.getResnum() in flexResnums) and (atom.getIcode() in flexIcodes) and (atom.getChid() in flexChids):
+            if (
+                (atom.getResnum() in flexResnums)
+                and (atom.getIcode() in flexIcodes)
+                and (atom.getChid() in flexChids)
+            ):
                 # Store index of current atom
                 # This atom is in a flexible residue
                 # The flexible residue is in the matched PMap
                 Patoms.append(idx)
 
-                #print(atom.getResnum(), atom.getIcode(), atom.getChid())
+                # print(atom.getResnum(), atom.getIcode(), atom.getChid())
 
                 Cidx = Cmap.getIndices()[i]
                 Catoms.append(Cidx)
 
-                Patoms_per_res[(atom.getResnum(), atom.getIcode(), atom.getChid())].append(idx)
-                Catoms_per_res[(atom.getResnum(), atom.getIcode(), atom.getChid())].append(Cidx)
+                Patoms_per_res[
+                    (atom.getResnum(), atom.getIcode(), atom.getChid())
+                ].append(idx)
+                Catoms_per_res[
+                    (atom.getResnum(), atom.getIcode(), atom.getChid())
+                ].append(Cidx)
 
         if len(Catoms) == 0:
             continue
 
         # TODO: Symmetry correction?
-        rmsd = prody.calcRMSD(pose[Patoms], cognate[Catoms])
+        if not symm:
+            rmsd = prody.calcRMSD(pose[Patoms], cognate[Catoms])
+        else:
+            Ap = _build_adjacency_matrix(pose[Patoms])
+            Ac = _build_adjacency_matrix(cognate[Catoms])
+
+            rmsd = symmrmsd(
+                pose[Patoms].getCoords(),
+                cognate[Catoms].getCoords(),
+                pose[Patoms].getElements(),
+                cognate[Catoms].getElements(),
+                Ap,
+                Ac,
+            )
+
         if rmsd < MATCHrmsd:
             MATCHrmsd = rmsd
 
             # Compute maximum per-redisude RMSD
             # Only when the RMSD is the lowest
-            MATCHrmsd_mflex = -1 # Maximum RMSD between all residues
+            MATCHrmsd_mflex = -1  # Maximum RMSD between all residues
             for Pres, PatomsR in Patoms_per_res.items():
                 CatomsR = Catoms_per_res[Pres]
 
-                maxrmsd = prody.calcRMSD(pose[PatomsR], cognate[CatomsR])
+                if not symm:
+                    maxrmsd = prody.calcRMSD(pose[PatomsR], cognate[CatomsR])
+                else:
+                    ApR = _build_adjacency_matrix(pose[PatomsR])
+                    AcR = _build_adjacency_matrix(cognate[CatomsR])
+
+                    maxrmsd = symmrmsd(
+                        pose[PatomsR].getCoords(),
+                        cognate[CatomsR].getCoords(),
+                        pose[PatomsR].getElements(),
+                        cognate[CatomsR].getElements(),
+                        ApR,
+                        AcR,
+                    )
 
                 if maxrmsd > MATCHrmsd_mflex:
                     MATCHrmsd_mflex = maxrmsd
 
     return MATCHrmsd, MATCHrmsd_mflex
+
 
 if __name__ == "__main__":
     import sys
@@ -110,6 +167,8 @@ if __name__ == "__main__":
     cognate = sys.argv[2]
     flex = sys.argv[3]
 
-    rmsd, maxresrmsd = calc_pocket_rmsd(pose, cognate, flex, "", verbose=False)
+    rmsd, maxresrmsd = calc_pocket_rmsd(
+        pose, cognate, flex, "", verbose=False, symm=True
+    )
 
     print(f"{rmsd:.5f} {maxresrmsd:.5f}")
