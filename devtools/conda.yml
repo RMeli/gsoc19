@@ -5,7 +5,7 @@ channels:
   - ambermd
 dependencies:
   # Base
-  - python=3.6
+  - python=3.8
   - ipython
   - pip
 
@@ -17,8 +17,15 @@ dependencies:
   
   - biopython
   - prody
+
   - rdkit
   - openbabel
+  - MDAnalysis
+
+  - qcelemental
+
+  - networkx
+  - graph-tool
 
   # Plotting
   - matplotlib
@@ -31,6 +38,4 @@ dependencies:
   - black
   - cython
   - pytest
-  
-  - pip:
-    - MDAnalysis==2.0.0b0
+  - setuptools
