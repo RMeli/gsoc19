@@ -2,9 +2,20 @@ import prody
 import numpy as np
 import os
 
+import qcelemental as qcel
+
 from spyrmsd.rmsd import symmrmsd
 
 from collections import defaultdict
+
+
+def _elements_to_atomicnums(elements: str):
+    anums = np.zeros_like(elements, dtype=int)
+
+    for i, e in enumerate(elements):
+        anums[i] = qcel.periodictable.to_atomic_number(e)
+
+    return anums
 
 
 def _build_adjacency_matrix(selection):
@@ -121,11 +132,14 @@ def calc_pocket_rmsd(pose, cognate, flex, root="", verbose=False, symm=True):
             Ap = _build_adjacency_matrix(pose[Patoms])
             Ac = _build_adjacency_matrix(cognate[Catoms])
 
+            Panum = _elements_to_atomicnums(pose[Patoms].getElements())
+            Canum = _elements_to_atomicnums(cognate[Catoms].getElements())
+
             rmsd = symmrmsd(
                 pose[Patoms].getCoords(),
                 cognate[Catoms].getCoords(),
-                pose[Patoms].getElements(),
-                cognate[Catoms].getElements(),
+                Panum,
+                Canum,
                 Ap,
                 Ac,
             )
@@ -145,11 +159,14 @@ def calc_pocket_rmsd(pose, cognate, flex, root="", verbose=False, symm=True):
                     ApR = _build_adjacency_matrix(pose[PatomsR])
                     AcR = _build_adjacency_matrix(cognate[CatomsR])
 
+                    PanumR = _elements_to_atomicnums(pose[PatomsR].getElements())
+                    CanumR = _elements_to_atomicnums(cognate[CatomsR].getElements())
+
                     maxrmsd = symmrmsd(
                         pose[PatomsR].getCoords(),
                         cognate[CatomsR].getCoords(),
-                        pose[PatomsR].getElements(),
-                        cognate[CatomsR].getElements(),
+                        PanumR,
+                        CanumR,
                         ApR,
                         AcR,
                     )
