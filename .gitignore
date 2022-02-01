@@ -23,6 +23,7 @@ docking/other*
 crossdocking/crossdocked/flexcd
 crossdocking/crossdocked/tests/docking-*
 crossdocking/cd-downsampled/carlos_cd
+crossdocking/cd-downsampled/wierbowski_cd
 crossdocking/rigid/wierbowski_cd
 crossdocking/rigid/carlos_cd
 

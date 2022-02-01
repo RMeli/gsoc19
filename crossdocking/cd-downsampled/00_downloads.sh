@@ -4,8 +4,8 @@
 # Download data from David Koes website.
 # --------------------------------------------------
 
-wget http://bits.csb.pitt.edu/files/gnina1.0_paper/crossdocked_ds_data.tar.gz
-tar -xvf crossdocked_ds_data.tar.gz
+wget http://bits.csb.pitt.edu/files/gnina1.0_paper/crossdocked_all_data.tar.gz
+tar -xvf crossdocked_all_data.tar.gz
 
 # Message about steps to take before runing the next script
 echo "# --------------------------------------------------"
