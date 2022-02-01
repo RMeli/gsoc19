@@ -1,13 +1,14 @@
 import prody
 import numpy as np
 import os
+import warnings
 
 import qcelemental as qcel
 
 from spyrmsd.rmsd import symmrmsd
+from spyrmsd.exceptions import NonIsomorphicGraphs
 
 from collections import defaultdict
-
 
 def _elements_to_atomicnums(elements: str):
     anums = np.zeros_like(elements, dtype=int)
@@ -20,12 +21,13 @@ def _elements_to_atomicnums(elements: str):
 
 def _build_adjacency_matrix(selection):
     N = len(selection)
-    A = np.zeros((N, N))
+    A = np.zeros((N, N), dtype=int)
     for i, a1 in enumerate(selection.iterAtoms()):
         for j, a2 in enumerate(selection.iterAtoms()):
             for b1 in a1.iterBonded():
                 if b1 == a2:
                     A[i, j] = 1
+                    A[j, i] = 1
                     break
 
     return A
@@ -52,8 +54,9 @@ def calc_pocket_rmsd(pose, cognate, flex, root="", verbose=False, symm=True):
 
     # Automatically infer bonds for symmetry correction
     # Bonds are needed to build the adjacency matrix
-    pose.inferBonds()
-    cognate.inferBonds()
+    mbond = 2.1
+    pose.inferBonds(max_bond=mbond)
+    cognate.inferBonds(max_bond=mbond)
 
     flex = prody.parsePDB(os.path.join(root, flex))
 
@@ -93,11 +96,6 @@ def calc_pocket_rmsd(pose, cognate, flex, root="", verbose=False, symm=True):
         for i, idx in enumerate(Pmap.getIndices()):
             atom = Pmap[i]
 
-            # Get index of residue number in flerx corresponding to current atom
-            # Raises value error is no such atom is found
-            # residx = flexResnums.index(atom.getResnum())
-            residx = np.where(flexResnums == atom.getResnum())
-
             # print(residx, flexIcodes[residx], atom.getIcode(), flexChids[residx], atom.getChid())
 
             if (
@@ -135,14 +133,20 @@ def calc_pocket_rmsd(pose, cognate, flex, root="", verbose=False, symm=True):
             Panum = _elements_to_atomicnums(pose[Patoms].getElements())
             Canum = _elements_to_atomicnums(cognate[Catoms].getElements())
 
-            rmsd = symmrmsd(
-                pose[Patoms].getCoords(),
-                cognate[Catoms].getCoords(),
-                Panum,
-                Canum,
-                Ap,
-                Ac,
-            )
+            try:
+                rmsd = symmrmsd(
+                    pose[Patoms].getCoords(),
+                    cognate[Catoms].getCoords(),
+                    Panum,
+                    Canum,
+                    Ap,
+                    Ac,
+                )
+            except NonIsomorphicGraphs as e: # Not isomorphic
+                warnings.warn("NonIsomorphicGraphs | Computing standard RMSD")
+                # Try computing RMSD without symmetry correction
+                # This will possibly add some noise
+                rmsd = prody.calcRMSD(pose[Patoms], cognate[Catoms])
 
         if rmsd < MATCHrmsd:
             MATCHrmsd = rmsd
@@ -162,14 +166,20 @@ def calc_pocket_rmsd(pose, cognate, flex, root="", verbose=False, symm=True):
                     PanumR = _elements_to_atomicnums(pose[PatomsR].getElements())
                     CanumR = _elements_to_atomicnums(cognate[CatomsR].getElements())
 
-                    maxrmsd = symmrmsd(
-                        pose[PatomsR].getCoords(),
-                        cognate[CatomsR].getCoords(),
-                        PanumR,
-                        CanumR,
-                        ApR,
-                        AcR,
-                    )
+                    try:
+                        maxrmsd = symmrmsd(
+                            pose[PatomsR].getCoords(),
+                            cognate[CatomsR].getCoords(),
+                            PanumR,
+                            CanumR,
+                            ApR,
+                            AcR,
+                        )
+                    except NonIsomorphicGraphs as e: # Not isomorphic
+                        warnings.warn("NonIsomorphicGraphs | Computing standard RMSD")
+                        # Try computing RMSD without symmetry correction
+                        # This will possibly add some noise
+                        maxrmsd = prody.calcRMSD(pose[PatomsR], cognate[CatomsR])
 
                 if maxrmsd > MATCHrmsd_mflex:
                     MATCHrmsd_mflex = maxrmsd
