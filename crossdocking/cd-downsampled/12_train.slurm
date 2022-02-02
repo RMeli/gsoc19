@@ -38,6 +38,7 @@ gcaffe=${groot}/caffe/python
 trainfolder=training/${annotation}/${modelname}
 mkdir -p ${trainfolder}
 
+# TODO: Create relative link
 cp files/${annotation}${prefix}train* files/${annotation}${prefix}test* ${trainfolder}
 cp models/${modelname}.model ${trainfolder}
 cp models/completerec models/completelig ${trainfolder}
