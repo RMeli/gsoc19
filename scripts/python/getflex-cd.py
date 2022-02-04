@@ -52,14 +52,17 @@ def load_systems(
         cflex = mda.Universe(cflexname)
 
     # Add cell dimensions to avoid warnings
-    flex.dimensions=[1,1,1,90,90,90]
-    cflex.dimensions=[1,1,1,90,90,90]
+    flex.dimensions = [1, 1, 1, 90, 90, 90]
+    cflex.dimensions = [1, 1, 1, 90, 90, 90]
 
     return flex, cflex
 
 
 def save_systems(
-    flex: mda.Universe, cflex: mda.Universe, dir: str, rank: str,
+    flex: mda.Universe,
+    cflex: mda.Universe,
+    dir: str,
+    rank: str,
 ):
     def sel(resnum, resname, segid, icode) -> str:
         s = f"(resid {resnum}{icode} and resname {resname} and segid {segid})"
@@ -82,7 +85,7 @@ def save_systems(
         assert p_res.n_atoms == c_res.n_atoms
 
         if rank != "":
-            srank=f"-p{rank}"
+            srank = f"-p{rank}"
         else:
             srank = ""
 
@@ -96,6 +99,7 @@ def save_systems(
         # Write out PDB files
         p_res.write(pfname)
         c_res.write(cfname)
+
 
 if __name__ == "__main__":
 

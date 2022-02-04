@@ -42,7 +42,9 @@ outfile = args.out
 
 rigid = prody.parsePDB(rigidname)
 if rigid.numCoordsets() != 1:
-    raise ValueError(f"More than one model (MODEL/ENDMDL) for {rigidname} is not allowed.")
+    raise ValueError(
+        f"More than one model (MODEL/ENDMDL) for {rigidname} is not allowed."
+    )
 
 out = open(outfile, "w")
 
@@ -67,7 +69,7 @@ def atype_perception(atype, aname):
 
     Assumpsions:
         * Atom names start either with a number or the correct element name
-        * Element names are correct according to the periodic table (i.e. HG is a type 
+        * Element names are correct according to the periodic table (i.e. HG is a type
           of hydrogen, Hg is mercury; CA is alpha carbon, Ca is calcium)
     """
 
@@ -105,7 +107,9 @@ for ci in range(flex.numCoordsets()):  # Loop over different MODELs (MODEL/ENDMD
 
             if (chain, resnum, icode) in flexres and aname not in backbone:
                 if atype != "H":
-                    resatoms = flex[chain].select(f"resnum {resnum} and icode {icode if icode else '_'} and not name H")
+                    resatoms = flex[chain].select(
+                        f"resnum {resnum} and icode {icode if icode else '_'} and not name H"
+                    )
                     w = which[(chain, resnum, icode)]
                     which[(chain, resnum, icode)] += 1  # update to next index
                     atom = resatoms[w]  # this is the atom to replace this line with

@@ -69,7 +69,10 @@ lsim = df_lsim.values
 print("Checking matrix properties...", flush=True)
 ddist, dlsim = np.diagonal(dist), np.diagonal(lsim)
 assert int(round(np.sum(ddist))) == int(round(np.sum(ddist[ddist < 0])))
-assert int(round(np.sum(dlsim[dlsim >= 0]))) - int(round(np.sum(dlsim[dlsim < 0]))) == n_targets
+assert (
+    int(round(np.sum(dlsim[dlsim >= 0]))) - int(round(np.sum(dlsim[dlsim < 0])))
+    == n_targets
+)
 print("done")
 
 # Set NaNs for compatibility with original implementation

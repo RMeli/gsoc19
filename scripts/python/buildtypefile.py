@@ -12,6 +12,7 @@ from inbox import inbox
 
 from typing import Optional
 
+
 def parse(args: Optional[str] = None) -> ap.Namespace:
 
     parser = ap.ArgumentParser()
@@ -24,9 +25,16 @@ def parse(args: Optional[str] = None) -> ap.Namespace:
     parser.add_argument("--fmax", default=1.5, type=float)
     parser.add_argument("-L", "--box_size", default=None, type=float)
     parser.add_argument("-o", "--out", default="all.types", type=str)
-    parser.add_argument("-d", "--datasets", nargs="+", default=["refined", "other"], type=str)
+    parser.add_argument(
+        "-d", "--datasets", nargs="+", default=["refined", "other"], type=str
+    )
     parser.add_argument("-v", "--verbose", action="store_true", default=False)
-    parser.add_argument("--all", action="store_true", default=False, help="Do not exclude poses in [lmin,lmax] and [fmin,fmax]")
+    parser.add_argument(
+        "--all",
+        action="store_true",
+        default=False,
+        help="Do not exclude poses in [lmin,lmax] and [fmin,fmax]",
+    )
 
     args = parser.parse_args()
 
@@ -64,7 +72,7 @@ def write_record(
         rmsd_lig = float(row["rmsd_lig"])
         rmsd_flex = float(row["rmsd_fmax"])
         if rmsd_lig <= lmin and rmsd_flex <= fmin:
-            annotation = 1 # Positive label
+            annotation = 1  # Positive label
 
             # Check that ligand and flexible residues are within the box
             if not keepall:
@@ -73,7 +81,7 @@ def write_record(
                     continue
 
         elif rmsd_lig >= lmax and rmsd_flex >= fmax:
-            annotation = 0 # Negative label
+            annotation = 0  # Negative label
 
             # Check that ligand and flexible residues are within the box
             if not keepall:
@@ -138,5 +146,14 @@ if __name__ == "__main__":
             path = os.path.join(args.datapath, dataset, system)
 
             write_record(
-                system, df_score, args.lmin, args.lmax, args.fmin, args.fmax, args.all, args.box_size, path, out
+                system,
+                df_score,
+                args.lmin,
+                args.lmax,
+                args.fmin,
+                args.fmax,
+                args.all,
+                args.box_size,
+                path,
+                out,
             )  # Write record

@@ -1,4 +1,4 @@
-import MDAnalysis as mda # MDA 2.0 or higher
+import MDAnalysis as mda  # MDA 2.0 or higher
 
 from rdkit import Chem
 
@@ -10,15 +10,17 @@ import gzip
 
 from typing import Optional, Tuple
 
+
 def loadsdf(fname: str, gzipped=False) -> mda.Universe:
     if not gzipped:
-            rdmol = next(Chem.SDMolSupplier(fname, removeHs=False))
+        rdmol = next(Chem.SDMolSupplier(fname, removeHs=False))
     else:
         with gzip.open(fname, "r") as fgz:
             rdmol = next(Chem.ForwardSDMolSupplier(fgz, removeHs=False))
 
     # Convert RDKit molecule to MDA universe
     return mda.Universe(rdmol)
+
 
 def loadpdb(fname: str) -> mda.Universe:
 
@@ -61,14 +63,15 @@ def in_box(c, mmin, mmax, L) -> bool:
 
     return True if np.alltrue(dplus < L2) and np.alltrue(dminus < L2) else False
 
+
 def inbox(ligname: str, flexname: str, box_size: float) -> Tuple[bool, bool]:
 
     lignoext, ligext = os.path.splitext(ligname)
     if ligext == ".gz":
-        gzipped=True
+        gzipped = True
         _, ligext = os.path.splitext(lignoext)
     else:
-        gzipped=False
+        gzipped = False
 
     if ligext == ".pdb":
         ligand = loadpdb(ligname)
@@ -94,6 +97,7 @@ def inbox(ligname: str, flexname: str, box_size: float) -> Tuple[bool, bool]:
     flexin: bool = in_box(c, fmin, fmax, box_size)
 
     return ligin, flexin
+
 
 def parse(args: Optional[str] = None) -> ap.Namespace:
     """

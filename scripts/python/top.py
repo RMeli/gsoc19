@@ -4,7 +4,13 @@ import numpy as np
 from matplotlib import pyplot as plt
 import seaborn as sns
 
-def smina_results(df_results: pd.DataFrame, lig_only: bool = False, csv_name: str = "fulltest", n_folds: int=3):
+
+def smina_results(
+    df_results: pd.DataFrame,
+    lig_only: bool = False,
+    csv_name: str = "fulltest",
+    n_folds: int = 3,
+):
 
     for fold in range(n_folds):
         # Read and cleanup fold results
@@ -19,19 +25,27 @@ def smina_results(df_results: pd.DataFrame, lig_only: bool = False, csv_name: st
         if lig_only:
             df_good = df_score.loc[(df_score["lig_rmsd"] < 2.0)]
         else:
-            df_good = df_score.loc[(df_score["lig_rmsd"] < 2.0) & (df_score["fmax_rmsd"] < 1)]
+            df_good = df_score.loc[
+                (df_score["lig_rmsd"] < 2.0) & (df_score["fmax_rmsd"] < 1)
+            ]
         n = len(df_good)
 
         # Percentage of good poses scored as top
         r = n / N * 100
 
-        #print(f"SMINA - Top 1: {r:.5f}")
+        # print(f"SMINA - Top 1: {r:.5f}")
 
-        df_results = df_results.append({"sf" : "smina", "top": r}, ignore_index=True)
+        df_results = df_results.append({"sf": "smina", "top": r}, ignore_index=True)
 
     return df_results
 
-def cnn_results(df_results: pd.DataFrame, lig_only: bool = False, csv_name: str = "fulltest", n_folds: int=3):
+
+def cnn_results(
+    df_results: pd.DataFrame,
+    lig_only: bool = False,
+    csv_name: str = "fulltest",
+    n_folds: int = 3,
+):
 
     for fold in range(n_folds):
         # Read and cleanup fold results
@@ -47,19 +61,27 @@ def cnn_results(df_results: pd.DataFrame, lig_only: bool = False, csv_name: str 
             df_good = df_score.loc[(df_score["lig_rmsd"] < 2.0)]
 
         else:
-            df_good = df_score.loc[(df_score["lig_rmsd"] < 2.0) & (df_score["fmax_rmsd"] < 1)]
+            df_good = df_score.loc[
+                (df_score["lig_rmsd"] < 2.0) & (df_score["fmax_rmsd"] < 1)
+            ]
         n = len(df_good)
 
         # Percentage of good poses as top
         r = n / N * 100
 
-        #print(f"CNN - Top 1: {r:.5f}")
+        # print(f"CNN - Top 1: {r:.5f}")
 
-        df_results = df_results.append({"sf" : "cnn", "top": r}, ignore_index=True)
+        df_results = df_results.append({"sf": "cnn", "top": r}, ignore_index=True)
 
     return df_results
 
-def  best_results(df_results: pd.DataFrame, lig_only: bool = False, csv_name: str = "fulltest", n_folds: int=3):
+
+def best_results(
+    df_results: pd.DataFrame,
+    lig_only: bool = False,
+    csv_name: str = "fulltest",
+    n_folds: int = 3,
+):
 
     for fold in range(n_folds):
         # Read and cleanup fold results
@@ -68,7 +90,7 @@ def  best_results(df_results: pd.DataFrame, lig_only: bool = False, csv_name: st
 
         # Good poses annotation
         if lig_only:
-            df["good"] = (df["lig_rmsd"] < 2.0)
+            df["good"] = df["lig_rmsd"] < 2.0
         else:
             df["good"] = (df["lig_rmsd"] < 2.0) & (df["fmax_rmsd"] < 1)
 
@@ -81,11 +103,12 @@ def  best_results(df_results: pd.DataFrame, lig_only: bool = False, csv_name: st
         # Percentage of good poses as top
         r = n / N * 100
 
-        #print(f"CNN - Top 1: {r:.5f}")
+        # print(f"CNN - Top 1: {r:.5f}")
 
-        df_results = df_results.append({"sf" : "best", "top": r}, ignore_index=True)
+        df_results = df_results.append({"sf": "best", "top": r}, ignore_index=True)
 
     return df_results
+
 
 if __name__ == "__main__":
 
@@ -94,19 +117,29 @@ if __name__ == "__main__":
 
     def parse(args: Optional[str] = None) -> ap.Namespace:
 
-        parser = ap.ArgumentParser(
-            description="Good top pose."
-        )
+        parser = ap.ArgumentParser(description="Good top pose.")
 
-        parser.add_argument("csv_name", type=str, help="CSV result file name (without extension)")
-        parser.add_argument("-n", "--n_folds", type=int, default=3, help="Number of folds")
-        parser.add_argument("-o", "--output", type=str, default="top.pdf", help="Output graph")
-        parser.add_argument("-l", "--ligonly", default=False, action="store_true", help="Ligand-based annotation")
+        parser.add_argument(
+            "csv_name", type=str, help="CSV result file name (without extension)"
+        )
+        parser.add_argument(
+            "-n", "--n_folds", type=int, default=3, help="Number of folds"
+        )
+        parser.add_argument(
+            "-o", "--output", type=str, default="top.pdf", help="Output graph"
+        )
+        parser.add_argument(
+            "-l",
+            "--ligonly",
+            default=False,
+            action="store_true",
+            help="Ligand-based annotation",
+        )
 
         return parser.parse_args(args)
 
     args = parse()
-    
+
     # SF: Scoring Function
     df_results = pd.DataFrame(columns=["sf", "top"])
 
@@ -119,4 +152,3 @@ if __name__ == "__main__":
     plt.xlabel("")
     plt.ylabel("Percentage of Targets with GOOD Top Pose")
     plt.savefig(args.output)
-

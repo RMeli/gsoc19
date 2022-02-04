@@ -46,10 +46,16 @@ def parse(args: Optional[str] = None) -> ap.Namespace:
         "--ligrmsd", type=str, default="rmsd_lig", help="Column name with ligand RMSD"
     )
     parser.add_argument(
-        "--flexrmsd", type=str, default="rmsd_flex", help="Column name with side-chains RMSD"
+        "--flexrmsd",
+        type=str,
+        default="rmsd_flex",
+        help="Column name with side-chains RMSD",
     )
     parser.add_argument(
-        "--flexmaxrmsd", type=str, default="rmsd_fmax", help="Column name with maximum side-chain RMSD"
+        "--flexmaxrmsd",
+        type=str,
+        default="rmsd_fmax",
+        help="Column name with maximum side-chain RMSD",
     )
 
     return parser.parse_args(args)
@@ -96,12 +102,16 @@ if __name__ == "__main__":
     if df.isin(bad_values).sum(axis=0).max() > 0:
         print(f"WARNING: {args.input} contains NaN or Inf:")
         print(df.isin(bad_values).sum(axis=0).max())
-        bidx_lig = df.index[df[args.ligrmsd].isin(bad_values)]  # Get row indices of bad values
-        
+        bidx_lig = df.index[
+            df[args.ligrmsd].isin(bad_values)
+        ]  # Get row indices of bad values
+
         # Check there are no bad values for the ligand
         assert len(df.iloc[bidx_lig]) == 0
 
-        bidx_flex = df.index[df[args.flexrmsd].isin(bad_values)]  # Get row indices of bad values
+        bidx_flex = df.index[
+            df[args.flexrmsd].isin(bad_values)
+        ]  # Get row indices of bad values
         print(df.iloc[bidx_flex])
 
         # Replace infinite values with NaNs and drop them
@@ -124,7 +134,7 @@ if __name__ == "__main__":
     ax2.title.set_text("Flexible Residues")
     handle = ax2.axvline(x=1, color="k", linestyle="--", label="1 Å")
     ax2.legend()
-    #ax2.legend(handles=[handle])
+    # ax2.legend(handles=[handle])
 
     plot(df, args.flexmaxrmsd, args.maxrank, args.bin_size, ax3)
     ax3.set_xlabel("RMSD (Å)")
@@ -132,9 +142,9 @@ if __name__ == "__main__":
     ax3.title.set_text("MAX Flexible Residue")
     handle = ax3.axvline(x=1, color="k", linestyle="--", label="1 Å")
     ax3.legend()
-    #ax3.legend(handles=[handle])
+    # ax3.legend(handles=[handle])
 
-    #plt.suptitle("RMSD Distributions")
+    # plt.suptitle("RMSD Distributions")
     plt.tight_layout()
     plt.savefig(os.path.join(args.outputpath, f"distrmsd.pdf"))
     plt.savefig(os.path.join(args.outputpath, f"distrmsd.png"))

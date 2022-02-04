@@ -31,25 +31,23 @@ def loadcd(
     ligandpath = os.path.join(path, ligname)  # Docked ligand
     flexname = f"{name}_flex.pdb"
     flexpath = os.path.join(path, flexname)  # Flexible residues
-    #receptorname = f"{recid}_{chain}__rec.pdb"
-    #receptorpath = os.path.join(crossdock, receptorname)
+    # receptorname = f"{recid}_{chain}__rec.pdb"
+    # receptorpath = os.path.join(crossdock, receptorname)
     crystalname = f"{recid}_{chain}_rec.pdb"
-    crystalpath = os.path.join(
-        crossdock, pocket, crystalname
-    )  # Crystal receptor
+    crystalpath = os.path.join(crossdock, pocket, crystalname)  # Crystal receptor
 
     # Load ligand and receptor
     cmd.load(ligandpath, "ligand")  # Selection name: ligand
     cmd.load(flexpath, "flex")  # Selection name: flex
-    #cmd.load(receptorpath, "receptor")  # Selection name: receptor
+    # cmd.load(receptorpath, "receptor")  # Selection name: receptor
     cmd.load(crystalpath, "crystal")  # Selection name: receptor
 
     # Hide everything
     cmd.hide("all")
 
     # Show receptor
-    #cmd.show("cartoon", "receptor")
-    #cmd.color("grey", "receptor")
+    # cmd.show("cartoon", "receptor")
+    # cmd.color("grey", "receptor")
     cmd.show("cartoon", "crystal")
     cmd.color("grey", "crystal")
 
@@ -69,7 +67,7 @@ def loadcd(
     cmd.zoom("ligand", 10)
 
     # Remove solvent
-    #cmd.remove("solvent")
+    # cmd.remove("solvent")
 
     # Get residues of crystal close to flexible residues
     stored.list = []
@@ -82,7 +80,7 @@ def loadcd(
     flexres = set(stored.list)  # Set of flexible residues
 
     # Outline flexible residues of the receptor
-    #for _, resi, chain in flexres:
+    # for _, resi, chain in flexres:
     #    if chain != "":  # ???
     #        sel = f"receptor and (resi {resi} in chain {chain})"
     #        cmd.show("sphere", sel)

@@ -13,6 +13,7 @@ import inbox
 # Show interpreter
 # print(sys.executable)
 
+
 def print_resrmsd(df, rank):
 
     df_rank = df[df["rank"] == rank]
@@ -27,11 +28,14 @@ def print_resrmsd(df, rank):
         resnum = re.search("[0-9]+", resinfo)
         icode = re.search("[A-Z]$", resinfo)
 
-        print(f"{resname} {chain.group(0) if chain is not None else ''} {resnum.group(0):5}{icode.group(0) if icode is not None else '':1} : {rmsd:.5f} A")
+        print(
+            f"{resname} {chain.group(0) if chain is not None else ''} {resnum.group(0):5}{icode.group(0) if icode is not None else '':1} : {rmsd:.5f} A"
+        )
+
 
 def draw_box(ligandpath, L):
 
-    L2 = float(L) / 2.0 # Half box size
+    L2 = float(L) / 2.0  # Half box size
 
     lig = inbox.load(ligandpath)
 
@@ -53,53 +57,115 @@ def draw_box(ligandpath, L):
     r, g, b = 1.0, 1.0, 1.0
 
     boundingBox = [
-                LINEWIDTH, float(linewidth),
-
-                BEGIN, LINES,
-                COLOR, float(r), float(g), float(b),
-
-                VERTEX, minX, minY, minZ,       #1
-                VERTEX, minX, minY, maxZ,       #2
-
-                VERTEX, minX, maxY, minZ,       #3
-                VERTEX, minX, maxY, maxZ,       #4
-
-                VERTEX, maxX, minY, minZ,       #5
-                VERTEX, maxX, minY, maxZ,       #6
-
-                VERTEX, maxX, maxY, minZ,       #7
-                VERTEX, maxX, maxY, maxZ,       #8
-
-
-                VERTEX, minX, minY, minZ,       #1
-                VERTEX, maxX, minY, minZ,       #5
-
-                VERTEX, minX, maxY, minZ,       #3
-                VERTEX, maxX, maxY, minZ,       #7
-
-                VERTEX, minX, maxY, maxZ,       #4
-                VERTEX, maxX, maxY, maxZ,       #8
-
-                VERTEX, minX, minY, maxZ,       #2
-                VERTEX, maxX, minY, maxZ,       #6
-
-
-                VERTEX, minX, minY, minZ,       #1
-                VERTEX, minX, maxY, minZ,       #3
-
-                VERTEX, maxX, minY, minZ,       #5
-                VERTEX, maxX, maxY, minZ,       #7
-
-                VERTEX, minX, minY, maxZ,       #2
-                VERTEX, minX, maxY, maxZ,       #4
-
-                VERTEX, maxX, minY, maxZ,       #6
-                VERTEX, maxX, maxY, maxZ,       #8
-
-                END
-        ]
+        LINEWIDTH,
+        float(linewidth),
+        BEGIN,
+        LINES,
+        COLOR,
+        float(r),
+        float(g),
+        float(b),
+        VERTEX,
+        minX,
+        minY,
+        minZ,  # 1
+        VERTEX,
+        minX,
+        minY,
+        maxZ,  # 2
+        VERTEX,
+        minX,
+        maxY,
+        minZ,  # 3
+        VERTEX,
+        minX,
+        maxY,
+        maxZ,  # 4
+        VERTEX,
+        maxX,
+        minY,
+        minZ,  # 5
+        VERTEX,
+        maxX,
+        minY,
+        maxZ,  # 6
+        VERTEX,
+        maxX,
+        maxY,
+        minZ,  # 7
+        VERTEX,
+        maxX,
+        maxY,
+        maxZ,  # 8
+        VERTEX,
+        minX,
+        minY,
+        minZ,  # 1
+        VERTEX,
+        maxX,
+        minY,
+        minZ,  # 5
+        VERTEX,
+        minX,
+        maxY,
+        minZ,  # 3
+        VERTEX,
+        maxX,
+        maxY,
+        minZ,  # 7
+        VERTEX,
+        minX,
+        maxY,
+        maxZ,  # 4
+        VERTEX,
+        maxX,
+        maxY,
+        maxZ,  # 8
+        VERTEX,
+        minX,
+        minY,
+        maxZ,  # 2
+        VERTEX,
+        maxX,
+        minY,
+        maxZ,  # 6
+        VERTEX,
+        minX,
+        minY,
+        minZ,  # 1
+        VERTEX,
+        minX,
+        maxY,
+        minZ,  # 3
+        VERTEX,
+        maxX,
+        minY,
+        minZ,  # 5
+        VERTEX,
+        maxX,
+        maxY,
+        minZ,  # 7
+        VERTEX,
+        minX,
+        minY,
+        maxZ,  # 2
+        VERTEX,
+        minX,
+        maxY,
+        maxZ,  # 4
+        VERTEX,
+        maxX,
+        minY,
+        maxZ,  # 6
+        VERTEX,
+        maxX,
+        maxY,
+        maxZ,  # 8
+        END,
+    ]
 
     cmd.load_cgo(boundingBox, "box")
+
 
 def flexrmsd(
     system,
@@ -140,7 +206,7 @@ def flexrmsd(
 
     print_resrmsd(df_recrmsd, idx)
 
-    print(df_rmsd[df_rmsd['rank']==idx])
+    print(df_rmsd[df_rmsd["rank"] == idx])
 
     # Load ligand and receptor
     cmd.load(ligandpath, "ligand")  # Selection name: ligand

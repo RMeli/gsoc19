@@ -22,8 +22,8 @@ def crossdocking(
     flexdist = float(flexdist)
 
     # Print informations
-    #print(f"Loading {dataset}/{system} (rank {idx})")
-    #print(f"flexdist = {flexdist}")
+    # print(f"Loading {dataset}/{system} (rank {idx})")
+    # print(f"flexdist = {flexdist}")
 
     # Build paths
     ppath = os.path.join(path, pocket, "PDB_Structures")
