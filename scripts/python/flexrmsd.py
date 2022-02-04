@@ -10,6 +10,7 @@ from spyrmsd.exceptions import NonIsomorphicGraphs
 
 from collections import defaultdict
 
+
 def _elements_to_atomicnums(elements: str):
     anums = np.zeros_like(elements, dtype=int)
 
@@ -58,6 +59,13 @@ def calc_pocket_rmsd(pose, cognate, flex, root="", verbose=False, symm=True):
     pose.inferBonds(max_bond=mbond)
     cognate.inferBonds(max_bond=mbond)
 
+    # Some PDB files have the deprecates segment id column filled
+    # This is not the case for the poses and therefore it can cause failures
+    # Fill segment names from chain IDs (which should be correct)
+    # See https://github.com/prody/ProDy/issues/1466
+    pose.setSegnames(pose.getChids())
+    cognate.setSegnames(cognate.getChids())
+
     flex = prody.parsePDB(os.path.join(root, flex))
 
     # Match POSE and COGNATE based on sequence identity
@@ -65,9 +73,11 @@ def calc_pocket_rmsd(pose, cognate, flex, root="", verbose=False, symm=True):
     for cutoff in range(90, 0, -10):
         # can't just set a low cutoff since we'll end up with bad alignments
         # try a whole bunch of alignments to maximize the likelihood we get the right one
+        print("overlap/seqid cutoff:", cutoff)
         m = prody.matchChains(
             pose, cognate, subset="all", overlap=cutoff, seqid=cutoff, pwalign=True
         )
+
         if m:
             matches += m
 
@@ -142,7 +152,7 @@ def calc_pocket_rmsd(pose, cognate, flex, root="", verbose=False, symm=True):
                     Ap,
                     Ac,
                 )
-            except NonIsomorphicGraphs as e: # Not isomorphic
+            except NonIsomorphicGraphs as e:  # Not isomorphic
                 warnings.warn("NonIsomorphicGraphs | Computing standard RMSD")
                 # Try computing RMSD without symmetry correction
                 # This will possibly add some noise
@@ -175,7 +185,7 @@ def calc_pocket_rmsd(pose, cognate, flex, root="", verbose=False, symm=True):
                             ApR,
                             AcR,
                         )
-                    except NonIsomorphicGraphs as e: # Not isomorphic
+                    except NonIsomorphicGraphs as e:  # Not isomorphic
                         warnings.warn("NonIsomorphicGraphs | Computing standard RMSD")
                         # Try computing RMSD without symmetry correction
                         # This will possibly add some noise
