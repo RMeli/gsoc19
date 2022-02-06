@@ -73,7 +73,7 @@ def calc_pocket_rmsd(pose, cognate, flex, root="", verbose=False, symm=True):
     for cutoff in range(90, 0, -10):
         # can't just set a low cutoff since we'll end up with bad alignments
         # try a whole bunch of alignments to maximize the likelihood we get the right one
-        print("overlap/seqid cutoff:", cutoff)
+        #print("overlap/seqid cutoff:", cutoff)
         m = prody.matchChains(
             pose, cognate, subset="all", overlap=cutoff, seqid=cutoff, pwalign=True
         )
