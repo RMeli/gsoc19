@@ -11,7 +11,7 @@ mkdir -p ${outdir}
 pscripts="../../scripts/python"
 
 python ${pscripts}/distrmsd.py \
-    carlos_cd/rmsds.csv \
+    carlos_cd/rmsds2.csv \
     -mr 3 -b 0.1 \
     -opath ${outdir} \
     --ligrmsd rmsd --flexrmsd flexrmsd --flexmaxrmsd fmaxrmsd
