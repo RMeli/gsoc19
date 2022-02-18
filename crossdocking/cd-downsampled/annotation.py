@@ -18,6 +18,9 @@ from sklearn.preprocessing import OrdinalEncoder
 
 root = "carlos_cd"
 
+# Path to CSV file with RMSDs
+csv_file = "analysis/rmsd2_clean.csv"
+
 def ligrmsd(row):
     if row.rmsd < 2.0:
         return 1  # Good pose
@@ -33,8 +36,8 @@ def ligrecrmsd(row, col, t):
 # Define all possible annotations
 annotations = {
     None: ligrmsd,
-    "flex": lambda r: ligrecrmsd(r, "flexobrmsd", 1.0),
-    "max1": lambda r: ligrecrmsd(r, "fmaxrmsd", 1.0),
+    "flex1": lambda r: ligrecrmsd(r, "flexrmsd", 1.0),
+    "flex2": lambda r: ligrecrmsd(r, "flexrmsd", 2.0),
     "max2": lambda r: ligrecrmsd(r, "fmaxrmsd", 2.0),
 }
 
@@ -78,15 +81,7 @@ def recname(row):
 
     return fname
 
-df = pd.read_csv("analysis/rmsd_clean.csv", index_col=False)
-
-# Assign different group to different pockets
-# TODO: Assesss pocket similarity?
-# encoder = OrdinalEncoder()
-# df["group"] = encoder.fit_transform(df["pocket"].to_numpy().reshape(-1, 1))
-# df["group"] = df["group"].astype(int)
-# Check that the number of unique pockets matches the number of groups
-# assert len(df["pocket"].unique()) == df["group"].max() + 1
+df = pd.read_csv(csv_file, index_col=False)
 
 # Create CV clusters based on ProBiS
 clusters = pd.read_csv("clustering/clusters.csv", index_col=0)
