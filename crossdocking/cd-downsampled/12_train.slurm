@@ -4,12 +4,14 @@
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=1
 #SBATCH --gres=gpu:v100:1
-#SBATCH --partition=medium
+#SBATCH --partition=devel
 #SBATCH --clusters=htc
 #SBATCH --array=0-2
 #SBATCH --output=slurm/train/%x.%A_%a.out
-#SBATCH --time=72:00:00
+#SBATCH --time=00:05:00
+##SBATCH --time=72:00:00
 #SBATCH --account=stat-ecr
+#SBATCH --qos=standard
 
 hostname
 nvidia-smi
@@ -17,8 +19,8 @@ nvidia-smi
 #---------------------------------------------------------------------------------------
 #---------------------------------------------------------------------------------------
 modelname="dense"
-prefix="nc"
-annotation="flex"
+prefix="cluster"
+annotation="flex1"
 #---------------------------------------------------------------------------------------
 #---------------------------------------------------------------------------------------
 modelname="${modelname}-noaffinity"
@@ -38,11 +40,16 @@ gcaffe=${groot}/caffe/python
 trainfolder=training/${annotation}/${modelname}
 mkdir -p ${trainfolder}
 
-# TODO: Create relative link
-cp files/${annotation}${prefix}train* files/${annotation}${prefix}test* ${trainfolder}
-cp models/${modelname}.model ${trainfolder}
-cp models/completerec models/completelig ${trainfolder}
 cd ${trainfolder}
+
+for i in 0 1 2
+do
+    ln -s ../../../files/${annotation}${prefix}train${i}.types ${annotation}${prefix}train${i}.types
+    ln -s ../../../files/${annotation}${prefix}test${i}.types ${annotation}${prefix}test${i}.types
+done
+ln -s ../../../models/${modelname}.model ${modelname}.model
+ln -s ../../../models/completerec completerec
+ln -s ../../../models/completelig completelig
 
 echo ${trainfolder}
 echo ${subdir}
