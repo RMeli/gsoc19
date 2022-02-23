@@ -1,26 +1,24 @@
-#!/bin/bash -l
+#!/bin/bash
 #SBATCH --job-name=train
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=1
 #SBATCH --gres=gpu:v100:1
-#SBATCH --partition=devel
+#SBATCH --partition=medium
 #SBATCH --clusters=htc
 #SBATCH --array=0-2
 #SBATCH --output=slurm/train/%x.%A_%a.out
-#SBATCH --time=00:05:00
-##SBATCH --time=72:00:00
+#SBATCH --time=72:00:00
 #SBATCH --account=stat-ecr
-#SBATCH --qos=standard
 
 hostname
 nvidia-smi
 
 #---------------------------------------------------------------------------------------
 #---------------------------------------------------------------------------------------
-modelname="dense"
-prefix="cluster"
-annotation="flex1"
+modelname="default2018" # dense/default2017/default2018
+prefix="cluster" # cluster/nc
+annotation="max2" # flex1/flex2/max1
 #---------------------------------------------------------------------------------------
 #---------------------------------------------------------------------------------------
 modelname="${modelname}-noaffinity"
@@ -42,14 +40,11 @@ mkdir -p ${trainfolder}
 
 cd ${trainfolder}
 
-for i in 0 1 2
-do
-    ln -s ../../../files/${annotation}${prefix}train${i}.types ${annotation}${prefix}train${i}.types
-    ln -s ../../../files/${annotation}${prefix}test${i}.types ${annotation}${prefix}test${i}.types
-done
-ln -s ../../../models/${modelname}.model ${modelname}.model
-ln -s ../../../models/completerec completerec
-ln -s ../../../models/completelig completelig
+ln -sf ../../../files/${annotation}${prefix}train${SLURM_ARRAY_TASK_ID}.types ${annotation}${prefix}train${SLURM_ARRAY_TASK_ID}.types
+ln -sf ../../../files/${annotation}${prefix}test${SLURM_ARRAY_TASK_ID}.types ${annotation}${prefix}test${SLURM_ARRAY_TASK_ID}.types
+ln -sf ../../../models/${modelname}.model ${modelname}.model
+ln -sf ../../../models/completerec completerec
+ln -sf ../../../models/completelig completelig
 
 echo ${trainfolder}
 echo ${subdir}
