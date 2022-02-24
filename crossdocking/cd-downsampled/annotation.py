@@ -21,17 +21,20 @@ root = "carlos_cd"
 # Path to CSV file with RMSDs
 csv_file = "analysis/rmsd2_clean.csv"
 
+
 def ligrmsd(row):
     if row.rmsd < 2.0:
         return 1  # Good pose
     else:
         return 0  # Bad pose
 
+
 def ligrecrmsd(row, col, t):
     if row.rmsd < 2.0 and row[col] < t:
         return 1  # Good pose
     else:
         return 0  # Bad pose
+
 
 # Define all possible annotations
 annotations = {
@@ -52,11 +55,12 @@ parser.add_argument(
     "--receptor",
     default=None,
     help="Receptor annotation (flex, max1 or max2)",
-    choices=annotations.keys()
+    choices=annotations.keys(),
 )
 args = parser.parse_args()
 
 prefix = "cluster" if args.cluster else "nc"
+
 
 def ligname(row):
     fprefix = f"{row.protein}_PRO_{row.ligand}_LIG_aligned"
@@ -80,6 +84,7 @@ def recname(row):
             break
 
     return fname
+
 
 df = pd.read_csv(csv_file, index_col=False)
 

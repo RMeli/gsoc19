@@ -5,7 +5,10 @@ from matplotlib import pyplot as plt
 
 df = pd.read_csv("allTopN.csv")
 
-df_melted = df.melt(value_vars=["best", "smina", "gnina"], id_vars=["N", "annotation","prefix","model","crystal"])
+df_melted = df.melt(
+    value_vars=["best", "smina", "gnina"],
+    id_vars=["N", "annotation", "prefix", "model", "crystal"],
+)
 
 print(df_melted)
 
@@ -17,8 +20,18 @@ df_melted.rename(columns={"variable": "method", "value": "TopN (%)"}, inplace=Tr
 
 print(df_melted)
 
-g = sns.relplot(data=df_melted, x="N", y="TopN (%)", hue="method", style="crystal", col="prefix", row="annotation", kind="line", markers=True)
-g.tight_layout() # Excludes legend; plt.tight_layout() includes legend
-plt.ylim([0,100])
+g = sns.relplot(
+    data=df_melted,
+    x="N",
+    y="TopN (%)",
+    hue="method",
+    style="crystal",
+    col="prefix",
+    row="annotation",
+    kind="line",
+    markers=True,
+)
+g.tight_layout()  # Excludes legend; plt.tight_layout() includes legend
+plt.ylim([0, 100])
 plt.savefig("TopN.png")
 plt.savefig("TopN.pdf")
