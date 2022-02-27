@@ -16,9 +16,9 @@ nvidia-smi
 
 #---------------------------------------------------------------------------------------
 #---------------------------------------------------------------------------------------
-modelname="default2018" # dense/default2017/default2018
+modelname="default2017" # dense/default2017/default2018
 prefix="cluster" # cluster/nc
-annotation="max2" # flex1/flex2/max1
+annotation="" # flex1/flex2/max1/""
 #---------------------------------------------------------------------------------------
 #---------------------------------------------------------------------------------------
 modelname="${modelname}-noaffinity"
@@ -35,7 +35,12 @@ container=/data/biggin/lina3015/gsoc19/crossdocking/cd-downsampled/singularity/o
 groot=${HOME}/git/gnina/
 gcaffe=${groot}/caffe/python
 
-trainfolder=training/${annotation}/${modelname}
+if [ -z "${annotation}" ]
+then
+    trainfolder=training/ligand/${modelname}
+else
+    trainfolder=training/${annotation}/${modelname}
+fi
 mkdir -p ${trainfolder}
 
 cd ${trainfolder}
