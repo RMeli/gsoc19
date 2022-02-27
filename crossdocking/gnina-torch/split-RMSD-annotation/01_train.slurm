@@ -1,14 +1,14 @@
 #!/bin/bash
-#SBATCH --job-name=train
+#SBATCH --job-name=train-gt
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=1
 #SBATCH --gres=gpu:1
-#SBATCH --partition=devel
+#SBATCH --partition=medium
 #SBATCH --clusters=htc
 #SBATCH --array=0-2
 #SBATCH --output=slurm/train/%x.%A_%a.out
-#SBATCH --time=00:10:00
+#SBATCH --time=72:00:00
 #SBATCH --account=stat-ecr
 
 hostname
@@ -19,7 +19,7 @@ which python
 prefix="nc" # cluster/nc
 annotation="flex1"
 
-epochs=10
+epochs=1000
 
 if [ ${annotation} = "" ]
 then
@@ -39,9 +39,9 @@ python -m gnina.training \
         --iterations ${epochs} \
         --batch_size 64 \
         --balanced \
-        --test_every 2 \
-        --checkpoint_every 2 \
-        --num_checkpoints 2 \
+        --test_every 50 \
+        --checkpoint_every 50 \
+        --num_checkpoints 50 \
         --out_dir ${trainfolder} \
         --log_file training${SLURM_ARRAY_TASK_ID}.log \
         --checkpoint_prefix training${SLURM_ARRAY_TASK_ID}
