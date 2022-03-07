@@ -13,7 +13,7 @@
 
 #---------------------------------------------------------------------------------------
 #---------------------------------------------------------------------------------------
-modelname="default2017" # dense/default2017/default2018
+modelname="dense" # dense/default2017/default2018
 prefix="nc" # cluster/nc
 annotation="max2" # flex1/flex2/max2/""
 #---------------------------------------------------------------------------------------
@@ -25,8 +25,6 @@ if [ ${prefix} = "nc" ]
 then
     modelname="${modelname}-nostratified"
 fi
-
-
 
 subdir=${PWD}
 gscripts=${HOME}/git/gninascripts # Script on local filesystem
