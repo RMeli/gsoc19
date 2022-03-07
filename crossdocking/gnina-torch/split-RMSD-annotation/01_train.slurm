@@ -5,10 +5,12 @@
 #SBATCH --cpus-per-task=1
 #SBATCH --gres=gpu:1
 #SBATCH --partition=medium
+##SBATCH --partition=devel
 #SBATCH --clusters=htc
 #SBATCH --array=0-2
 #SBATCH --output=slurm/train/%x.%A_%a.out
 #SBATCH --time=72:00:00
+##SBATCH --time=00:10:00
 #SBATCH --account=stat-ecr
 
 hostname
@@ -18,15 +20,11 @@ which python
 
 prefix="nc" # cluster/nc
 annotation="flex1"
+model="dense"
 
-epochs=1000
+epochs=2000
 
-if [ ${annotation} = "" ]
-then
-    trainfolder=training/ligand/${modelname}
-else
-    trainfolder=training/${annotation}/${modelname}
-fi
+trainfolder=training/${annotation}/${model}-${prefix}
 mkdir -p ${trainfolder}
 
 python -m gnina.training \
@@ -36,12 +34,13 @@ python -m gnina.training \
         --data_root ../../cd-downsampled/ \
         --ligmolcache lig.molcache2 \
         --recmolcache rec.molcache2 \
+        --model ${model} \
         --iterations ${epochs} \
         --batch_size 64 \
         --balanced \
-        --test_every 50 \
-        --checkpoint_every 50 \
-        --num_checkpoints 50 \
+        --test_every 5 \
+        --checkpoint_every 100 \
+        --num_checkpoints 20 \
         --out_dir ${trainfolder} \
         --log_file training${SLURM_ARRAY_TASK_ID}.log \
         --checkpoint_prefix training${SLURM_ARRAY_TASK_ID}
