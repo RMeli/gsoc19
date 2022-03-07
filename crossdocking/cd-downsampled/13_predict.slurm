@@ -13,16 +13,20 @@
 
 #---------------------------------------------------------------------------------------
 #---------------------------------------------------------------------------------------
-modelname="dense"
-prefix="nc"
-annotation="flex"
+modelname="default2017" # dense/default2017/default2018
+prefix="nc" # cluster/nc
+annotation="max2" # flex1/flex2/max2/""
 #---------------------------------------------------------------------------------------
 #---------------------------------------------------------------------------------------
+echo ${modelname} ${prefix} ${annotation}
+
 modelname="${modelname}-noaffinity"
 if [ ${prefix} = "nc" ]
 then
     modelname="${modelname}-nostratified"
 fi
+
+
 
 subdir=${PWD}
 gscripts=${HOME}/git/gninascripts # Script on local filesystem
@@ -32,7 +36,13 @@ container=/data/biggin/lina3015/gsoc19/crossdocking/cd-downsampled/singularity/o
 groot=${HOME}/git/gnina/
 gcaffe=${groot}/caffe/python
 
-trainfolder=training/${annotation}/${modelname}
+if [ -z "${annotation}" ]
+then
+    trainfolder=training/ligand/${modelname}
+else
+    trainfolder=training/${annotation}/${modelname}
+fi
+
 cd ${trainfolder}
 
 singularity exec --nv -B ${subdir}:${subdir} --env PYTHONPATH=${gcaffe}:/usr/local/python \
