@@ -41,7 +41,7 @@ def load_scores(df, model: str, annotation: str, prefix: str, prediction_prefix=
     for i in range(3):
         dfs.append(
             pd.read_csv(
-                f"../training/{tfname}/{model}/{prediction_prefix}{annotation}{prefix}test{i}.out",
+                f"training/{tfname}/{model}/{prediction_prefix}{annotation}{prefix}test{i}.out",
                 sep=" ",
                 header=None,
             )
@@ -88,7 +88,10 @@ def load_scores(df, model: str, annotation: str, prefix: str, prediction_prefix=
         [0, 2, 10]
     ]
     score["rank"] = (
-        score["rank"].str.replace("p", "").str.replace(".gninatyes", "").astype(int)
+        score["rank"]
+        .str.replace("p", "", regex=False)
+        .str.replace(".gninatyes", "", regex=False)
+        .astype(int)
     )
     score.drop(columns="ligname", inplace=True)
 
@@ -166,8 +169,9 @@ def topN(df, nmax: int):
 
         n_pockets += 1
 
-    # One pocket has been removed for lack of actives
-    assert n_pockets == 91 or n_pockets == 92
+    # Some pckets have been removed for lack of actives
+    #assert n_pockets == 91 or n_pockets == 92, f"n_pockets = {n_pockets}"
+    print(f"    n_pockets = {n_pockets}")
 
     # Return TopN of targets, averaged per pocket
     top_smina_avg = np.array(top_smina) / n_pockets
@@ -187,7 +191,7 @@ def process(model, annotation, prefix, nmax=10, prediction_prefix=""):
     elif prefix == "cluster":
         modelname = f"{model}-noaffinity"
 
-    df = pd.read_csv(f"{annotation}nc_annotated.csv")
+    df = pd.read_csv(f"analysis/{annotation}nc_annotated.csv")
 
     # !!!!!!!!!!
     # Change the column name "annotation" to "label"
@@ -229,8 +233,7 @@ if __name__ == "__main__":
     # models = ["default2017", "default2018"]
     prefixes = ["cluster", "nc"]
     # prefixes = ["nc"]
-    annotations = ["", "flex", "max1", "max2"]
-    # annotations = ["",]
+    annotations = ["", "flex1", "flex2", "max2"]
 
     df_score_list = []
     df_top_list = []
@@ -242,6 +245,6 @@ if __name__ == "__main__":
                 df_score_list.append(df_score)
                 df_top_list.append(df_top)
 
-    pd.concat(df_score_list).to_csv("allscores.csv", float_format="%.5f", index=False)
+    pd.concat(df_score_list).to_csv("analysis/allscores.csv", float_format="%.5f", index=False)
     df_top = pd.concat(df_top_list)
-    df_top.to_csv("allTopN.csv", float_format="%.5f", index=False)
+    df_top.to_csv("analysis/allTopN.csv", float_format="%.5f", index=False)
