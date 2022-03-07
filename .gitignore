@@ -16,6 +16,8 @@ PDBbind18/other
 crossdocking/cd-downsampled/analysis/allscores.csv
 crossdocking/cd-downsampled/analysis/_csv/allscores.csv
 
+# PyTorch
+*.pt
 
 # docking
 docking/refined*
