@@ -170,7 +170,7 @@ def topN(df, nmax: int):
         n_pockets += 1
 
     # Some pckets have been removed for lack of actives
-    #assert n_pockets == 91 or n_pockets == 92, f"n_pockets = {n_pockets}"
+    # assert n_pockets == 91 or n_pockets == 92, f"n_pockets = {n_pockets}"
     print(f"    n_pockets = {n_pockets}")
 
     # Return TopN of targets, averaged per pocket
@@ -245,6 +245,8 @@ if __name__ == "__main__":
                 df_score_list.append(df_score)
                 df_top_list.append(df_top)
 
-    pd.concat(df_score_list).to_csv("analysis/allscores.csv", float_format="%.5f", index=False)
+    pd.concat(df_score_list).to_csv(
+        "analysis/allscores.csv", float_format="%.5f", index=False
+    )
     df_top = pd.concat(df_top_list)
     df_top.to_csv("analysis/allTopN.csv", float_format="%.5f", index=False)

@@ -3,7 +3,7 @@ import pandas as pd
 
 from matplotlib import pyplot as plt
 
-df = pd.read_csv("allTopN.csv")
+df = pd.read_csv("analysis/allTopN.csv")
 
 df_melted = df.melt(
     value_vars=["best", "smina", "gnina"],
@@ -33,5 +33,5 @@ g = sns.relplot(
 )
 g.tight_layout()  # Excludes legend; plt.tight_layout() includes legend
 plt.ylim([0, 100])
-plt.savefig("TopN.png")
-plt.savefig("TopN.pdf")
+plt.savefig("analysis/TopN.png")
+plt.savefig("analysis/TopN.pdf")
