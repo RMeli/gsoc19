@@ -20,7 +20,7 @@ which python
 
 prefix="nc" # cluster/nc
 annotation="flex1"
-model="default2018"
+model="dense"
 
 epochs=2000
 
