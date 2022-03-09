@@ -3,12 +3,22 @@ import seaborn as sns
 
 from matplotlib import pyplot as plt
 
-prefix = "flex1"
+import argparse
+
+parser = argparse.ArgumentParser(description="Plot results of training.")
+parser.add_argument(
+    "model", type=str, choices=["default2017-nc", "default2018-nc", "dense-nc"]
+)
+parser.add_argument("prefix", type=str, choices=["flex1", "felex2", "max2"])
+
+args = parser.parse_args()
 
 dfs = []
-for i in range(3):
+for i in range(2):
     for stage in ["test", "train"]:
-        df = pd.read_csv(f"training/{prefix}/training{i}_metrics_{stage}.csv")
+        df = pd.read_csv(
+            f"training/{args.prefix}/{args.model}/training{i}_metrics_{stage}.csv"
+        )
         df["Fold"] = i
         df["Phase"] = stage
 
@@ -23,7 +33,6 @@ to_plot = [
     "Balanced accuracy (flex)",
     "Loss (pose)",
     "Loss (flex pose)",
-    "Loss",
 ]
 
 for tp in to_plot:
@@ -37,5 +46,5 @@ for tp in to_plot:
     )
     plt.legend(loc="lower center")
     plt.savefig(
-        f"plots/{prefix}_{tp.replace('(','').replace(')','').replace(' ','_')}.png"
+        f"plots/{args.prefix}_{args.model}_{tp.replace('(','').replace(')','').replace(' ','_')}.png"
     )
