@@ -38,6 +38,7 @@ def recrmsd(row, col, t):
 
 # Define all possible annotations
 annotations = {
+    "flex05": lambda r: recrmsd(r, "flexrmsd", 0.5),
     "flex1": lambda r: recrmsd(r, "flexrmsd", 1.0),
     "flex2": lambda r: recrmsd(r, "flexrmsd", 2.0),
     "max2": lambda r: recrmsd(r, "fmaxrmsd", 2.0),
