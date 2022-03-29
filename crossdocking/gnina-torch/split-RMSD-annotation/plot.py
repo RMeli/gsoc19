@@ -9,15 +9,19 @@ parser = argparse.ArgumentParser(description="Plot results of training.")
 parser.add_argument(
     "model", type=str, choices=["default2017-nc", "default2018-nc", "dense-nc"]
 )
-parser.add_argument("prefix", type=str, choices=["flex1", "felex2", "max2"])
+parser.add_argument("prefix", type=str, choices=["flex05", "flex1", "flex2", "max2"])
+parser.add_argument("-s", "--suffix", type=str, default="", choices=["", "stratified", "loss"])
 
 args = parser.parse_args()
+
+if args.suffix:
+    suffix = f"-{args.suffix}"
 
 dfs = []
 for i in range(3):
     for stage in ["test", "train"]:
         df = pd.read_csv(
-            f"training/{args.prefix}/{args.model}/training{i}_metrics_{stage}.csv"
+            f"training/{args.prefix}/{args.model}{suffix}/training{i}_metrics_{stage}.csv"
         )
         df["Fold"] = i
         df["Phase"] = stage
@@ -46,10 +50,6 @@ for tp in to_plot:
     )
     plt.legend(loc="lower center")
 
-    figname = f"plots/{args.prefix}_{args.model}_{tp.replace('(','').replace(')','').replace(' ','_')}"
-    plt.savefig(
-        f"{figname}.png"
-    )
-    plt.savefig(
-        f"{figname}.pdf"
-    )
+    figname = f"plots/{args.prefix}_{args.model}{suffix}_{tp.replace('(','').replace(')','').replace(' ','_')}"
+    plt.savefig(f"{figname}.png")
+    plt.savefig(f"{figname}.pdf")

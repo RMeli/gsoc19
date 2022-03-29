@@ -11,8 +11,11 @@ plt.savefig("plots/rmsd_vd_flexrmsd.pdf")
 ligmax = 15
 recmax = 4
 
-print(df[(df.rmsd > ligmax) | (df.flexrmsd > recmax)].drop(columns=["score", "group", "lig_annotation", "rec_annotation", "obrmsd"]))
-
+print(
+    df[(df.rmsd > ligmax) | (df.flexrmsd > recmax)].drop(
+        columns=["score", "group", "lig_annotation", "rec_annotation", "obrmsd"]
+    )
+)
 
 sns.jointplot(x=df[df.rmsd <= ligmax].rmsd, y=df[df.flexrmsd <= 5].flexrmsd, kind="hex")
 plt.vlines(x=2, ymin=0, ymax=recmax, colors="grey", linestyles="dashed")
@@ -20,7 +23,11 @@ plt.hlines(y=1, xmin=0, xmax=ligmax, colors="grey", linestyles="dashed")
 plt.savefig("plots/rmsd_vd_flexrmsd-zoom.png")
 plt.savefig("plots/rmsd_vd_flexrmsd-zoom.pdf")
 
-sns.jointplot(x=df[(df.rmsd <= ligmax) & (df["rank"] != 0)].rmsd, y=df[(df.flexrmsd <= recmax) & (df["rank"] != 0)].flexrmsd, kind="hex")
+sns.jointplot(
+    x=df[(df.rmsd <= ligmax) & (df["rank"] != 0)].rmsd,
+    y=df[(df.flexrmsd <= recmax) & (df["rank"] != 0)].flexrmsd,
+    kind="hex",
+)
 plt.vlines(x=2, ymin=0, ymax=recmax, colors="grey", linestyles="dashed")
 plt.hlines(y=1, xmin=0, xmax=ligmax, colors="grey", linestyles="dashed")
 plt.savefig("plots/rmsd_vd_flexrmsd-zoom-nocrystal.png")
@@ -33,8 +40,10 @@ plt.savefig("plots/rmsd_vd_flexrmsd-zoom-nocrystal.pdf")
 # plt.savefig("plots/lig_rec_annotation.pdf")
 
 g = sns.catplot(
-    data=df[["lig_annotation", "rec_annotation"]], kind="count",
-    x="rec_annotation", col="lig_annotation"
+    data=df[["lig_annotation", "rec_annotation"]],
+    kind="count",
+    x="rec_annotation",
+    col="lig_annotation",
 )
 plt.tight_layout()
 plt.savefig("plots/balance.png")
