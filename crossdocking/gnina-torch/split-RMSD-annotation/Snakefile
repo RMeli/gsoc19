@@ -1,0 +1,38 @@
+
+folds = range(3)
+models = ["default2017", "default2018", "dense"]
+clusterings = ["nc", "cluster"]
+annotations = ["flex05", "flex1", "flex2", "max2"]
+modes = ["train", "test"]
+
+DATAROOT = "../../cd-downsampled/files"
+TRAINDIR = "TEST"
+
+allfiles = expand(
+    "{traindir}/{annotation}/{model}-{clustering}/training{fold}_metrics_{mode}.csv",
+    fold=folds,
+    model=models,
+    clustering=clusterings,
+    annotation=annotations,
+    mode=modes,
+    traindir=TRAINDIR,
+)
+
+rule all:
+    input:
+        allfiles
+
+rule train:
+    input:
+        [
+            expand("{dataroot}/SPLIT{annotation}{clustering}test{fold}.types", dataroot=DATAROOT, allow_missing=True),
+            expand("{dataroot}/SPLIT{annotation}{clustering}train{fold}.types", dataroot=DATAROOT, allow_missing=True)
+        ]
+    output:
+        [
+            expand("{traindir}/{annotation}/{model}-{clustering}/training{fold}_metrics_test.csv", traindir=TRAINDIR, allow_missing=True),
+            expand("{traindir}/{annotation}/{model}-{clustering}/training{fold}_metrics_train.csv", traindir=TRAINDIR, allow_missing=True)
+        ]
+    run:
+        "echo {input[0]} > {output[0]}",
+        "echo {input[1]} > {output[1]}"
