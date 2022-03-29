@@ -1,8 +1,11 @@
 
 folds = range(3)
-models = ["default2017", "default2018", "dense"]
-clusterings = ["nc", "cluster"]
-annotations = ["flex05", "flex1", "flex2", "max2"]
+#models = ["default2017", "default2018", "dense"]
+#clusterings = ["nc", "cluster"]
+#annotations = ["flex05", "flex1", "flex2", "max2"]
+models = ["default2017"]
+clusterings = ["nc"]
+annotations = ["flex1"]
 modes = ["train", "test"]
 
 DATAROOT = "../../cd-downsampled/files"
@@ -33,6 +36,5 @@ rule train:
             expand("{traindir}/{annotation}/{model}-{clustering}/training{fold}_metrics_test.csv", traindir=TRAINDIR, allow_missing=True),
             expand("{traindir}/{annotation}/{model}-{clustering}/training{fold}_metrics_train.csv", traindir=TRAINDIR, allow_missing=True)
         ]
-    run:
-        "echo {input[0]} > {output[0]}",
-        "echo {input[1]} > {output[1]}"
+    shell:
+        "echo {input[0]} > {output[0]} && echo {input[1]} > {output[1]}"
