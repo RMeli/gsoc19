@@ -37,4 +37,4 @@ rule train:
             expand("{traindir}/{annotation}/{model}-{clustering}/training{fold}_metrics_train.csv", traindir=TRAINDIR, allow_missing=True)
         ]
     shell:
-        "echo {input[0]} > {output[0]} && echo {input[1]} > {output[1]}"
+        "python -m gnina.training --help"

@@ -1,0 +1,19 @@
+cluster:
+  sbatch
+    --job-name="train-{wildcards}"
+    --nodes=1
+    --ntasks-per-node=1
+    --cpus-per-task=1
+    --gres=gpu:{resources.gpu}
+    --partition=devel
+    --clusters=htc
+    --array=0-2
+    --output=slurm/train/%x.%A_%a.out
+    --error=slurm/train/%x.%A_%a.err
+    --time={resources.time}
+    --account=stat-ecr
+default-resources:
+  - gpu=1
+  - time="00:10:00"
+jobs: 2
+js: train_snakemake.slurm
