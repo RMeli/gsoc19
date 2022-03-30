@@ -3,21 +3,34 @@ folds = range(3)
 #models = ["default2017", "default2018", "dense"]
 #clusterings = ["nc", "cluster"]
 #annotations = ["flex05", "flex1", "flex2", "max2"]
+#stratify = [(0, 0, 0), (0, 1, 0.5)]
+#scale_flexpose_loss = [1.0, 0.5, 2.0]
 models = ["default2017"]
 clusterings = ["nc"]
 annotations = ["flex1"]
 modes = ["train", "test"]
+stratify = ["[0,1,0.5]"]
+scale_flexpose_loss = [0.5]
 
 DATAROOT = "../../cd-downsampled/files"
 TRAINDIR = "TEST"
 
+def stratify_to_tuple(wildcards):
+    s = wildcards.stratify
+    s = s.replace("[", "").replace("]", "")
+    s = s.split(",")
+    s = [float(c.strip()) for c in s]
+    return s
+
 allfiles = expand(
-    "{traindir}/{annotation}/{model}-{clustering}/training{fold}_metrics_{mode}.csv",
+    "{traindir}/{annotation}/{model}-{clustering}/s{stratify}-floss{scale_flexpose_loss}/training{fold}_metrics_{mode}.csv",
     fold=folds,
     model=models,
     clustering=clusterings,
     annotation=annotations,
     mode=modes,
+    stratify=stratify,
+    scale_flexpose_loss=scale_flexpose_loss,
     traindir=TRAINDIR,
 )
 
@@ -33,8 +46,30 @@ rule train:
         ]
     output:
         [
-            expand("{traindir}/{annotation}/{model}-{clustering}/training{fold}_metrics_test.csv", traindir=TRAINDIR, allow_missing=True),
-            expand("{traindir}/{annotation}/{model}-{clustering}/training{fold}_metrics_train.csv", traindir=TRAINDIR, allow_missing=True)
+            expand("{traindir}/{annotation}/{model}-{clustering}/s{stratify}-floss{scale_flexpose_loss}/training{fold}_metrics_test.csv", traindir=TRAINDIR, allow_missing=True),
+            expand("{traindir}/{annotation}/{model}-{clustering}/s{stratify}-floss{scale_flexpose_loss}/training{fold}_metrics_train.csv", traindir=TRAINDIR, allow_missing=True)
         ]
+    params:
+        traindir=TRAINDIR,
+        stratify=stratify_to_tuple
     shell:
-        "python -m gnina.training --help"
+        "python -m gnina.training "
+        "{input[0]} "
+        "--testfile {input[1]} "
+        "--data_root ../../cd-downsampled/ "
+        "--model {wildcards.model} "
+        "--flexlabel_pos 1 "
+        "--stratify_pos 1 "
+        "--stratify_min {params.stratify[0]} "
+        "--stratify_max {params.stratify[1]} "
+        "--stratify_step {params.stratify[2]} "
+        "--iterations 25 "
+        "--scale_flexpose_loss {scale_flexpose_loss} "
+        "--batch_size 128 "
+        "--balanced "
+        "--test_every 10 "
+        "--checkpoint_every 20 "
+        "--num_checkpoints 20 "
+        "--checkpoint_prefix training{wildcards.fold} "
+        "--out_dir {params.traindir}/{wildcards.annotation}/{wildcards.model}-{wildcards.clustering}/s{wildcards.stratify}-floss{wildcards.scale_flexpose_loss} "
+        "--log_file training{wildcards.fold}.log"
