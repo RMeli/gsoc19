@@ -1,6 +1,6 @@
 cluster:
   sbatch
-    --job-name=train-{wildcards}
+    --job-name="train-{wildcards}"
     --nodes=1
     --ntasks-per-node=1
     --cpus-per-task=1
