@@ -18,28 +18,57 @@ nvidia-smi
 
 which python
 
+# Suffix to distinguish different runs
+suffix="loss"
+
 prefix="nc" # cluster/nc
 annotation="flex1"
-model="dense"
+model="default2018"
 
-epochs=2000
+epochs=500
 
-trainfolder=training/${annotation}/${model}-${prefix}
+if [ -n "${suffix}" ];
+then
+    suffix="-${suffix}"
+fi
+
+trainfolder=training/${annotation}/${model}-${prefix}${suffix}
 mkdir -p ${trainfolder}
+
+stratify_min=0
+stratify_max=0
+stratify_step=0
+scale_flexpose_loss=1.0
+
+if [ "${suffix}" == "stratified" ]
+then
+    stratify_min=0
+    stratify_max=1
+    stratify_step=0.5
+fi
+
+if [ "${suffix}" == "loss" ]
+then
+    scale_flexpose_loss=5.0
+fi
+
 
 python -m gnina.training \
         ../../cd-downsampled/files/SPLIT${annotation}${prefix}train${SLURM_ARRAY_TASK_ID}.types \
         --testfile ../../cd-downsampled/files/SPLIT${annotation}${prefix}test${SLURM_ARRAY_TASK_ID}.types \
         --flexlabel_pos 1 \
+        --stratify_pos 1 \
+        --stratify_min ${stratify_min} \
+        --stratify_max ${stratify_max} \
+        --stratify_step ${stratify_step} \
+        --scale_flexpose_loss ${scale_flexpose_loss} \
         --data_root ../../cd-downsampled/ \
-        --ligmolcache lig.molcache2 \
-        --recmolcache rec.molcache2 \
         --model ${model} \
         --iterations ${epochs} \
         --batch_size 64 \
         --balanced \
-        --test_every 5 \
-        --checkpoint_every 100 \
+        --test_every 10 \
+        --checkpoint_every 30 \
         --num_checkpoints 20 \
         --out_dir ${trainfolder} \
         --log_file training${SLURM_ARRAY_TASK_ID}.log \
