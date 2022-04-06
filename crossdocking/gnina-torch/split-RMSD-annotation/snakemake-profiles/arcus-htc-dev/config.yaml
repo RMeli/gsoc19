@@ -4,14 +4,15 @@ cluster:
     --nodes=1
     --ntasks-per-node=1
     --cpus-per-task=1
-    --gres=gpu:{resources.gpu}
+    --gres=gpu:v100:{resources.gpu}
     --partition=devel
     --clusters=htc
-    --array=0-2
     --output=slurm/train/%x.%A_%a.out
     --error=slurm/train/%x.%A_%a.err
     --time={resources.time}
     --account=stat-ecr
+    --qos=standard
+    --mem-per-cpu=24G
 default-resources:
   - gpu=1
   - time="00:10:00"

@@ -11,9 +11,10 @@ cluster:
     --error=slurm/train/%x.%A_%a.err
     --time={resources.time}
     --account=stat-ecr
+    --qos=standard
     --mem-per-cpu=24G
 default-resources:
   - gpu=1
-  - time="24:00:00"
-jobs: 100
+  - time="06:00:00"
+jobs: 6
 js: train_snakemake.slurm
