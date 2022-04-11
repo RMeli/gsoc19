@@ -1,5 +1,6 @@
 import pandas as pd
 import seaborn as sns
+import os
 
 from matplotlib import pyplot as plt
 
@@ -7,22 +8,18 @@ import argparse
 
 parser = argparse.ArgumentParser(description="Plot results of training.")
 parser.add_argument(
-    "model", type=str, choices=["default2017-nc", "default2018-nc", "dense-nc"]
+    "output",
+    type=str,
 )
-parser.add_argument("prefix", type=str, choices=["flex05", "flex1", "flex2", "max2"])
-parser.add_argument("-s", "--suffix", type=str, default="", choices=["", "stratified", "loss"])
-
+parser.add_argument("plot", type=str)
 args = parser.parse_args()
 
-if args.suffix:
-    suffix = f"-{args.suffix}"
+wdir = os.path.dirname(args.output)
 
 dfs = []
 for i in range(3):
     for stage in ["test", "train"]:
-        df = pd.read_csv(
-            f"training/{args.prefix}/{args.model}{suffix}/training{i}_metrics_{stage}.csv"
-        )
+        df = pd.read_csv(os.path.join(wdir, f"training{i}_metrics_{stage}.csv"))
         df["Fold"] = i
         df["Phase"] = stage
 
@@ -30,26 +27,27 @@ for i in range(3):
 
 df = pd.concat(dfs, ignore_index=True)
 
-to_plot = [
-    "ROC AUC",
-    "ROC AUC (flex)",
-    "Balanced accuracy",
-    "Balanced accuracy (flex)",
-    "Loss (pose)",
-    "Loss (flex pose)",
-]
+to_plot = {
+    "roc-auc": "ROC AUC",
+    "roc-auc-flex": "ROC AUC (flex)",
+    "balanced-accuracy": "Balanced accuracy",
+    "balanced-accuracy-flex": "Balanced accuracy (flex)",
+    "loss-pose": "Loss (pose)",
+    "loss-flex-pose": "Loss (flex pose)",
+}
 
-for tp in to_plot:
-    df_to_plot = df[["Epoch", "Fold", "Phase", tp]]
+df_to_plot = df[["Epoch", "Fold", "Phase", to_plot[args.plot]]]
 
-    print(df_to_plot)
+plt.figure()
+sns.lineplot(
+    x="Epoch",
+    y=to_plot[args.plot],
+    hue="Phase",
+    style="Phase",
+    data=df_to_plot,
+    markers=True,
+)
+plt.legend(loc="lower center")
 
-    plt.figure()
-    sns.lineplot(
-        x="Epoch", y=tp, hue="Phase", style="Phase", data=df_to_plot, markers=True
-    )
-    plt.legend(loc="lower center")
-
-    figname = f"plots/{args.prefix}_{args.model}{suffix}_{tp.replace('(','').replace(')','').replace(' ','_')}"
-    plt.savefig(f"{figname}.png")
-    plt.savefig(f"{figname}.pdf")
+plt.savefig(args.output)
+plt.savefig(args.output.replace(".png", ".pdf"))

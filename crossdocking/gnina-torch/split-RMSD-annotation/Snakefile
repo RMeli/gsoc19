@@ -1,36 +1,43 @@
 
-folds = range(3)
-#models = ["default2017", "default2018", "dense"]
+folds = list(range(3))
 #clusterings = ["nc", "cluster"]
 #annotations = ["flex05", "flex1", "flex2", "max2"]
-#stratify = [(0, 0, 0), (0, 1, 0.5)]
-#scale_flexpose_loss = [1.0, 0.5, 2.0]
+#models = ["default2017", "default2018", "dense"]
 models = ["default2017"]
 clusterings = ["nc"]
 annotations = ["flex1"]
+stratify = ["0,1,0.5", "0,0,0"]
+scale_flexpose_loss = [1.0, 5.0]
+
 modes = ["train", "test"]
-stratify = ["[0,1,0.5]"]
-scale_flexpose_loss = [0.5]
+
+to_plot = [
+    "roc-auc",
+    "roc-auc-flex",
+    "balanced-accuracy",
+    "balanced-accuracy-flex",
+    "loss-pose",
+    "loss-flex-pose",
+]
 
 DATAROOT = "../../cd-downsampled/files"
 TRAINDIR = "TEST"
 
 def stratify_to_tuple(wildcards):
     s = wildcards.stratify
-    s = s.replace("[", "").replace("]", "")
     s = s.split(",")
     s = [float(c.strip()) for c in s]
     return s
 
 allfiles = expand(
-    "{traindir}/{annotation}/{model}-{clustering}/s{stratify}-floss{scale_flexpose_loss}/training{fold}_metrics_{mode}.csv",
-    fold=folds,
+    "{traindir}/{annotation}/{model}-{clustering}/s{stratify}-floss{scale_flexpose_loss}/{plot}.png",
     model=models,
     clustering=clusterings,
     annotation=annotations,
     mode=modes,
     stratify=stratify,
     scale_flexpose_loss=scale_flexpose_loss,
+    plot=to_plot,
     traindir=TRAINDIR,
 )
 
@@ -41,16 +48,15 @@ rule all:
 rule train:
     input:
         [
-            expand("{dataroot}/SPLIT{annotation}{clustering}test{fold}.types", dataroot=DATAROOT, allow_missing=True),
-            expand("{dataroot}/SPLIT{annotation}{clustering}train{fold}.types", dataroot=DATAROOT, allow_missing=True)
+            expand("{dataroot}/SPLIT{annotation}{clustering}train{fold}.types", dataroot=DATAROOT, allow_missing=True),
+            expand("{dataroot}/SPLIT{annotation}{clustering}test{fold}.types", dataroot=DATAROOT, allow_missing=True)
         ]
     output:
         [
-            expand("{traindir}/{annotation}/{model}-{clustering}/s{stratify}-floss{scale_flexpose_loss}/training{fold}_metrics_test.csv", traindir=TRAINDIR, allow_missing=True),
-            expand("{traindir}/{annotation}/{model}-{clustering}/s{stratify}-floss{scale_flexpose_loss}/training{fold}_metrics_train.csv", traindir=TRAINDIR, allow_missing=True)
+            expand("{traindir}/{annotation}/{model}-{clustering}/s{stratify}-floss{scale_flexpose_loss}/training{fold}_metrics_train.csv", allow_missing=True),
+            expand("{traindir}/{annotation}/{model}-{clustering}/s{stratify}-floss{scale_flexpose_loss}/training{fold}_metrics_test.csv", allow_missing=True)
         ]
     params:
-        traindir=TRAINDIR,
         stratify=stratify_to_tuple
     shell:
         "python -m gnina.training "
@@ -63,13 +69,25 @@ rule train:
         "--stratify_min {params.stratify[0]} "
         "--stratify_max {params.stratify[1]} "
         "--stratify_step {params.stratify[2]} "
-        "--iterations 25 "
-        "--scale_flexpose_loss {scale_flexpose_loss} "
-        "--batch_size 128 "
+        "--iterations 500 "
+        "--scale_flexpose_loss {wildcards.scale_flexpose_loss} "
+        "--batch_size 64 "
         "--balanced "
-        "--test_every 10 "
-        "--checkpoint_every 20 "
-        "--num_checkpoints 20 "
+        "--test_every 25 "
+        "--checkpoint_every 50 "
+        "--num_checkpoints 100 "
+        "--checkpoint_dir checkpoints{wildcards.fold} "
         "--checkpoint_prefix training{wildcards.fold} "
-        "--out_dir {params.traindir}/{wildcards.annotation}/{wildcards.model}-{wildcards.clustering}/s{wildcards.stratify}-floss{wildcards.scale_flexpose_loss} "
+        "--out_dir {wildcards.traindir}/{wildcards.annotation}/{wildcards.model}-{wildcards.clustering}/s{wildcards.stratify}-floss{wildcards.scale_flexpose_loss} "
         "--log_file training{wildcards.fold}.log"
+
+rule plot:
+    input:
+        [
+            expand("{traindir}/{annotation}/{model}-{clustering}/s{stratify}-floss{scale_flexpose_loss}/training{fold}_metrics_train.csv", fold=folds, allow_missing=True),
+            expand("{traindir}/{annotation}/{model}-{clustering}/s{stratify}-floss{scale_flexpose_loss}/training{fold}_metrics_test.csv",  fold=folds, allow_missing=True)
+        ]
+    output:
+        "{traindir}/{annotation}/{model}-{clustering}/s{stratify}-floss{scale_flexpose_loss}/{plot}.png",
+    shell:
+        "python plot.py {output} {wildcards.plot}"
