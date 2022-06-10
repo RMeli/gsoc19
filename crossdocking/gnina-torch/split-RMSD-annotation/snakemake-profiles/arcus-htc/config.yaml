@@ -5,15 +5,16 @@ cluster:
     --ntasks-per-node=1
     --cpus-per-task=1
     --gres=gpu:v100:{resources.gpu}
-    --partition=short
+    --partition=medium
     --clusters=htc
     --output=slurm/train/%x.%A_%a.out
     --error=slurm/train/%x.%A_%a.err
     --time={resources.time}
     --account=stat-ecr
+    --qos=standard
     --mem-per-cpu=24G
 default-resources:
   - gpu=1
   - time="24:00:00"
-jobs: 100
+jobs: 1000
 js: train_snakemake.slurm
