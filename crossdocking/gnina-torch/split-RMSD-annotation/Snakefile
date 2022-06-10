@@ -1,13 +1,15 @@
 
 folds = list(range(3))
-#clusterings = ["nc", "cluster"]
-#annotations = ["flex05", "flex1", "flex2", "max2"]
-#models = ["default2017", "default2018", "dense"]
-models = ["default2017"]
-clusterings = ["nc"]
-annotations = ["flex1"]
+models = ["default2017", "default2018", "dense"]
+clusterings = ["nc", "cluster"]
+annotations = ["flex05", "flex1", "flex2", "max2"]
 stratify = ["0,1,0.5", "0,0,0"]
-scale_flexpose_loss = [1.0, 5.0]
+scale_flexpose_loss = [1.0, 5.0, 10.0]
+
+DATAROOT = "../../cd-downsampled/files"
+TRAINDIR = "train"
+
+# ----------------------------
 
 modes = ["train", "test"]
 
@@ -19,9 +21,6 @@ to_plot = [
     "loss-pose",
     "loss-flex-pose",
 ]
-
-DATAROOT = "../../cd-downsampled/files"
-TRAINDIR = "TEST"
 
 def stratify_to_tuple(wildcards):
     s = wildcards.stratify
