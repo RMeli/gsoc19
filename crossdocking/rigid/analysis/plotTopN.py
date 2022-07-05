@@ -3,11 +3,14 @@ import pandas as pd
 
 from matplotlib import pyplot as plt
 
-pp=""
+pp = "FLEX"
 
 df = pd.read_csv(f"{pp}allTopN.csv")
 
-df_melted = df.melt(value_vars=["best", "smina", "gnina"], id_vars=["N", "annotation","prefix","model","crystal"])
+df_melted = df.melt(
+    value_vars=["best", "smina", "gnina"],
+    id_vars=["N", "annotation", "prefix", "model", "crystal"],
+)
 
 print(df_melted)
 
@@ -19,7 +22,21 @@ df_melted.rename(columns={"variable": "method", "value": "TopN (%)"}, inplace=Tr
 
 print(df_melted)
 
-g = sns.relplot(data=df_melted, x="N", y="TopN (%)", hue="method", style="crystal", col="prefix", kind="line", markers=True)
-g.tight_layout() # Excludes legend; plt.tight_layout() includes legend
-plt.ylim([0,100])
+# Rename prefix
+df_melted["prefix"] = df_melted["prefix"].str.replace("cluster", "clustering")
+df_melted["prefix"] = df_melted["prefix"].str.replace("nc", "no clustering")
+
+g = sns.relplot(
+    data=df_melted,
+    x="N",
+    y="TopN (%)",
+    hue="method",
+    style="crystal",
+    col="prefix",
+    kind="line",
+    markers=True,
+)
+g.tight_layout()  # Excludes legend; plt.tight_layout() includes legend
+plt.ylim([0, 100])
 plt.savefig(f"{pp}TopN.png")
+plt.savefig(f"{pp}TopN.pdf")
